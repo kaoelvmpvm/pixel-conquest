@@ -2,371 +2,371 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<title>Pixel Conquest｜像素吞併</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090a09">
+<meta name="description" content="五連地城是像素風的單人五子棋 Roguelike。連五消線、擊敗守關者，帶著遺物一路深入地城。">
+<title>五連地城 | FIVE BELOW</title>
 <style>
-:root{color-scheme:dark;--ink:#f1f3fb;--muted:#a0a7b5;--line:#373c47;--blue:#69ccff;--red:#ff7885;--gold:#ffda80}
-*{box-sizing:border-box}
-body{margin:0;background:#000;color:var(--ink);font-family:system-ui,"PingFang TC","Noto Sans TC",sans-serif;min-height:100dvh}
-button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:disabled{cursor:default;opacity:.32}
-button:focus-visible,canvas:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-h1,p{margin:0}
-main{width:min(100% - 20px,clamp(270px,calc((100svh - 220px) * .6667),437px));margin:auto;padding:10px 0 max(8px,env(safe-area-inset-bottom))}
-header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:9px}
-h1{font:900 clamp(18px,5vw,28px)/1.05 ui-monospace,monospace;letter-spacing:-.055em;color:#fff;text-shadow:2px 2px #36546c}
-.version{color:var(--muted);font:700 11px ui-monospace,monospace;white-space:nowrap}
-.status{display:grid;gap:5px;margin-bottom:7px}
-.statusline{display:flex;justify-content:space-between;align-items:center;gap:4px;font:700 12px ui-monospace,monospace}
-.blue{color:var(--blue)}.red{color:var(--red)}#phase{color:var(--muted);font-size:11px}
-.meter{background:#d85067;height:5px}#fill{width:50%;height:100%;background:#46baff;transition:width .14s linear}
-.board{position:relative;border:2px solid #585f72;box-shadow:0 3px #20242c;aspect-ratio:2/3;background:#000}
-canvas{display:block;width:100%;height:100%;image-rendering:pixelated;touch-action:none}
-.banner{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);padding:8px 14px;background:#000;border:2px solid var(--gold);color:var(--gold);font-weight:900;pointer-events:none;white-space:nowrap}
-[hidden]{display:none!important}
-.panel{background:#000;padding:10px 0 0;display:grid;gap:7px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:5px}
-.resources{white-space:nowrap;font-size:12px;color:var(--muted)}
-.resources strong{color:var(--gold);font:700 16px ui-monospace,monospace}
-.rack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.card{background:#14171f;border:1px solid var(--line);border-bottom-width:3px;padding:4px 2px;font-size:12px;font-weight:800;display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:1px 4px;touch-action:none;user-select:none;-webkit-user-select:none}
-.card[aria-pressed=true]{border-color:#6abeec;background:#142638}
-.card.dim{opacity:.55}
-.card svg{width:23px;height:19px;display:block;pointer-events:none}
-.card small{grid-column:1/-1;color:var(--gold);font-size:10px;white-space:nowrap;pointer-events:none}
-.actions{display:flex;gap:4px}
-.actions button{background:#101217;border:1px solid var(--line);padding:5px 6px;font-size:11px;font-weight:700;white-space:nowrap}
-#hint{min-height:1.4em;font-size:11px;line-height:1.35;color:var(--muted)}
-details{font-size:11px;line-height:1.5;color:var(--muted)}summary{cursor:pointer;color:var(--ink)}details p{margin-top:4px}
+:root{color-scheme:dark;--bg:#090a09;--panel:#131512;--rim:#393c31;--ink:#f5efdc;--muted:#b1ac98;--sand:#e9c27b;--mint:#bfe9a5;--coral:#ff977c;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,"PingFang TC","Noto Sans TC",sans-serif;min-height:100dvh}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:disabled{cursor:default}.ghost:disabled{opacity:.55}button:focus-visible,summary:focus-visible{outline:2px solid var(--sand);outline-offset:3px}h1,h2,p{margin:0}[hidden]{display:none!important}
+.shell{max-width:940px;margin:auto;padding:clamp(14px,4vw,40px) clamp(12px,4vw,30px) max(16px,env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:clamp(12px,3vw,24px)}
+.brand{display:flex;align-items:center;gap:11px}.brand-icon{width:42px;flex:none;color:var(--sand);image-rendering:pixelated}.kicker,.eyebrow,.version{font:800 10px/1.3 var(--mono);letter-spacing:.17em;color:var(--sand)}h1{font-size:clamp(24px,5.5vw,38px);line-height:1.1;letter-spacing:.09em;font-weight:900;text-shadow:2px 2px #504024}.tools{display:flex;gap:6px}.ghost,.special,.primary{min-height:40px;border:1px solid var(--rim);border-bottom-width:3px;background:#181b15;padding:6px 10px;font-size:13px;font-weight:750}.ghost:hover,.special:not(:disabled):hover{border-color:var(--sand)}.ghost svg{width:16px;height:16px;display:block}.ghost[aria-pressed=false] .sound-waves{opacity:.18}
+.play{display:grid;gap:14px;align-items:start}.arena,.tray{min-width:0}.route{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;list-style:none;margin:0 0 7px;padding:0}.route li{border:1px solid #2c3027;background:#11130f;color:var(--muted);padding:4px 4px 5px;text-align:center;font-size:11px;white-space:nowrap}.route span{font:800 10px var(--mono);margin-right:.35em;color:#aba58b}.route li[aria-current=step]{background:#332719;border-color:#957549;color:#ffdfa2}.route li.cleared{color:var(--mint);border-color:#4a5a3b}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rim);border-bottom:0;background:#171a15}.combatant:last-child{text-align:right}.combatant b{display:block;font-size:12px;margin-bottom:5px}.you b{color:var(--mint)}.enemy b{color:var(--coral)}.pips{display:flex;gap:4px}.enemy .pips{justify-content:flex-end}.pip{display:block;width:clamp(10px,3vw,18px);height:8px;box-shadow:inset 0 -2px #0005;background:#38392e}.you .pip.filled{background:#a8d887}.enemy .pip.filled{background:#ed795c}.shield{font:700 10px var(--mono);color:var(--sand)}.floor{text-align:center;color:var(--sand);font:800 11px var(--mono);letter-spacing:.12em}
+.frame{position:relative;padding:clamp(8px,2.4vw,14px);background:#292b21;border:1px solid #62634c;box-shadow:inset 0 0 0 3px #191a14,0 4px #13150f}
+.board{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));aspect-ratio:1;background:#302c22;gap:1px;padding:1px;position:relative;isolation:isolate;user-select:none;-webkit-user-select:none}
+.cell{background:#474232;border:0;padding:0;min-width:0;min-height:0;position:relative;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}.cell.alt{background:#4c4736}.cell.star:before{content:"";width:4px;height:4px;background:#968060;position:absolute}.cell:focus-visible{z-index:3;outline:2px solid #ffe6a3;outline-offset:-2px}.cell.last:after,.cell.keyboard:after{content:"";position:absolute;inset:2px;border:1px solid #ffe7aa;opacity:.85;pointer-events:none}.cell.target{background:#624137}.cell.target:hover{background:#844d3e}
+.stone{display:block;width:72%;height:72%;pointer-events:none;position:relative;--shape:polygon(24% 0,76% 0,76% 12%,90% 12%,90% 24%,100% 24%,100% 76%,90% 76%,90% 88%,76% 88%,76% 100%,24% 100%,24% 88%,10% 88%,10% 76%,0 76%,0 24%,10% 24%,10% 12%,24% 12%);clip-path:var(--shape);visibility:hidden}
+.stone:before{content:"";position:absolute;inset:12%;clip-path:var(--shape);background:var(--core)}.stone:after{content:"";position:absolute;top:23%;left:23%;width:25%;height:13%;background:var(--glint)}
+.cell[data-v="1"] .stone,.cell[data-v="2"] .stone,.cell[data-v="3"] .stone{visibility:visible}.cell[data-v="1"] .stone{background:#386044;--core:#a8d887;--glint:#e0f8c1}.cell[data-v="2"] .stone{background:#7e3a32;--core:#e57961;--glint:#ffc5a4}
+.cell[data-v="3"] .stone{width:80%;height:80%;background:#272921;--core:#8d9280;--glint:#d0cbb3;--shape:polygon(12% 24%,30% 24%,30% 8%,72% 8%,72% 21%,89% 21%,89% 43%,100% 43%,100% 80%,74% 80%,74% 93%,12% 93%,12% 79%,0 79%,0 40%,12% 40%)}
+@media(hover:hover){.board.ready .cell[data-v="0"]:hover{background:#645b42}.board.ready .cell[data-v="0"]:hover .stone{visibility:visible;background:#e0f8c1;opacity:.4}}
+.cell.burst{z-index:1;background:#806a38}.cell.burst .stone{animation:burst .36s steps(5,end) both}.cell.burst .stone:before{background:#fff2ad}.cell.removed .stone{visibility:visible;background:#d98a63;animation:burst .36s steps(5,end) both}@keyframes burst{0%,30%{transform:scale(1.14);opacity:1}100%{transform:scale(.25);opacity:0}}
+.strike{position:absolute;z-index:4;left:50%;top:47%;transform:translate(-50%,-50%);padding:7px 10px;background:#15130e;border:1px solid currentColor;font-size:clamp(15px,4.2vw,26px);font-weight:900;white-space:nowrap;pointer-events:none;color:#ffe7aa;box-shadow:0 3px #0008}.strike.hostile{color:#ffad93}
+.signal{min-height:45px;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);padding:8px 0 0}.signal:before{content:"";width:7px;height:7px;flex:none;background:var(--mint);box-shadow:2px 2px #35452d}.signal[data-tone="enemy"]:before{background:var(--coral);box-shadow:2px 2px #653e36}.signal[data-tone="event"]:before{background:var(--sand);box-shadow:2px 2px #5a492e}
+.tray{display:grid;gap:9px}.box,.rules{border:1px solid var(--rim);background:var(--panel);padding:10px 12px}.tray h2{font-size:15px;margin:2px 0 4px}.box p,.rules p{color:var(--muted);font-size:12px;line-height:1.5}.inventory{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.tag{color:#ffe0a0;border:1px solid #645538;background:#262217;padding:3px 6px;font-size:12px}.special{margin-top:9px;color:var(--sand);display:block;width:100%;text-align:left}.special[aria-pressed=true]{background:#432921;border-color:#d38a68}.special:disabled{opacity:.58}.rules summary{cursor:pointer;color:var(--ink);font-size:13px;font-weight:750}.rules p{margin-top:7px}.version{color:var(--muted);font-size:9px}.footer{margin-top:13px;display:flex;justify-content:space-between;gap:7px}
+dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;background:#191a13;border:2px solid #91734c;color:var(--ink);box-shadow:5px 6px 0 #000b;padding:18px}dialog::backdrop{background:#080908ca}dialog h2{color:#ffe0a0;font-size:25px;margin:4px 0 7px}dialog p{font-size:14px;color:var(--muted);line-height:1.55}.choices{display:grid;gap:7px;margin-top:14px}.choice{display:grid;grid-template-columns:25px 1fr;align-items:center;gap:0 9px;text-align:left;background:#292519;border:1px solid #655436;border-bottom-width:3px;padding:9px 10px}.choice:hover{border-color:var(--sand);background:#342d1e}.choice i{font:800 18px var(--mono);color:var(--sand);grid-row:1/span 2}.choice b{color:#ffe4ad;font-size:15px}.choice small{color:#d5cbb1;line-height:1.4}.primary{display:inline-block;background:#e9c27b;color:#1d170e;border-color:#af874d;margin-top:14px}.primary:hover{background:#ffda93}.confirm-actions{display:flex;align-items:baseline;gap:8px}
+@media(min-width:760px){.play{grid-template-columns:minmax(0,550px) minmax(218px,1fr);gap:22px}.tray{margin-top:33px}.frame{padding:14px}.box,.rules{padding:13px 14px}}
+@media(prefers-reduced-motion:reduce){.cell.burst .stone,.cell.removed .stone{animation:none}}
 </style>
 </head>
 <body>
-<main>
-<header><h1>PIXEL CONQUEST</h1><span class="version">v0.1.1</span></header>
-<div class="layout">
-<section class="battle" aria-label="戰況">
-<div class="status"><div class="statusline"><span class="red" id="red">紅軍 50%</span><span id="phase">等待部署</span><span class="blue" id="blue">藍軍 50%</span></div><div class="meter" aria-hidden="true"><div id="fill"></div></div></div>
-<div class="board"><canvas id="board" width="256" height="384" tabindex="0" aria-label="十六欄二十四列戰場，藍方在下。可用方向鍵移動、Enter 部署或選取砲台。"></canvas><div id="banner" class="banner" hidden></div></div>
-</section>
-<section class="panel" aria-label="部署控制">
-<div class="toolbar">
-<div class="resources">能量 <strong id="energy">16</strong> / 40</div>
-<div class="actions"><button id="rotate" type="button" title="順時針轉向">朝向 ↑</button><button id="scrap" type="button" disabled>拆除</button><button id="reset" type="button">重開</button></div>
+<main class="shell">
+<header>
+  <div class="brand">
+    <svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" shape-rendering="crispEdges"><path d="M2 2h20v2H2zM2 20h20v2H2zM2 4h2v16H2zM20 4h2v16h-2z" opacity=".5"/><path d="M16 5h3v3h-3zM12 9h4v4h-4zM8 13h4v4H8zM5 17h3v3H5z"/><path d="M5 5h2v2H5zM17 16h2v2h-2z" opacity=".55"/></svg>
+    <div><p class="kicker">FIVE BELOW</p><h1>五連地城</h1></div>
+  </div>
+  <div class="tools">
+    <button class="ghost" id="sound" type="button" aria-label="音效" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z"/><path class="sound-waves" d="M11 6v4m3-6v8"/></svg></button>
+    <button class="ghost" id="reset" type="button">重新開始</button>
+  </div>
+</header>
+<div class="play">
+  <section class="arena" aria-label="地城戰鬥">
+    <ol class="route" id="route" aria-label="關卡進度">
+      <li aria-current="step"><span>01</span>守門者</li><li><span>02</span>追線者</li><li><span>03</span>石庭王</li>
+    </ol>
+    <div class="hud">
+      <div class="combatant you"><b>你 <span class="shield" id="shield" hidden>◆ 護盾</span></b><div class="pips" id="playerHP"></div></div>
+      <div class="floor" id="floor">FLOOR 01</div>
+      <div class="combatant enemy"><b id="foeName">守門者</b><div class="pips" id="enemyHP"></div></div>
+    </div>
+    <div class="frame">
+      <div class="board" id="board" role="group" aria-label="11 乘 11 棋盤。可用方向鍵移動焦點，按 Enter 或空白鍵落子。"></div>
+      <div class="strike" id="strike" aria-hidden="true" hidden></div>
+    </div>
+    <p class="signal" id="status" role="status" aria-atomic="true">輪到你。點空格落子。</p>
+  </section>
+  <aside class="tray" aria-label="關卡資訊與遺物">
+    <section class="box"><p class="eyebrow">ENCOUNTER</p><h2 id="encounterTitle">守門者</h2><p id="encounter"></p></section>
+    <section class="box"><p class="eyebrow">RELICS</p><h2>遺物</h2><p id="emptyRelics">目前沒有遺物，擊敗守關者後可選擇獎勵。</p><div class="inventory" id="inventory" hidden></div><button class="special" id="pin" type="button" aria-pressed="false" hidden>破陣釘</button></section>
+    <details class="rules" open><summary>怎麼玩</summary><p>你執綠棋，和對手輪流下一子。橫、直或斜連成五顆以上，就消除整條線並扣對手 1 點生命。同一手連出兩個方向，就扣 2 點。</p><p>打倒對手後三選一。你的生命與遺物會帶到下一關。生命歸零，就得從第一關開始。</p></details>
+  </aside>
 </div>
-<div id="rack" class="rack" aria-label="武器"></div>
-<p id="hint" aria-live="polite">拖砲台到藍格，放下即開火。</p>
-<details><summary>玩法</summary><p>拖曳或點選武器再點藍格。砲台持續射擊，打中敵格就翻色。深色斜紋格仍是你的領地，但要上下左右接回己方底線才可部署與開火。砲台腳下的格子被攻下時，砲台會摧毀。拖曳場上的砲台可移動。占領整張地圖就獲勝。</p></details>
-</section>
-</div>
+<div class="footer"><span class="version">GOMOKU ROGUELIKE</span><span class="version">v0.1.0</span></div>
 </main>
+<dialog id="modal" aria-labelledby="modalTitle"><p class="eyebrow" id="modalEyebrow"></p><h2 id="modalTitle"></h2><p id="modalText"></p><div class="choices" id="choices" hidden></div><div class="confirm-actions" id="modalActions"></div></dialog>
 <script>
 'use strict';
-const W=16,H=24,N=W*H,S=16,BLUE=1,RED=2;
-const WEAPONS={
- gun:{label:'機關砲',cost:5,range:7,reload:.55,detail:'直線快射，每發翻一格。'},
- spread:{label:'散射砲',cost:9,range:4,reload:1.02,detail:'直射加左右斜射，拓寬戰線。'},
- mortar:{label:'迫擊砲',cost:13,range:7,reload:2.25,detail:'越過前線，爆炸最多翻五格。'}
+const SIZE=11,N=SIZE*SIZE,PLAYER=1,ENEMY=2,ROCK=3,MAX_HP=4;
+const DIRS=[[1,0],[0,1],[1,1],[1,-1]],ADJ=[[1,0],[-1,0],[0,1],[0,-1]];
+const LEVELS=[
+  {name:'守門者',hp:2,offense:.80,defense:1.15,desc:'擅長攔住你快成形的棋路。試著在同一手佈下兩個威脅。'},
+  {name:'追線者',hp:2,offense:1.12,defense:.86,desc:'更積極在不同方向下棋。進攻前，先確認你擋得住它的下一手。'},
+  {name:'石庭王',hp:3,offense:1,defense:1.05,desc:'岩石會截斷棋路，雙方都不能落子。找出還能交會的兩條線。'}
+];
+const RELICS={
+  ember:{name:'餘燼',icon:'✦',desc:'五連消除後，保留你這回合剛落下的棋子。'},
+  cross:{name:'交叉刃',icon:'×',desc:'同一手完成兩個以上的五連方向時，額外造成 1 點傷害。'},
+  pin:{name:'破陣釘',icon:'▣',desc:'每關一次，移除一顆上下左右緊鄰己方棋子的敵棋，取代該回合落子。'},
+  rest:{name:'整備',icon:'+',desc:'回復 1 點生命。若已滿血，下一關獲得可抵銷 1 點傷害的護盾。'}
 };
-const DIR=[[0,-1],[1,0],[0,1],[-1,0]], ARROWS=['↑','→','↓','←'];
-const idx=(x,y)=>x>=0&&x<W&&y>=0&&y<H?y*W+x:-1;
-const xy=i=>[i%W,Math.floor(i/W)];
-const other=s=>3-s;
-class Match {
- constructor(){
-  this.tiles=Uint8Array.from({length:N},(_,i)=>i<W*H/2?RED:BLUE);
-  this.units=new Map();this.supply=new Uint8Array(N);this.energy=[0,16,16];this.free=[0,2,2];
-  this.shots=[];this.fx=[];this.mode='waiting';this.winner=0;this.time=0;this.aiNext=1.2;
-  this.relink();
-  this.place(RED,'gun',idx(5,10),2);
-  this.place(RED,'gun',idx(10,10),2);
- }
- relink(){
-  this.supply.fill(0);this.blueCount=0;
-  const q=[];
-  for(let x=0;x<W;x++){if(this.tiles[x]===RED){q.push(x);this.supply[x]=RED;}const i=N-W+x;if(this.tiles[i]===BLUE){q.push(i);this.supply[i]=BLUE;}}
-  for(let k=0;k<q.length;k++){const i=q[k],s=this.supply[i],[x,y]=xy(i);for(const [dx,dy] of DIR){const j=idx(x+dx,y+dy);if(j>=0&&this.supply[j]===0&&this.tiles[j]===s){this.supply[j]=s;q.push(j);}}}
-  for(const v of this.tiles)if(v===BLUE)this.blueCount++;
- }
- cost(s,type){return type==='gun'&&this.free[s]>0?0:WEAPONS[type].cost;}
- why(s,i,type,from=null){
-  if(this.mode==='done')return '戰局已結束。';
-  if(i<0||i>=N)return '請放在戰場內。';
-  if(this.tiles[i]!==s)return '只能部署在己方格子。';
-  if(this.supply[i]!==s)return '這格未連回己方底線。';
-  if(this.units.has(i)&&i!==from)return '這格已經有砲台。';
-  if(from!==null&&this.units.get(from)?.side!==s)return '原砲台已不在場上。';
-  if(from===null&&this.energy[s]+1e-7<this.cost(s,type))return '能量不足。';
-  return '';
- }
- place(s,type,i,dir,from=null){
-  if(this.why(s,i,type,from))return false;
-  if(from!==null)this.units.delete(from);
-  else if(this.cost(s,type)===0)this.free[s]--;
-  else this.energy[s]-=this.cost(s,type);
-  const u={side:s,type,dir,ready:this.time};
-  this.units.set(i,u);
-  if(s===BLUE&&this.mode==='waiting')this.mode='live';
-  if(this.mode==='live')this.fire(i,u);
-  return true;
- }
- targets(i,u){
-  const [x,y]=xy(i),[dx,dy]=DIR[u.dir],r=WEAPONS[u.type].range, result=[];
-  if(u.type==='mortar'){
-   let best=-1,score=-Infinity;
-   for(let a=-r;a<=r;a++)for(let b=-r;b<=r;b++){
-    const d=Math.abs(a)+Math.abs(b),j=idx(x+a,y+b);
-    if(d<2||d>r||a*dx+b*dy<=0||j<0||this.tiles[j]===u.side)continue;
-    let splash=1;for(const [qx,qy] of DIR){const k=idx(x+a+qx,y+b+qy);if(k>=0&&this.tiles[k]!==u.side)splash++;}
-    const t=splash*.75+d*.16+(this.units.has(j)?2.2:0);
-    if(t>score){score=t;best=j;}
-   }
-   return best<0?[]:[best];
-  }
-  const rays=[[dx,dy]];
-  if(u.type==='spread')rays.push([dx+dy,dy-dx],[dx-dy,dy+dx]);
-  for(const [a,b] of rays)for(let n=1;n<=r;n++){
-   const j=idx(x+a*n,y+b*n);
-   if(j<0)break;
-   if(this.tiles[j]!==u.side){result.push(j);break;}
-  }
-  return result;
- }
- impact(p){
-  const [x,y]=xy(p.to);
-  const cells=p.type==='mortar'?[p.to,...DIR.map(([a,b])=>idx(x+a,y+b))]:[p.to];
-  let changed=false;
-  for(const i of cells)if(i>=0&&this.tiles[i]!==p.side){
-   const tower=this.units.delete(i);
-   this.tiles[i]=p.side;changed=true;this.fx.push({i,side:p.side,t:this.time,tower});
-  }
-  return changed;
- }
- fire(i,u){
-  const hits=this.targets(i,u), [x,y]=xy(i), [dx,dy]=DIR[u.dir];
-  let destinations=hits;
-  if(!hits.length){
-   let end=i;
-   for(let n=1;n<=WEAPONS[u.type].range;n++){
-    const j=idx(x+dx*n,y+dy*n);
-    if(j<0)break;
-    end=j;
-   }
-   destinations=[end];
-  }
-  u.ready=this.time+WEAPONS[u.type].reload;
-  for(const to of destinations){
-   const [tx,ty]=xy(to);
-   this.shots.push({from:i,to,side:u.side,type:u.type,cosmetic:!hits.length,start:this.time,end:this.time+(u.type==='mortar'?.65:.09+Math.hypot(tx-x,ty-y)*.032)});
-  }
- }
- ai(){
-  const types=['gun','spread','mortar'].filter(type=>this.energy[RED]>=this.cost(RED,type));
-  const idle=[...this.units].find(([i,u])=>u.side===RED&&(this.supply[i]!==RED||!this.targets(i,u).length));
-  const choices=types.map(type=>({type,from:null}));
-  if(idle)choices.push({type:idle[1].type,from:idle[0]});
-  if(!choices.length)return;
-  let best=null,bestScore=-Infinity;
-  for(let i=0;i<N;i++){
-   if(this.supply[i]!==RED||this.units.has(i))continue;
-   const [,y]=xy(i);
-   for(const {type,from} of choices){
-    for(const dir of [2,1,3,0]){
-     const hits=this.targets(i,{side:RED,type,dir});
-     if(!hits.length)continue;
-     const score=hits.length*.72+(type==='mortar'?1.0:type==='spread'?.2:.42)+Math.random()*1.55+
-       (hits.some(j=>this.units.has(j))?.50:0)+y*.022-(dir===2?0:.32)+(from===null?0:.18);
-     if(score>bestScore){bestScore=score;best={type,i,dir,from};}
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const $=id=>document.getElementById(id);
+const board=$('board'),status=$('status'),strike=$('strike'),modal=$('modal');
+const cells=[],letters='ABCDEFGHIJK';
+let run,focusIndex=60,timer,modalType='',soundEnabled=false,audioContext;
+function index(x,y){return x>=0&&x<SIZE&&y>=0&&y<SIZE?y*SIZE+x:-1}
+function point(i){return [i%SIZE,Math.floor(i/SIZE)]}
+function shuffle(values){const a=[...values];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newRun(){return {stage:0,hp:MAX_HP,enemyHp:2,relics:new Set(),shield:0,pinUsed:false,pinMode:false,mode:'player',last:-1,board:new Uint8Array(N),turns:0}}
+function boardFor(stage){
+  const b=new Uint8Array(N);
+  if(stage!==2)return b;
+  const template=shuffle([[[3,3],[2,6],[5,2]],[[4,3],[2,4],[6,2]],[[3,4],[2,2],[5,3]]])[0];
+  const rotate=Math.floor(Math.random()*4),reflect=Math.random()<.5;
+  for(const [a,c] of template){let x=reflect?10-a:a,y=c;for(let i=0;i<rotate;i++)[x,y]=[10-y,x];b[index(x,y)]=b[index(10-x,10-y)]=ROCK}
+  return b;
+}
+function linesAt(b,i,side){
+  if(i<0||i>=N||b[i]!==side)return [];
+  const [x,y]=point(i),lines=[];
+  for(const [dx,dy] of DIRS){
+    const line=[i];
+    for(const s of [1,-1]){
+      for(let n=1;n<SIZE;n++){
+        const j=index(x+n*s*dx,y+n*s*dy);if(j<0||b[j]!==side)break;
+        if(s===1)line.push(j);else line.unshift(j);
+      }
     }
-   }
+    if(line.length>=5)lines.push(line);
   }
-  if(best)this.place(RED,best.type,best.i,best.dir,best.from);
- }
- tick(dt){
-  if(this.mode!=='live')return;
-  this.time+=dt;
-  for(const s of [BLUE,RED])this.energy[s]=Math.min(40,this.energy[s]+dt*1.65);
-  let changed=false;const incoming=[];
-  for(const p of this.shots){if(this.time>=p.end){if(!p.cosmetic)changed=this.impact(p)||changed;}else incoming.push(p);}
-  this.shots=incoming;
-  if(changed){
-   this.relink();
-   if(this.blueCount===0||this.blueCount===N){this.mode='done';this.winner=this.blueCount?BLUE:RED;return;}
+  return lines;
+}
+function analyzePlacement(b,i,side,relics){
+  if(!Number.isInteger(i)||i<0||i>=N||b[i]!==0)return null;
+  b[i]=side;
+  const lines=linesAt(b,i,side);
+  const damage=lines.length+(lines.length>1&&side===PLAYER&&relics.has('cross')?1:0);
+  const cleared=[...new Set(lines.flat())].filter(j=>!(j===i&&side===PLAYER&&relics.has('ember')));
+  return {lines,damage,cleared};
+}
+function legalPin(b,i){
+  if(i<0||i>=N||b[i]!==ENEMY)return false;
+  const [x,y]=point(i);return ADJ.some(([dx,dy])=>b[index(x+dx,y+dy)]===PLAYER);
+}
+function pinTargets(){return run.board.some((_,i)=>legalPin(run.board,i))}
+function threatShape(b,i,side){
+  const [x,y]=point(i);let score=0,certain=0,openThrees=0,same=0;
+  for(const [dx,dy] of DIRS){
+    let best=0,extra=0,distEnds=0;
+    const tape=Array.from({length:9},(_,k)=>k===4?side:(b[index(x+(k-4)*dx,y+(k-4)*dy)]??ROCK));
+    if(tape[3]===side)same++;if(tape[5]===side)same++;
+    for(let k=0;k<=4;k++){
+      const w=tape.slice(k,k+5);
+      if(w.some(v=>v!==0&&v!==side))continue;
+      const count=w.filter(v=>v===side).length;
+      const open=Number(tape[k-1]===0)+Number(tape[k+5]===0);
+      if(count===5){certain=1;best=Math.max(best,6500);continue}
+      if(count===4){const gap=k+w.indexOf(0);extra|=1<<gap}
+      if(count===3&&open===2){const p=w.map((v,j)=>v===side?j:-10).filter(j=>j>=0);if(p[2]-p[0]<=3)distEnds=1}
+      best=Math.max(best,([0,0,7,48,115,0][count])*(1+open*.22));
+    }
+    score+=best+((extra&(extra-1))!==0?425:0);openThrees+=distEnds;
   }
-  this.fx=this.fx.filter(a=>this.time-a.t<.47);
-  for(const [i,u] of this.units){
-   if(this.supply[i]===u.side&&u.ready<=this.time)this.fire(i,u);
+  score+=openThrees>1?108:0;
+  return {score,certain,same};
+}
+function virtualDamage(b,i,side,relics){
+  b[i]=side;
+  const n=linesAt(b,i,side).length;
+  b[i]=0;
+  return n+(side===PLAYER&&n>1&&relics.has('cross')?1:0);
+}
+function chooseEnemy(state){
+  const b=state.board,level=LEVELS[state.stage];
+  let best=-1,value=-Infinity;
+  for(let i=0;i<N;i++){
+    if(b[i]!==0)continue;
+    const [x,y]=point(i);
+    const ours=threatShape(b,i,ENEMY),theirs=threatShape(b,i,PLAYER);
+    let v=ours.score*level.offense+theirs.score*level.defense+
+      1.28*(10-Math.abs(x-5)-Math.abs(y-5))+2.5*ours.same+1.2*theirs.same+Math.random()*4;
+    if(ours.certain){
+      const harm=virtualDamage(b,i,ENEMY,state.relics);
+      v+=harm*15000+(harm>=state.hp+state.shield?120000:0);
+    }
+    if(theirs.certain){
+      const harm=virtualDamage(b,i,PLAYER,state.relics);
+      v+=harm*8000+(harm>=state.enemyHp?48000:0);
+    }
+    if(v>value){value=v;best=i}
   }
-  if(this.time>=this.aiNext){this.aiNext=this.time+1.3+Math.random()*.65;this.ai();}
- }
+  return best;
 }
-const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d');
-let game=new Match(),selected='gun',direction=0,from=null,hover=-1,keyPos=idx(7,13),drag=null,lastHint='',holdUntil=0;
-const setHint=(text,ms=0)=>{lastHint=text;$('hint').textContent=text;holdUntil=performance.now()+ms;};
-const baseHint='拖砲台到藍格，放下即開火。';
-const weaponHint=()=>from!==null?'把所選砲台拖到其他藍格，或點格子搬移。':WEAPONS[selected]?.detail??baseHint;
-const cards={};
-for(const [type,w] of Object.entries(WEAPONS)){
- const button=document.createElement('button');button.type='button';button.className='card';button.title=w.detail;button.setAttribute('aria-pressed','false');
- const barrel=type==='gun'?'<path d="M12 2h6v10h-6z"/>':type==='spread'?'<path d="M8 3h4v9H8zM13 1h4v11h-4zM18 3h4v9h-4z"/>':'<path d="M11 1h8v4h2v9H9V5h2z"/><path fill="#193e65" d="M13 4h4v4h-4z"/>';
- button.innerHTML='<svg viewBox="0 0 30 22" aria-hidden="true" shape-rendering="crispEdges"><path fill="#0d1d34" d="M4 12h22v9H4z"/><path fill="#3792cc" d="M7 10h16v9H7z"/><g fill="#83deff">'+barrel+'</g></svg><span>'+w.label+'</span><small></small>';
- button.addEventListener('pointerdown',e=>{if(e.button!==0||!e.isPrimary||!selectType(type))return;beginDrag(e,button);});
- button.addEventListener('click',e=>{if(e.detail===0)selectType(type);});
- $('rack').append(button);cards[type]=button;
+function hpMeter(el,current,max,label){
+  el.replaceChildren();el.setAttribute('role','img');el.setAttribute('aria-label',label+'生命 '+current+'／'+max);
+  for(let i=0;i<max;i++){const pip=document.createElement('span');pip.className='pip'+(i<current?' filled':'');pip.setAttribute('aria-hidden','true');el.append(pip)}
 }
-function selectType(type){
- if(game.mode==='done')return false;
- selected=type;from=null;setHint(weaponHint());sync();return true;
+function message(text,tone='player'){status.textContent=text;status.dataset.tone=tone}
+function render(){
+  const level=LEVELS[run.stage];
+  board.classList.toggle('ready',run.mode==='player'&&!run.pinMode);
+  $('reset').disabled=run.mode==='enemy'||run.mode==='effect';
+  board.setAttribute('aria-busy',String(run.mode==='enemy'||run.mode==='effect'));
+  for(let i=0;i<N;i++){
+    const value=run.board[i],btn=cells[i];
+    if(btn.dataset.v!==String(value)){
+      const [x,y]=point(i);
+      btn.dataset.v=value;
+      btn.setAttribute('aria-label',letters[x]+(y+1)+'，'+['空格','你的棋子','對手棋子','岩石'][value]);
+    }
+    btn.tabIndex=i===focusIndex?0:-1;
+    btn.classList.toggle('last',i===run.last&&value!==0);
+    btn.classList.toggle('target',run.pinMode&&run.mode==='player'&&legalPin(run.board,i));
+    btn.setAttribute('aria-disabled',String(run.mode!=='player'||(run.pinMode?!legalPin(run.board,i):value!==0)));
+  }
+  hpMeter($('playerHP'),run.hp,MAX_HP,'玩家');hpMeter($('enemyHP'),run.enemyHp,level.hp,'敵方');
+  $('shield').hidden=run.shield===0;
+  $('foeName').textContent=level.name;$('encounterTitle').textContent=level.name;$('encounter').textContent=level.desc;
+  $('floor').textContent='FLOOR 0'+(run.stage+1);
+  [...$('route').children].forEach((el,i)=>{
+    if(i===run.stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');
+    el.classList.toggle('cleared',i<run.stage||(i===run.stage&&run.enemyHp===0));
+  });
+  $('inventory').replaceChildren();
+  for(const id of run.relics){
+    const tag=document.createElement('span');tag.className='tag';tag.textContent=RELICS[id].name;tag.title=RELICS[id].desc;$('inventory').append(tag);
+  }
+  $('emptyRelics').hidden=run.relics.size>0;$('inventory').hidden=run.relics.size===0;
+  $('pin').hidden=!run.relics.has('pin');
+  $('pin').disabled=run.mode!=='player'||run.pinUsed||!pinTargets();
+  $('pin').setAttribute('aria-pressed',String(run.pinMode));
+  $('pin').textContent=run.pinUsed?'破陣釘 · 已使用':run.pinMode?'取消破陣釘':pinTargets()?'破陣釘 · 可使用':'破陣釘 · 無相鄰目標';
 }
-function cellAt(e){
- const b=canvas.getBoundingClientRect();
- return idx(Math.floor((e.clientX-b.left)*W/b.width),Math.floor((e.clientY-b.top)*H/b.height));
+function schedule(callback,delay){clearTimeout(timer);timer=setTimeout(callback,delay)}
+function clearEffects(){cells.forEach(c=>c.classList.remove('burst','removed'));strike.hidden=true}
+function playSound(kind){
+  if(!soundEnabled)return;
+  try{
+    audioContext??=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
+    const notes=kind==='hit'?[392,523,784]:kind==='hurt'?[196,147,98]:kind==='clear'?[392,494,588,784]:[kind==='enemy'?160:246];
+    const t=audioContext.currentTime;
+    notes.forEach((hz,i)=>{
+      const osc=audioContext.createOscillator(),gain=audioContext.createGain(),start=t+i*.052;
+      osc.type='square';osc.frequency.value=hz;gain.gain.setValueAtTime(.0001,start);
+      gain.gain.exponentialRampToValueAtTime(.048,start+.008);gain.gain.exponentialRampToValueAtTime(.0001,start+.065);
+      osc.connect(gain).connect(audioContext.destination);osc.start(start);osc.stop(start+.07);
+    });
+  }catch{}
 }
-function beginDrag(e,el){
- drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:false,cell:cellAt(e),el};
- el.setPointerCapture(e.pointerId);
+function playerTurn(text='輪到你。點空格落子。'){run.mode='player';message(text);render()}
+function passTurn(side){
+  if(!run.board.includes(0)){
+    for(let i=0;i<N;i++)if(run.board[i]!==ROCK)run.board[i]=0;
+    run.last=-1;
+    if(side===ENEMY){playerTurn('棋盤已滿，清空棋子後繼續。輪到你。');return}
+    message('棋盤已滿，清空棋子後繼續。對手思考中。','enemy');
+  }else if(side===PLAYER)message('對手思考中…','enemy');
+  if(side===ENEMY){playerTurn();return}
+  run.mode='enemy';render();schedule(enemyTurn,240);
 }
-function tileAction(i){
- if(i<0||game.mode==='done')return;
- if(from!==null&&!game.units.has(from)){from=null;setHint('原砲台已被摧毀。',1800);return;}
- const u=game.units.get(i);
- if(u?.side===BLUE){from=i;selected=u.type;direction=u.dir;setHint(weaponHint());sync();return;}
- deploy(i);
+function enemyTurn(){
+  if(run.mode!=='enemy')return;
+  const i=chooseEnemy(run);if(i===-1){passTurn(ENEMY);return}place(i,ENEMY);
 }
-function deploy(i){
- if(!selected||i<0)return;
- if(from===i)return;
- const reason=game.why(BLUE,i,selected,from);
- if(reason){setHint(reason,1800);return;}
- const moving=from!==null;
- game.place(BLUE,selected,i,direction,from);
- from=moving?i:null;
- setHint(moving?'砲台已移動。':WEAPONS[selected].label+'已開火。',1200);sync();
+function place(i,side){
+  if((side===PLAYER&&run.mode!=='player')||(side===ENEMY&&run.mode!=='enemy'))return;
+  const result=analyzePlacement(run.board,i,side,run.relics);if(!result)return;
+  run.last=i;run.turns++;playSound(side===PLAYER?'stone':'enemy');
+  if(!result.damage){passTurn(side);return}
+  run.mode='effect';
+  let blocked=0;
+  if(side===PLAYER)run.enemyHp=Math.max(0,run.enemyHp-result.damage);
+  else{
+    blocked=Math.min(run.shield,result.damage);run.shield-=blocked;
+    run.hp=Math.max(0,run.hp-result.damage+blocked);
+  }
+  render();
+  for(const j of result.cleared)cells[j].classList.add('burst');
+  const damage=result.damage-blocked;
+  strike.textContent=damage===0?'護盾抵銷':(result.lines.length>1?'交會連擊':'五連出招')+' −'+damage;
+  strike.classList.toggle('hostile',side===ENEMY);strike.hidden=false;
+  message((side===PLAYER?'你':'對手')+'完成 '+result.lines.length+' 條五連。'+
+    (damage?'造成 '+damage+' 點傷害。':'')+(blocked?'護盾抵銷 '+blocked+' 點。':''),'event');
+  playSound(side===PLAYER?'hit':'hurt');
+  schedule(()=>{
+    for(const j of result.cleared)run.board[j]=0;
+    if(run.board[run.last]===0)run.last=-1;
+    clearEffects();render();
+    if(run.enemyHp===0){roundCleared();return}
+    if(run.hp===0){endRun(false);return}
+    passTurn(side);
+  },reduced.matches?420:610);
 }
-canvas.addEventListener('pointerdown',e=>{
- if(!e.isPrimary||e.button!==0||game.mode==='done')return;
- const i=cellAt(e),u=game.units.get(i);
- if(u?.side===BLUE){from=i;selected=u.type;direction=u.dir;setHint(weaponHint());sync();}
- hover=i;beginDrag(e,canvas);
+function usePin(i){
+  if(run.mode!=='player'||!run.pinMode||run.pinUsed||!legalPin(run.board,i))return;
+  run.board[i]=0;run.pinUsed=true;run.pinMode=false;run.last=-1;run.turns++;run.mode='effect';
+  cells[i].classList.add('removed');message('破陣釘移除一顆敵棋。','event');render();playSound('hit');
+  schedule(()=>{clearEffects();passTurn(PLAYER)},reduced.matches?240:360);
+}
+function makeButton(label,kind,callback){
+  const button=document.createElement('button');button.type='button';button.textContent=label;button.className=kind;button.addEventListener('click',callback);return button;
+}
+function showModal(type,eyebrow,title,body){
+  modalType=type;$('modalEyebrow').textContent=eyebrow;$('modalTitle').textContent=title;$('modalText').textContent=body;
+  $('choices').replaceChildren();$('choices').hidden=true;$('modalActions').replaceChildren();
+}
+function rewardsForRun(){
+  const pool=Object.keys(RELICS).filter(id=>id!=='rest'&&!run.relics.has(id));
+  if(run.hp<MAX_HP||pool.length<3)pool.push('rest');
+  return shuffle(pool).slice(0,3);
+}
+function roundCleared(){
+  if(run.stage===LEVELS.length-1){endRun(true);return}
+  run.mode='reward';render();message('擊敗 '+LEVELS[run.stage].name+'！選一項獎勵。','event');playSound('clear');
+  showModal('reward','FLOOR 0'+(run.stage+1)+' / CLEAR','選一項獎勵','你的生命會帶到下一關。選定後立即前進。');
+  for(const id of rewardsForRun()){
+    const card=makeButton('','choice',()=>selectReward(id));
+    const icon=document.createElement('i'),name=document.createElement('b'),desc=document.createElement('small');
+    icon.textContent=RELICS[id].icon;icon.setAttribute('aria-hidden','true');name.textContent=RELICS[id].name;desc.textContent=RELICS[id].desc;
+    card.append(icon,name,desc);$('choices').append(card);
+  }
+  $('choices').hidden=false;modal.showModal();
+}
+function selectReward(id){
+  if(run.mode!=='reward'||!Object.hasOwn(RELICS,id))return;
+  run.shield=0;
+  if(id==='rest'){
+    if(run.hp===MAX_HP)run.shield=1;
+    else run.hp++;
+  }else run.relics.add(id);
+  run.stage++;run.enemyHp=LEVELS[run.stage].hp;run.board=boardFor(run.stage);
+  run.last=-1;run.pinUsed=false;run.pinMode=false;focusIndex=60;
+  modal.close();modalType='';playerTurn('抵達 '+LEVELS[run.stage].name+'。輪到你先下。');cells[focusIndex].focus({preventScroll:true});
+}
+function endRun(won){
+  run.mode=won?'win':'lost';render();
+  message(won?'你打倒了石庭王，通過地城！':'生命歸零，這趟挑戰結束。','event');
+  if(won)playSound('clear');
+  showModal('ending',won?'DUNGEON CLEAR':'RUN OVER',won?'地城通關！':'這趟挑戰結束',won?'你打倒了石庭王，帶著 '+run.hp+' 點生命走出地城。':'你在第 '+(run.stage+1)+' 關遇到 '+LEVELS[run.stage].name+'。重新出發時，遺物會重置。');
+  $('modalActions').append(makeButton('再闖一次','primary',resetRun));modal.showModal();
+}
+function resetRun(){
+  clearTimeout(timer);if(modal.open)modal.close();modalType='';clearEffects();
+  run=newRun();focusIndex=60;
+  playerTurn();cells[focusIndex].focus({preventScroll:true});
+}
+for(let i=0;i<N;i++){
+  const [x,y]=point(i),cell=document.createElement('button'),stone=document.createElement('span');
+  cell.type='button';cell.className='cell'+((x+y)%2?' alt':'')+([3,5,7].includes(x)&&[3,5,7].includes(y)?' star':'');
+  stone.className='stone';stone.setAttribute('aria-hidden','true');cell.append(stone);cells.push(cell);board.append(cell);
+  cell.addEventListener('focus',()=>{
+    if(focusIndex===i)return;
+    cells[focusIndex].tabIndex=-1;focusIndex=i;cell.tabIndex=0;
+  });
+  cell.addEventListener('click',()=>{
+    if(run.mode!=='player')return;
+    if(run.pinMode){usePin(i);return}
+    place(i,PLAYER);
+  });
+  cell.addEventListener('keydown',e=>{
+    const d={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!d)return;
+    e.preventDefault();const j=index(x+d[0],y+d[1]);if(j===-1)return;
+    cells[focusIndex].tabIndex=-1;focusIndex=j;cells[j].tabIndex=0;cells[j].focus();
+  });
+}
+$('pin').addEventListener('click',()=>{
+  if($('pin').disabled)return;
+  run.pinMode=!run.pinMode;
+  message(run.pinMode?'點選有標示的敵棋。這會用掉本回合的落子機會。':'已取消破陣釘。輪到你。');render();
 });
-canvas.addEventListener('pointermove',e=>{if(!drag&&e.pointerType!=='touch')hover=cellAt(e);});
-canvas.addEventListener('pointerleave',()=>{if(!drag)hover=-1;});
-window.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.moved||=Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>5;hover=cellAt(e);});
-function endDrag(e,cancel){
- if(!drag||drag.id!==e.pointerId)return;
- const d=drag;drag=null;const i=cellAt(e);
- if(!cancel){
-  if(d.moved&&i>=0)deploy(i);
-  else if(!d.moved&&d.el===canvas)tileAction(d.cell);
- }
- hover=e.pointerType==='mouse'?i:-1;
-}
-window.addEventListener('pointerup',e=>endDrag(e,false));
-window.addEventListener('pointercancel',e=>endDrag(e,true));
-function rotate(){
- if(game.mode==='done')return;
- direction=(direction+1)%4;
- const unit=game.units.get(from);
- if(unit&&unit.side===BLUE){unit.dir=direction;unit.ready=game.time+.55;}
- sync();
-}
-$('rotate').onclick=rotate;
-$('scrap').onclick=()=>{
- if(from===null||game.mode==='done'||game.units.get(from)?.side!==BLUE)return;
- game.units.delete(from);from=null;setHint('砲台已拆除，能量不退還。',1500);sync();
-};
-function reset(){game=new Match();selected='gun';direction=0;from=null;hover=-1;keyPos=idx(7,13);drag=null;setHint(baseHint);sync();}
-$('reset').onclick=reset;
-window.addEventListener('keydown',e=>{
- if(!e.repeat&&e.key.toLowerCase()==='r'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)rotate();
- if(document.activeElement!==canvas)return;
- const dir=['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].indexOf(e.key);
- if(dir>=0){e.preventDefault();const [x,y]=xy(keyPos),[a,b]=DIR[dir],next=idx(x+a,y+b);if(next>=0)keyPos=next;hover=keyPos;}
- if(e.key==='Enter'||e.key===' '){e.preventDefault();tileAction(keyPos);}
+$('sound').addEventListener('click',()=>{
+  soundEnabled=!soundEnabled;$('sound').setAttribute('aria-pressed',String(soundEnabled));
+  if(soundEnabled)playSound('stone');
 });
-canvas.addEventListener('focus',()=>{hover=keyPos;});
-canvas.addEventListener('blur',()=>{if(!drag)hover=-1;});
-function sync(){
- const {blueCount,mode}=game;
- const b=blueCount===N?100:blueCount===0?0:Math.min(99,Math.max(1,Math.round(blueCount/N*100)));
- $('blue').textContent='藍軍 '+b+'%';$('red').textContent='紅軍 '+(100-b)+'%';$('fill').style.width=b+'%';
- $('energy').textContent=Math.floor(game.energy[BLUE]+1e-7);
- const t=Math.floor(game.time);
- $('phase').textContent=mode==='waiting'?'等待部署':mode==='done'?'終局':[Math.floor(t/60),t%60].map(v=>String(v).padStart(2,'0')).join(':');
- $('banner').hidden=mode!=='done';
- $('banner').textContent=game.winner===BLUE?'藍軍獲勝！':'紅軍獲勝！';
-$('rotate').disabled=mode==='done';$('scrap').disabled=from===null||mode==='done';
- $('rotate').textContent='朝向 '+ARROWS[direction];
- for(const [type,button] of Object.entries(cards)){
-  button.setAttribute('aria-pressed',String(selected===type&&from===null));
-  button.classList.toggle('dim',game.cost(BLUE,type)>game.energy[BLUE]);
-  button.disabled=mode==='done';
-  button.querySelector('small').textContent=game.cost(BLUE,type)===0?'免費 ×'+game.free[BLUE]:game.cost(BLUE,type)+' 能量';
- }
-}
-const tones={1:{ground:['#245781','#295f90'],off:'#213b59',edge:'#69cfff',light:'#b3eaff',body:'#40a4ed'},
- 2:{ground:['#8c3549','#9a3e50'],off:'#592d3b',edge:'#ff8390',light:'#ffd4b5',body:'#f26073'}};
-function newRect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
-function center(i){const [x,y]=xy(i);return [x*S+8,y*S+8];}
-function drawTower(i,u){
- const [x,y]=center(i),t=tones[u.side],linked=game.supply[i]===u.side;
- ctx.save();ctx.translate(x,y);ctx.globalAlpha=linked?1:.57;
- newRect(-6,-4,13,12,'#11192a');newRect(-5,-5,11,10,t.body);newRect(-4,-4,9,7,t.edge);
- if(game.mode==='live'&&u.ready>game.time&&u.ready-game.time<.85)newRect(-4,6,Math.max(1,Math.ceil(8*(1-(u.ready-game.time)/.85))),1,t.light);
- ctx.rotate(u.dir*Math.PI/2);
- if(u.type==='spread'){for(const a of [-4,0,4]){newRect(a-1,-7,3,8,'#14203a');newRect(a,-7,1,6,t.light);}}
- else if(u.type==='mortar'){newRect(-4,-6,9,9,'#172339');newRect(-3,-6,7,7,t.body);newRect(-2,-5,5,4,t.light);newRect(-1,-4,3,2,'#202943');}
- else{newRect(-2,-8,5,9,'#101e33');newRect(-1,-8,3,7,t.light);}
- ctx.restore();
- if(i===from){ctx.strokeStyle='#ffe08b';ctx.strokeRect(x-7.5,y-7.5,15,15);}
-}
-function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
- for(let i=0;i<N;i++){
-  const [a,b]=xy(i),x=a*S,y=b*S,s=game.tiles[i],p=tones[s],link=game.supply[i]===s;
-  newRect(x,y,S,S,link?p.ground[(a+b)%2]:p.off);
-  newRect(x,y,1,S,'#11172544');newRect(x,y,S,1,'#11172544');
-  if(!link){for(let k=0;k<4;k++)newRect(x+2+k*3,y+12-k*3,2,2,'#10172677');}
-  if(b===0||b===H-1){newRect(x+4,y+(b===0?2:12),8,2,p.edge);}
-  if(a<W-1&&game.tiles[i+1]!==s)newRect(x+S-1,y,1,S,'#e5efffa4');
-  if(b<H-1&&game.tiles[i+W]!==s)newRect(x,y+S-1,S,1,'#e5efffa4');
- }
- if(hover>=0&&selected&&game.mode!=='done'){
-  const [x,y]=center(hover),reason=game.why(BLUE,hover,selected,from),u={side:BLUE,type:selected,dir:direction};
-  if(!reason){
-   const [a,b]=xy(hover),range=WEAPONS[selected].range,[dx,dy]=DIR[direction];
-   const plot=(j)=>{if(j<0)return;const [cx,cy]=center(j);newRect(cx-1,cy-1,3,3,'#d8f5ff90');};
-   if(selected==='mortar'){
-    for(let q=-range;q<=range;q++)for(let r=-range;r<=range;r++){const d=Math.abs(q)+Math.abs(r);if(d===range&&q*dx+r*dy>0)plot(idx(a+q,b+r));}
-   }else{
-    const rays=[[dx,dy]];if(selected==='spread')rays.push([dx+dy,dy-dx],[dx-dy,dy+dx]);for(const [q,r] of rays)for(let d=1;d<=range;d++)plot(idx(a+d*q,b+d*r));
-   }
-   for(const j of game.targets(hover,u)){const [cx,cy]=center(j);ctx.strokeStyle='#ffe08b';ctx.strokeRect(cx-4.5,cy-4.5,9,9);}
-  }
-  newRect(x-7,y-7,14,14,reason?'#ff4d6680':'#a6eaff75');ctx.strokeStyle=reason?'#ffd1d7':'#defaff';ctx.strokeRect(x-7.5,y-7.5,15,15);
- }
- for(const [i,u] of game.units)drawTower(i,u);
- for(const p of game.shots){
-  const [x,y]=center(p.from),[tx,ty]=center(p.to),u=Math.max(0,Math.min(1,(game.time-p.start)/(p.end-p.start)));
-  const a=x+(tx-x)*u,b=y+(ty-y)*u,arc=p.type==='mortar'?Math.sin(Math.PI*u)*32:0,c=tones[p.side];
-  if(arc)newRect(a-2,b-1,4,2,'#15192399');
-  newRect(a-2,b-2-arc,p.type==='mortar'?5:4,4,c.edge);newRect(a-1,b-1-arc,2,2,'#fff6c5');
- }
- for(const f of game.fx){
-  const [x,y]=center(f.i),age=game.time-f.t,t=tones[f.side];
-  if(age<.16)newRect(x-7,y-7,14,14,t.edge+'9c');
-  for(let j=0;j<(f.tower?8:4);j++){const d=j*Math.PI*.5+f.i*.14,rr=(4+age*31)*(j>3?1.6:1);newRect(x+Math.sin(d)*rr,y+Math.cos(d)*rr,2,2,j%2?t.light:tones[other(f.side)].body);}
- }
-}
-let last=performance.now(),nextSync=0;
-function frame(now){
- const dt=Math.min(.05,(now-last)/1000);last=now;const old=game.mode;game.tick(dt);
- if(from!==null&&!game.units.has(from)){from=null;setHint('你選取的砲台已被摧毀。',1700);}
- if(game.mode==='done'&&old!=='done')setHint(game.winner===BLUE?'戰場已全部變藍。':'戰場已全部變紅。');
- else if(holdUntil&&now>holdUntil){const h=weaponHint();if(h!==lastHint)setHint(h);else holdUntil=0;}
- if(now>=nextSync||old!==game.mode){sync();nextSync=now+110;}
- draw();requestAnimationFrame(frame);
-}
-sync();requestAnimationFrame(frame);
+$('reset').addEventListener('click',()=>{
+  if(run.mode==='enemy'||run.mode==='effect')return;
+  if(!run.turns){resetRun();return}
+  showModal('reset','NEW RUN','重新開始？','目前的關卡、生命和遺物都會重置。');
+  $('modalActions').append(makeButton('取消','ghost',()=>{modal.close();modalType=''}),makeButton('重新開始','primary',resetRun));
+  modal.showModal();
+});
+modal.addEventListener('cancel',e=>{if(modalType!=='reset')e.preventDefault();else modalType=''});
+run=newRun();playerTurn();
 </script>
 </body>
 </html>
