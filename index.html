@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101526">
+<title>Pixel Conquest｜像素吞併</title>
+<style>
+:root{color-scheme:dark;--bg:#101526;--panel:#192138;--line:#354462;--ink:#f0f4ff;--muted:#abb9d8;--blue:#65ceff;--red:#ff7785;--gold:#ffdb79}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#202e4c,var(--bg) 55%);color:var(--ink);font-family:system-ui,"PingFang TC","Noto Sans TC",sans-serif;min-height:100dvh}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible,canvas:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h1,h2,p{margin:0}button:disabled{cursor:default}
+main{width:min(100% - 24px,1020px);margin:auto;padding:19px 0 max(12px,env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:15px}
+h1{font:bold clamp(20px,5vw,35px)/1.05 ui-monospace,monospace;letter-spacing:-.045em;color:#fff;text-shadow:2px 3px #3561a2}
+header p{font-size:12px;letter-spacing:.14em;color:var(--muted);margin-top:5px}
+.version,.small{border:1px solid var(--line);background:#1c2740;padding:6px 9px;color:var(--muted);font:700 11px ui-monospace,monospace;white-space:nowrap}
+.small{font:700 12px system-ui;color:var(--ink)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 295px;gap:16px;align-items:start}
+.status{display:grid;gap:6px;margin-bottom:8px}
+.statusline{display:flex;justify-content:space-between;align-items:center;gap:4px;font:700 13px ui-monospace,monospace}
+.blue{color:var(--blue)}.red{color:var(--red)}
+#phase{color:var(--muted);font-size:12px}
+.meter{background:#d85067;height:8px;border:1px solid #101526;outline:1px solid var(--line)}
+#fill{width:50%;height:100%;background:#46baff;transition:width .18s linear}
+.board{position:relative;border:3px solid #52678f;box-shadow:0 5px #090e19,0 0 0 1px #0c1220;aspect-ratio:2/3;margin:auto;background:#131a29}
+.battle{width:min(100%,calc((100svh - 145px) * .6667));margin:auto}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;touch-action:none}
+.banner{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);padding:8px 14px;background:#101526ec;border:2px solid var(--gold);color:var(--gold);font-weight:900;pointer-events:none;white-space:nowrap}
+[hidden]{display:none!important}
+.panel{background:var(--panel);border:1px solid var(--line);box-shadow:0 4px #0b1020;padding:12px;display:grid;gap:10px}
+.resources{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.resources strong{color:var(--gold);font:700 18px ui-monospace,monospace}
+.rack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.card{background:#263450;border:1px solid #4a5f82;box-shadow:0 2px #111928;padding:6px 3px;font-size:13px;font-weight:800;display:grid;justify-items:center;gap:2px;touch-action:none;user-select:none;-webkit-user-select:none}
+.card[aria-pressed=true]{border-color:var(--blue);background:#284769;box-shadow:inset 0 -2px var(--blue)}
+.card.dim{opacity:.59}
+.card svg{width:30px;height:24px;display:block;pointer-events:none}
+.card small{color:var(--gold);font-size:11px;white-space:nowrap;pointer-events:none}
+.actions{display:flex;gap:6px;align-items:stretch}
+.actions button{background:#2a3855;border:1px solid #4a5f82;padding:7px 8px;font-size:12px;font-weight:700;min-width:0;flex:1}
+.actions button:disabled{opacity:.45}
+#start{background:#ffe08b;color:#251a08;border-color:#ffe08b}
+#hint{min-height:2.7em;font-size:12px;line-height:1.38;color:var(--muted)}
+details{font-size:12px;line-height:1.55;color:var(--muted)}summary{cursor:pointer;color:var(--ink)}details p{margin-top:5px}
+footer{text-align:center;margin-top:14px;color:var(--muted);font:11px ui-monospace,monospace;letter-spacing:.10em}
+@media(max-width:720px){main{width:min(100% - 16px,520px);padding-top:9px}header{margin-bottom:8px}.layout{grid-template-columns:1fr;gap:9px}.battle{width:min(100%,44svh,348px);min-width:min(100%,180px)}.panel{gap:6px;padding:7px}.board{border-width:2px}.status{margin-bottom:5px}.statusline{font-size:12px}.card{padding:4px 2px}.card svg{height:18px}footer{margin-top:9px}.actions button{padding:6px 4px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>PIXEL CONQUEST</h1><p>像素吞併 ／ 即時領地戰</p></div><span class="version">v0.1</span></header>
+<div class="layout">
+<section class="battle" aria-label="戰況">
+<div class="status"><div class="statusline"><span class="red" id="red">紅軍 50%</span><span id="phase">備戰</span><span class="blue" id="blue">藍軍 50%</span></div><div class="meter" aria-hidden="true"><div id="fill"></div></div></div>
+<div class="board"><canvas id="board" width="256" height="384" tabindex="0" aria-label="十六欄二十四列戰場，藍方在下。可用方向鍵移動、Enter 部署或選取砲台。"></canvas><div id="banner" class="banner" hidden></div></div>
+</section>
+<section class="panel" aria-label="部署控制">
+<div class="resources"><span>能量 <strong id="energy">16</strong> / 40</span><span id="slots">部署 0 / 6</span></div>
+<div id="rack" class="rack" aria-label="武器"></div>
+<div class="actions"><button id="start" type="button">開始對戰</button><button id="rotate" type="button" title="選取中的武器順時針轉向">朝向 ↑</button><button id="scrap" type="button" disabled>拆除</button><button id="reset" type="button">重開</button></div>
+<p id="hint" aria-live="polite">把武器拖到藍格，或先點武器再點格子。開局有兩座免費機關砲。</p>
+<details><summary>作戰手冊</summary><p>砲台自動射擊，命中即翻色。砲台腳下的地被攻下時，砲台就會摧毀。深色斜紋格仍算你的地，但必須上下左右接回藍方底線才可部署與開火。拖曳已部署的砲台可搬移，不耗能量，但需要重新架設。朝向可用按鈕或 R 鍵調整。整張地圖變成同色才獲勝。</p></details>
+</section>
+</div><footer>BLUE vs CPU · 16 × 24</footer>
+</main>
+<script>
+'use strict';
+const W=16,H=24,N=W*H,S=16,BLUE=1,RED=2,MAX=6;
+const WEAPONS={
+ gun:{label:'機關砲',cost:5,range:7,reload:.55,detail:'直線快射，每發翻一格。'},
+ spread:{label:'散射砲',cost:9,range:4,reload:1.02,detail:'直射加左右斜射，拓寬戰線。'},
+ mortar:{label:'迫擊砲',cost:13,range:7,reload:2.25,detail:'越過前線，爆炸最多翻五格。'}
+};
+const DIR=[[0,-1],[1,0],[0,1],[-1,0]], ARROWS=['↑','→','↓','←'];
+const idx=(x,y)=>x>=0&&x<W&&y>=0&&y<H?y*W+x:-1;
+const xy=i=>[i%W,Math.floor(i/W)];
+const other=s=>3-s;
+class Match {
+ constructor(){
+  this.tiles=Uint8Array.from({length:N},(_,i)=>i<W*H/2?RED:BLUE);
+  this.units=new Map();this.supply=new Uint8Array(N);this.energy=[0,16,16];this.free=[0,2,2];
+  this.shots=[];this.fx=[];this.mode='setup';this.winner=0;this.time=0;this.count=0;this.aiNext=1.2;
+  this.relink();
+  this.place(RED,'gun',idx(5,10),2);
+  this.place(RED,'gun',idx(10,10),2);
+ }
+ relink(){
+  this.supply.fill(0);this.blueCount=0;
+  const q=[];
+  for(let x=0;x<W;x++){if(this.tiles[x]===RED){q.push(x);this.supply[x]=RED;}const i=N-W+x;if(this.tiles[i]===BLUE){q.push(i);this.supply[i]=BLUE;}}
+  for(let k=0;k<q.length;k++){const i=q[k],s=this.supply[i],[x,y]=xy(i);for(const [dx,dy] of DIR){const j=idx(x+dx,y+dy);if(j>=0&&this.supply[j]===0&&this.tiles[j]===s){this.supply[j]=s;q.push(j);}}}
+  for(const v of this.tiles)if(v===BLUE)this.blueCount++;
+ }
+ countUnits(s){let n=0;for(const u of this.units.values())if(u.side===s)n++;return n;}
+ cost(s,type){return type==='gun'&&this.free[s]>0?0:WEAPONS[type].cost;}
+ why(s,i,type,from=null){
+  if(this.mode==='done')return '戰局已結束。';
+  if(i<0||i>=N)return '請放在戰場內。';
+  if(this.tiles[i]!==s)return '只能部署在己方格子。';
+  if(this.supply[i]!==s)return '這格未連回己方底線。';
+  if(this.units.has(i)&&i!==from)return '這格已經有砲台。';
+  if(from!==null&&this.units.get(from)?.side!==s)return '原砲台已不在場上。';
+  if(from===null&&this.countUnits(s)>=MAX)return '已達六座上限，可移動或拆除現有砲台。';
+  if(from===null&&this.energy[s]+1e-7<this.cost(s,type))return '能量不足。';
+  return '';
+ }
+ place(s,type,i,dir,from=null){
+  if(this.why(s,i,type,from))return false;
+  if(from!==null)this.units.delete(from);
+  else if(this.cost(s,type)===0)this.free[s]--;
+  else this.energy[s]-=this.cost(s,type);
+  this.units.set(i,{side:s,type,dir,ready:this.time+(from===null?.52:.85)});
+  return true;
+ }
+ targets(i,u){
+  const [x,y]=xy(i),[dx,dy]=DIR[u.dir],r=WEAPONS[u.type].range, result=[];
+  if(u.type==='mortar'){
+   let best=-1,score=-Infinity;
+   for(let a=-r;a<=r;a++)for(let b=-r;b<=r;b++){
+    const d=Math.abs(a)+Math.abs(b),j=idx(x+a,y+b);
+    if(d<2||d>r||a*dx+b*dy<=0||j<0||this.tiles[j]===u.side)continue;
+    let splash=1;for(const [qx,qy] of DIR){const k=idx(x+a+qx,y+b+qy);if(k>=0&&this.tiles[k]!==u.side)splash++;}
+    const t=splash*.75+d*.16+(this.units.has(j)?2.2:0);
+    if(t>score){score=t;best=j;}
+   }
+   return best<0?[]:[best];
+  }
+  const rays=[[dx,dy]];
+  if(u.type==='spread')rays.push([dx+dy,dy-dx],[dx-dy,dy+dx]);
+  for(const [a,b] of rays)for(let n=1;n<=r;n++){
+   const j=idx(x+a*n,y+b*n);
+   if(j<0)break;
+   if(this.tiles[j]!==u.side){result.push(j);break;}
+  }
+  return result;
+ }
+ impact(p){
+  const [x,y]=xy(p.to);
+  const cells=p.type==='mortar'?[p.to,...DIR.map(([a,b])=>idx(x+a,y+b))]:[p.to];
+  let changed=false;
+  for(const i of cells)if(i>=0&&this.tiles[i]!==p.side){
+   const tower=this.units.delete(i);
+   this.tiles[i]=p.side;changed=true;this.fx.push({i,side:p.side,t:this.time,tower});
+  }
+  return changed;
+ }
+ ai(){
+  const types=['gun','spread','mortar'].filter(type=>this.energy[RED]>=this.cost(RED,type));
+  let best=null,bestScore=-Infinity;
+  const num=this.countUnits(RED);
+  const idle=[...this.units].filter(([i,u])=>u.side===RED&&(this.supply[i]!==RED||!this.targets(i,u).length));
+  if(num>=MAX&&!idle.length)return;
+  const swap=idle[0]??null;
+  if(!types.length&&!(num>=MAX&&swap))return;
+  for(let i=0;i<N;i++){
+   if(this.supply[i]!==RED||this.units.has(i))continue;
+   const [,y]=xy(i);
+   for(const type of num<MAX?types:[swap[1].type]){
+    for(const dir of [2,1,3,0]){
+     const hits=this.targets(i,{side:RED,type,dir});
+     if(!hits.length)continue;
+     const score=hits.length*.72+(type==='mortar'?1.0:type==='spread'?.2:.42)+Math.random()*1.55+
+       (hits.some(j=>this.units.has(j))?.50:0)+y*.022-(dir===2?0:.32);
+     if(score>bestScore){bestScore=score;best={type,i,dir};}
+    }
+   }
+  }
+  if(best)this.place(RED,best.type,best.i,best.dir,num>=MAX?swap[0]:null);
+ }
+ tick(dt){
+  if(this.mode==='countdown'){this.count-=dt;if(this.count<=0)this.mode='live';return;}
+  if(this.mode!=='live')return;
+  this.time+=dt;
+  for(const s of [BLUE,RED])this.energy[s]=Math.min(40,this.energy[s]+dt*1.65);
+  let changed=false;const incoming=[];
+  for(const p of this.shots){if(this.time>=p.end)changed=this.impact(p)||changed;else incoming.push(p);}
+  this.shots=incoming;
+  if(changed){
+   this.relink();
+   if(this.blueCount===0||this.blueCount===N){this.mode='done';this.winner=this.blueCount?BLUE:RED;return;}
+  }
+  this.fx=this.fx.filter(a=>this.time-a.t<.47);
+  for(const [i,u] of this.units){
+   if(this.supply[i]!==u.side||u.ready>this.time)continue;
+   const targets=this.targets(i,u);
+   if(targets.length){u.ready=this.time+WEAPONS[u.type].reload;
+    for(const to of targets){const [x,y]=xy(i),[tx,ty]=xy(to);this.shots.push({from:i,to,side:u.side,type:u.type,start:this.time,end:this.time+(u.type==='mortar'?.65:.09+Math.hypot(tx-x,ty-y)*.032)});}
+   }
+  }
+  if(this.time>=this.aiNext){this.aiNext=this.time+1.3+Math.random()*.65;this.ai();}
+ }
+}
+const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d');
+let game=new Match(),selected='gun',direction=0,from=null,hover=-1,keyPos=idx(7,13),drag=null,lastHint='',holdUntil=0;
+const setHint=(text,ms=0)=>{lastHint=text;$('hint').textContent=text;holdUntil=performance.now()+ms;};
+const baseHint='把武器拖到藍格，或先點武器再點格子。開局有兩座免費機關砲。';
+const weaponHint=()=>from!==null?'把所選砲台拖到其他藍格，或點格子搬移。':WEAPONS[selected]?.detail??baseHint;
+const cards={};
+for(const [type,w] of Object.entries(WEAPONS)){
+ const button=document.createElement('button');button.type='button';button.className='card';button.title=w.detail;button.setAttribute('aria-pressed','false');
+ const barrel=type==='gun'?'<path d="M12 2h6v10h-6z"/>':type==='spread'?'<path d="M8 3h4v9H8zM13 1h4v11h-4zM18 3h4v9h-4z"/>':'<path d="M11 1h8v4h2v9H9V5h2z"/><path fill="#193e65" d="M13 4h4v4h-4z"/>';
+ button.innerHTML='<svg viewBox="0 0 30 22" aria-hidden="true" shape-rendering="crispEdges"><path fill="#0d1d34" d="M4 12h22v9H4z"/><path fill="#3792cc" d="M7 10h16v9H7z"/><g fill="#83deff">'+barrel+'</g></svg><span>'+w.label+'</span><small></small>';
+ button.addEventListener('pointerdown',e=>{if(e.button!==0||!e.isPrimary||!selectType(type))return;beginDrag(e,button);});
+ button.addEventListener('click',e=>{if(e.detail===0)selectType(type);});
+ $('rack').append(button);cards[type]=button;
+}
+function selectType(type){
+ if(game.mode==='done')return false;
+ selected=type;from=null;setHint(weaponHint());sync();return true;
+}
+function cellAt(e){
+ const b=canvas.getBoundingClientRect();
+ return idx(Math.floor((e.clientX-b.left)*W/b.width),Math.floor((e.clientY-b.top)*H/b.height));
+}
+function beginDrag(e,el){
+ drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:false,cell:cellAt(e),el};
+ el.setPointerCapture(e.pointerId);
+}
+function tileAction(i){
+ if(i<0||game.mode==='done')return;
+ if(from!==null&&!game.units.has(from)){from=null;setHint('原砲台已被摧毀。',1800);return;}
+ const u=game.units.get(i);
+ if(u?.side===BLUE){from=i;selected=u.type;direction=u.dir;setHint(weaponHint());sync();return;}
+ deploy(i);
+}
+function deploy(i){
+ if(!selected||i<0)return;
+ if(from===i)return;
+ const reason=game.why(BLUE,i,selected,from);
+ if(reason){setHint(reason,1800);return;}
+ const moving=from!==null;
+ game.place(BLUE,selected,i,direction,from);
+ from=moving?i:null;
+ setHint(moving?'砲台已移動，正在重新架設。':WEAPONS[selected].label+'已部署。',1200);sync();
+}
+canvas.addEventListener('pointerdown',e=>{
+ if(!e.isPrimary||e.button!==0||game.mode==='done')return;
+ const i=cellAt(e),u=game.units.get(i);
+ if(u?.side===BLUE){from=i;selected=u.type;direction=u.dir;setHint(weaponHint());sync();}
+ hover=i;beginDrag(e,canvas);
+});
+canvas.addEventListener('pointermove',e=>{if(!drag&&e.pointerType!=='touch')hover=cellAt(e);});
+canvas.addEventListener('pointerleave',()=>{if(!drag)hover=-1;});
+window.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.moved||=Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>5;hover=cellAt(e);});
+function endDrag(e,cancel){
+ if(!drag||drag.id!==e.pointerId)return;
+ const d=drag;drag=null;const i=cellAt(e);
+ if(!cancel){
+  if(d.moved&&i>=0)deploy(i);
+  else if(!d.moved&&d.el===canvas)tileAction(d.cell);
+ }
+ hover=e.pointerType==='mouse'?i:-1;
+}
+window.addEventListener('pointerup',e=>endDrag(e,false));
+window.addEventListener('pointercancel',e=>endDrag(e,true));
+function rotate(){
+ if(game.mode==='done')return;
+ direction=(direction+1)%4;
+ const unit=game.units.get(from);
+ if(unit&&unit.side===BLUE){unit.dir=direction;unit.ready=game.time+.55;}
+ sync();
+}
+$('start').onclick=()=>{
+ if(game.mode==='done'){reset();return;}
+ if(game.mode==='setup'){
+  if(!game.countUnits(BLUE)){setHint('先在藍方部署至少一座砲台。',2300);return;}
+  game.mode='countdown';game.count=3;setHint('戰鬥即將開始。',2000);sync();
+ }
+};
+$('rotate').onclick=rotate;
+$('scrap').onclick=()=>{
+ if(from===null||game.mode==='done'||game.units.get(from)?.side!==BLUE)return;
+ game.units.delete(from);from=null;setHint('砲台已拆除，能量不退還。',1500);sync();
+};
+function reset(){game=new Match();selected='gun';direction=0;from=null;hover=-1;keyPos=idx(7,13);drag=null;setHint(baseHint);sync();}
+$('reset').onclick=reset;
+window.addEventListener('keydown',e=>{
+ if(!e.repeat&&e.key.toLowerCase()==='r'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)rotate();
+ if(document.activeElement!==canvas)return;
+ const dir=['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].indexOf(e.key);
+ if(dir>=0){e.preventDefault();const [x,y]=xy(keyPos),[a,b]=DIR[dir],next=idx(x+a,y+b);if(next>=0)keyPos=next;hover=keyPos;}
+ if(e.key==='Enter'||e.key===' '){e.preventDefault();tileAction(keyPos);}
+});
+canvas.addEventListener('focus',()=>{hover=keyPos;});
+canvas.addEventListener('blur',()=>{if(!drag)hover=-1;});
+function sync(){
+ const {blueCount,mode}=game;
+ const b=blueCount===N?100:blueCount===0?0:Math.min(99,Math.max(1,Math.round(blueCount/N*100)));
+ $('blue').textContent='藍軍 '+b+'%';$('red').textContent='紅軍 '+(100-b)+'%';$('fill').style.width=b+'%';
+ $('energy').textContent=Math.floor(game.energy[BLUE]+1e-7);$('slots').textContent='部署 '+game.countUnits(BLUE)+' / '+MAX;
+ const t=Math.floor(game.time);
+ $('phase').textContent=mode==='setup'?'備戰':mode==='countdown'?'即將開戰':mode==='done'?'終局':[Math.floor(t/60),t%60].map(v=>String(v).padStart(2,'0')).join(':');
+ $('banner').hidden=mode!=='countdown'&&mode!=='done';
+ $('banner').textContent=mode==='done'?(game.winner===BLUE?'藍軍獲勝！':'紅軍獲勝！'):Math.ceil(game.count);
+ $('start').textContent=({setup:'開始對戰',countdown:'倒數中',live:'對戰中',done:'再玩一局'})[mode];
+ $('start').disabled=mode==='live'||mode==='countdown';$('rotate').disabled=mode==='done';$('scrap').disabled=from===null||mode==='done';
+ $('rotate').textContent='朝向 '+ARROWS[direction];
+ for(const [type,button] of Object.entries(cards)){
+  button.setAttribute('aria-pressed',String(selected===type&&from===null));
+  button.classList.toggle('dim',game.cost(BLUE,type)>game.energy[BLUE]);
+  button.disabled=mode==='done';
+  button.querySelector('small').textContent=game.cost(BLUE,type)===0?'免費 ×'+game.free[BLUE]:game.cost(BLUE,type)+' 能量';
+ }
+}
+const tones={1:{ground:['#245781','#295f90'],off:'#213b59',edge:'#69cfff',light:'#b3eaff',body:'#40a4ed'},
+ 2:{ground:['#8c3549','#9a3e50'],off:'#592d3b',edge:'#ff8390',light:'#ffd4b5',body:'#f26073'}};
+function newRect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
+function center(i){const [x,y]=xy(i);return [x*S+8,y*S+8];}
+function drawTower(i,u){
+ const [x,y]=center(i),t=tones[u.side],linked=game.supply[i]===u.side;
+ ctx.save();ctx.translate(x,y);ctx.globalAlpha=linked?1:.57;
+ newRect(-6,-4,13,12,'#11192a');newRect(-5,-5,11,10,t.body);newRect(-4,-4,9,7,t.edge);
+ if(game.mode==='live'&&u.ready>game.time&&u.ready-game.time<.85)newRect(-4,6,Math.max(1,Math.ceil(8*(1-(u.ready-game.time)/.85))),1,t.light);
+ ctx.rotate(u.dir*Math.PI/2);
+ if(u.type==='spread'){for(const a of [-4,0,4]){newRect(a-1,-7,3,8,'#14203a');newRect(a,-7,1,6,t.light);}}
+ else if(u.type==='mortar'){newRect(-4,-6,9,9,'#172339');newRect(-3,-6,7,7,t.body);newRect(-2,-5,5,4,t.light);newRect(-1,-4,3,2,'#202943');}
+ else{newRect(-2,-8,5,9,'#101e33');newRect(-1,-8,3,7,t.light);}
+ ctx.restore();
+ if(i===from){ctx.strokeStyle='#ffe08b';ctx.strokeRect(x-7.5,y-7.5,15,15);}
+}
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ for(let i=0;i<N;i++){
+  const [a,b]=xy(i),x=a*S,y=b*S,s=game.tiles[i],p=tones[s],link=game.supply[i]===s;
+  newRect(x,y,S,S,link?p.ground[(a+b)%2]:p.off);
+  newRect(x,y,1,S,'#11172544');newRect(x,y,S,1,'#11172544');
+  if(!link){for(let k=0;k<4;k++)newRect(x+2+k*3,y+12-k*3,2,2,'#10172677');}
+  if(b===0||b===H-1){newRect(x+4,y+(b===0?2:12),8,2,p.edge);}
+  if(a<W-1&&game.tiles[i+1]!==s)newRect(x+S-1,y,1,S,'#e5efffa4');
+  if(b<H-1&&game.tiles[i+W]!==s)newRect(x,y+S-1,S,1,'#e5efffa4');
+ }
+ if(hover>=0&&selected&&game.mode!=='done'){
+  const [x,y]=center(hover),reason=game.why(BLUE,hover,selected,from),u={side:BLUE,type:selected,dir:direction};
+  if(!reason){
+   const [a,b]=xy(hover),range=WEAPONS[selected].range,[dx,dy]=DIR[direction];
+   const plot=(j)=>{if(j<0)return;const [cx,cy]=center(j);newRect(cx-1,cy-1,3,3,'#d8f5ff90');};
+   if(selected==='mortar'){
+    for(let q=-range;q<=range;q++)for(let r=-range;r<=range;r++){const d=Math.abs(q)+Math.abs(r);if(d===range&&q*dx+r*dy>0)plot(idx(a+q,b+r));}
+   }else{
+    const rays=[[dx,dy]];if(selected==='spread')rays.push([dx+dy,dy-dx],[dx-dy,dy+dx]);for(const [q,r] of rays)for(let d=1;d<=range;d++)plot(idx(a+d*q,b+d*r));
+   }
+   for(const j of game.targets(hover,u)){const [cx,cy]=center(j);ctx.strokeStyle='#ffe08b';ctx.strokeRect(cx-4.5,cy-4.5,9,9);}
+  }
+  newRect(x-7,y-7,14,14,reason?'#ff4d6680':'#a6eaff75');ctx.strokeStyle=reason?'#ffd1d7':'#defaff';ctx.strokeRect(x-7.5,y-7.5,15,15);
+ }
+ for(const [i,u] of game.units)drawTower(i,u);
+ for(const p of game.shots){
+  const [x,y]=center(p.from),[tx,ty]=center(p.to),u=Math.max(0,Math.min(1,(game.time-p.start)/(p.end-p.start)));
+  const a=x+(tx-x)*u,b=y+(ty-y)*u,arc=p.type==='mortar'?Math.sin(Math.PI*u)*32:0,c=tones[p.side];
+  if(arc)newRect(a-2,b-1,4,2,'#15192399');
+  newRect(a-2,b-2-arc,p.type==='mortar'?5:4,4,c.edge);newRect(a-1,b-1-arc,2,2,'#fff6c5');
+ }
+ for(const f of game.fx){
+  const [x,y]=center(f.i),age=game.time-f.t,t=tones[f.side];
+  if(age<.16)newRect(x-7,y-7,14,14,t.edge+'9c');
+  for(let j=0;j<(f.tower?8:4);j++){const d=j*Math.PI*.5+f.i*.14,rr=(4+age*31)*(j>3?1.6:1);newRect(x+Math.sin(d)*rr,y+Math.cos(d)*rr,2,2,j%2?t.light:tones[other(f.side)].body);}
+ }
+}
+let last=performance.now(),nextSync=0;
+function frame(now){
+ const dt=Math.min(.05,(now-last)/1000);last=now;const old=game.mode;game.tick(dt);
+ if(from!==null&&!game.units.has(from)){from=null;setHint('你選取的砲台已被摧毀。',1700);}
+ if(game.mode==='done'&&old!=='done')setHint(game.winner===BLUE?'戰場已全部變藍。':'戰場已全部變紅。');
+ else if(holdUntil&&now>holdUntil){const h=weaponHint();if(h!==lastHint)setHint(h);else holdUntil=0;}
+ if(now>=nextSync||old!==game.mode){sync();nextSync=now+110;}
+ draw();requestAnimationFrame(frame);
+}
+sync();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
