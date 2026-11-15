@@ -4,20 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090a09">
-<meta name="description" content="五連地城是像素風的單人五子棋 Roguelike。五連必殺、棋型扣血，帶著遺物闖過三層地城。">
+<meta name="description" content="五連地城是像素風的單人五子棋 Roguelike。五連必殺、棋型扣血，帶著遺物深入地城。">
 <title>五連地城 | FIVE BELOW</title>
 <style>
 :root{color-scheme:dark;--bg:#090a09;--panel:#131512;--rim:#393c31;--ink:#f5efdc;--muted:#b1ac98;--sand:#e9c27b;--mint:#bfe9a5;--coral:#ff977c;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,"PingFang TC","Noto Sans TC",sans-serif;min-height:100dvh}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:disabled{cursor:default}.ghost:disabled{opacity:.55}button:focus-visible,summary:focus-visible{outline:2px solid var(--sand);outline-offset:3px}h1,h2,p{margin:0}[hidden]{display:none!important}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,"PingFang TC","Noto Sans TC",sans-serif;min-height:100dvh}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:disabled{cursor:default}.ghost:disabled{opacity:.55}button:focus-visible,summary:focus-visible{outline:2px solid var(--sand);outline-offset:3px}h1,h2,p{margin:0}[hidden]{display:none!important}
 .shell{max-width:940px;margin:auto;padding:clamp(14px,4vw,40px) clamp(12px,4vw,30px) max(16px,env(safe-area-inset-bottom))}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:clamp(12px,3vw,24px)}
 .brand{display:flex;align-items:center;gap:11px}.brand-icon{width:42px;flex:none;color:var(--sand);image-rendering:pixelated}.kicker,.eyebrow,.version{font:800 10px/1.3 var(--mono);letter-spacing:.17em;color:var(--sand)}h1{font-size:clamp(24px,5.5vw,38px);line-height:1.1;letter-spacing:.09em;font-weight:900;text-shadow:2px 2px #504024}.tools{display:flex;gap:6px}.ghost,.special,.primary{min-height:40px;border:1px solid var(--rim);border-bottom-width:3px;background:#181b15;padding:6px 10px;font-size:13px;font-weight:750}.ghost:hover,.special:not(:disabled):hover{border-color:var(--sand)}.ghost svg{width:16px;height:16px;display:block}.ghost[aria-pressed=false] .sound-waves{opacity:.18}
 .play{display:grid;gap:14px;align-items:start}.arena,.tray{min-width:0}.route{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;list-style:none;margin:0 0 7px;padding:0}.route li{border:1px solid #2c3027;background:#11130f;color:var(--muted);padding:4px 4px 5px;text-align:center;font-size:11px;white-space:nowrap}.route span{font:800 10px var(--mono);margin-right:.35em;color:#aba58b}.route li[aria-current=step]{background:#332719;border-color:#957549;color:#ffdfa2}.route li.cleared{color:var(--mint);border-color:#4a5a3b}
-.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rim);border-bottom:0;background:#171a15}.combatant:last-child{text-align:right}.combatant b{display:block;font-size:12px;margin-bottom:5px}.you b{color:var(--mint)}.enemy b{color:var(--coral)}.pips{display:flex;gap:4px}.enemy .pips{justify-content:flex-end}.pip{display:block;width:clamp(10px,3vw,18px);height:8px;box-shadow:inset 0 -2px #0005;background:#38392e}.you .pip.filled{background:#a8d887}.enemy .pip.filled{background:#ed795c}.shield{font:700 10px var(--mono);color:var(--sand)}.floor{text-align:center;color:var(--sand);font:800 11px var(--mono);letter-spacing:.12em}
+.hud{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rim);border-bottom:0;background:#171a15}.combatant:last-child{text-align:right}.combatant b{display:block;font-size:12px;margin-bottom:5px}.you b{color:var(--mint)}.enemy b{color:var(--coral)}.pips{display:flex;gap:3px}.enemy .pips{justify-content:flex-end}.pip{display:block;width:clamp(9px,2.8vw,18px);min-width:5px;height:8px;box-shadow:inset 0 -2px #0005;background:#38392e}.you .pip.filled{background:#a8d887}.enemy .pip.filled{background:#ed795c}.shield{font:700 10px var(--mono);color:var(--sand)}.floor{text-align:center;color:var(--sand);font:800 11px var(--mono);letter-spacing:.12em}.coins{margin-top:4px;text-align:center;color:#dbc087;font-size:11px;white-space:nowrap}.coins b{display:inline;margin:0;font:800 12px var(--mono);color:#ffe0a0}
 .frame{position:relative;padding:clamp(8px,2.4vw,14px);background:#292b21;border:1px solid #62634c;box-shadow:inset 0 0 0 3px #191a14,0 4px #13150f}
-.board{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));aspect-ratio:1;background:#302c22;gap:1px;padding:1px;position:relative;isolation:isolate;user-select:none;-webkit-user-select:none}
-.cell{background:#474232;border:0;padding:0;min-width:0;min-height:0;position:relative;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}.cell.alt{background:#4c4736}.cell.star:before{content:"";width:4px;height:4px;background:#968060;position:absolute}.cell:focus-visible{z-index:3;outline:2px solid #ffe6a3;outline-offset:-2px}.cell.last:after,.cell.keyboard:after{content:"";position:absolute;inset:2px;border:1px solid #ffe7aa;opacity:.85;pointer-events:none}.cell.target{background:#624137}.cell.target:hover{background:#844d3e}
-.stone{display:block;width:72%;height:72%;pointer-events:none;position:relative;--shape:polygon(24% 0,76% 0,76% 12%,90% 12%,90% 24%,100% 24%,100% 76%,90% 76%,90% 88%,76% 88%,76% 100%,24% 100%,24% 88%,10% 88%,10% 76%,0 76%,0 24%,10% 24%,10% 12%,24% 12%);clip-path:var(--shape);visibility:hidden}
+.board-space{position:relative}.board-space:before{content:"";display:block;padding-top:100%}
+.board{position:absolute;inset:0;display:grid;grid-template:repeat(11,minmax(0,1fr))/repeat(11,minmax(0,1fr));background:#302c22;gap:1px;padding:1px;isolation:isolate;user-select:none;-webkit-user-select:none}
+.cell{-webkit-appearance:none;appearance:none;background:#474232;border:0;padding:0;min-width:0;min-height:0;position:relative;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}.cell.alt{background:#4c4736}.cell.star:before{content:"";width:4px;height:4px;background:#968060;position:absolute}.cell:focus-visible{z-index:3;outline:2px solid #ffe6a3;outline-offset:-2px}.cell.last:after,.cell.keyboard:after{content:"";position:absolute;inset:2px;border:1px solid #ffe7aa;opacity:.85;pointer-events:none}.cell.target{background:#624137}.cell.target:hover{background:#844d3e}
+.stone{display:block;position:absolute;inset:0;margin:auto;width:72%;height:72%;pointer-events:none;--shape:polygon(24% 0,76% 0,76% 12%,90% 12%,90% 24%,100% 24%,100% 76%,90% 76%,90% 88%,76% 88%,76% 100%,24% 100%,24% 88%,10% 88%,10% 76%,0 76%,0 24%,10% 24%,10% 12%,24% 12%);clip-path:var(--shape);visibility:hidden}
 .stone:before{content:"";position:absolute;inset:12%;clip-path:var(--shape);background:var(--core)}.stone:after{content:"";position:absolute;top:23%;left:23%;width:25%;height:13%;background:var(--glint)}
 .cell[data-v="1"] .stone,.cell[data-v="2"] .stone,.cell[data-v="3"] .stone{visibility:visible}.cell[data-v="1"] .stone{background:#386044;--core:#a8d887;--glint:#e0f8c1}.cell[data-v="2"] .stone{background:#7e3a32;--core:#e57961;--glint:#ffc5a4}
 .cell[data-v="3"] .stone{width:80%;height:80%;background:#272921;--core:#8d9280;--glint:#d0cbb3;--shape:polygon(12% 24%,30% 24%,30% 8%,72% 8%,72% 21%,89% 21%,89% 43%,100% 43%,100% 80%,74% 80%,74% 93%,12% 93%,12% 79%,0 79%,0 40%,12% 40%)}
@@ -27,7 +28,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;ma
 .strike{position:absolute;z-index:4;left:50%;top:47%;transform:translate(-50%,-50%);padding:7px 10px;background:#15130e;border:1px solid currentColor;font-size:clamp(15px,4.2vw,26px);font-weight:900;white-space:nowrap;pointer-events:none;color:#ffe7aa;box-shadow:0 3px #0008}.strike.hostile{color:#ffad93}
 .signal{min-height:45px;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);padding:8px 0 0}.signal:before{content:"";width:7px;height:7px;flex:none;background:var(--mint);box-shadow:2px 2px #35452d}.signal[data-tone="enemy"]:before{background:var(--coral);box-shadow:2px 2px #653e36}.signal[data-tone="event"]:before{background:var(--sand);box-shadow:2px 2px #5a492e}
 .tray{display:grid;gap:9px}.box,.rules{border:1px solid var(--rim);background:var(--panel);padding:10px 12px}.tray h2{font-size:15px;margin:2px 0 4px}.box p,.rules p{color:var(--muted);font-size:12px;line-height:1.5}.inventory{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.tag{color:#ffe0a0;border:1px solid #645538;background:#262217;padding:3px 6px;font-size:12px}.special{margin-top:9px;color:var(--sand);display:block;width:100%;text-align:left}.special[aria-pressed=true]{background:#432921;border-color:#d38a68}.special:disabled{opacity:.58}.rules summary{cursor:pointer;color:var(--ink);font-size:13px;font-weight:750}.rules p{margin-top:7px}.version{color:var(--muted);font-size:9px}.footer{margin-top:13px;display:flex;justify-content:space-between;gap:7px}
-dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;background:#191a13;border:2px solid #91734c;color:var(--ink);box-shadow:5px 6px 0 #000b;padding:18px}dialog::backdrop{background:#080908ca}dialog h2{color:#ffe0a0;font-size:25px;margin:4px 0 7px}dialog p{font-size:14px;color:var(--muted);line-height:1.55}.choices{display:grid;gap:7px;margin-top:14px}.choice{display:grid;grid-template-columns:25px 1fr;align-items:center;gap:0 9px;text-align:left;background:#292519;border:1px solid #655436;border-bottom-width:3px;padding:9px 10px}.choice:hover{border-color:var(--sand);background:#342d1e}.choice i{font:800 18px var(--mono);color:var(--sand);grid-row:1/span 2}.choice b{color:#ffe4ad;font-size:15px}.choice small{color:#d5cbb1;line-height:1.4}.primary{display:inline-block;background:#e9c27b;color:#1d170e;border-color:#af874d;margin-top:14px}.primary:hover{background:#ffda93}.confirm-actions{display:flex;align-items:baseline;gap:8px}
+dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;background:#191a13;border:2px solid #91734c;color:var(--ink);box-shadow:5px 6px 0 #000b;padding:18px}dialog::backdrop{background:#080908ca}dialog h2{color:#ffe0a0;font-size:25px;margin:4px 0 7px}dialog p{font-size:14px;color:var(--muted);line-height:1.55}.choices{display:grid;gap:7px;margin-top:14px}.choice{display:grid;grid-template-columns:25px 1fr;align-items:center;gap:0 9px;text-align:left;background:#292519;border:1px solid #655436;border-bottom-width:3px;padding:9px 10px}.choice:not(:disabled):hover{border-color:var(--sand);background:#342d1e}.choice:disabled{opacity:.48}.choice i{font:800 18px var(--mono);color:var(--sand);grid-row:1/span 2}.choice b{color:#ffe4ad;font-size:15px}.choice small{color:#d5cbb1;line-height:1.4}.primary{display:inline-block;background:#e9c27b;color:#1d170e;border-color:#af874d;margin-top:14px}.primary:hover{background:#ffda93}.confirm-actions{display:flex;align-items:baseline;gap:8px}
 @media(min-width:760px){.play{grid-template-columns:minmax(0,550px) minmax(218px,1fr);gap:22px}.tray{margin-top:33px}.frame{padding:14px}.box,.rules{padding:13px 14px}}
 @media(prefers-reduced-motion:reduce){.cell.burst .stone,.cell.combo .stone,.cell.removed .stone{animation:none}}
 </style>
@@ -51,22 +52,22 @@ dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;backgr
     </ol>
     <div class="hud">
       <div class="combatant you"><b>你 <span class="shield" id="shield" hidden>◆ 護盾</span></b><div class="pips" id="playerHP"></div></div>
-      <div class="floor" id="floor">FLOOR 01</div>
+      <div><p class="floor" id="floor">FLOOR 01</p><p class="coins">金幣 <b id="coins">0</b></p></div>
       <div class="combatant enemy"><b id="foeName">守門者</b><div class="pips" id="enemyHP"></div></div>
     </div>
     <div class="frame">
-      <div class="board" id="board" role="group" aria-label="11 乘 11 棋盤。可用方向鍵移動焦點，按 Enter 或空白鍵落子。"></div>
+      <div class="board-space"><div class="board" id="board" role="group" aria-label="11 乘 11 棋盤。可用方向鍵移動焦點，按 Enter 或空白鍵落子。"></div></div>
       <div class="strike" id="strike" aria-hidden="true" hidden></div>
     </div>
     <p class="signal" id="status" role="status" aria-atomic="true">輪到你。點空格落子。</p>
   </section>
   <aside class="tray" aria-label="關卡資訊與遺物">
     <section class="box"><p class="eyebrow">ENCOUNTER</p><h2 id="encounterTitle">守門者</h2><p id="encounter"></p></section>
-    <section class="box"><p class="eyebrow">RELICS</p><h2>遺物</h2><p id="emptyRelics">目前沒有遺物，擊敗守關者後可選擇獎勵。</p><div class="inventory" id="inventory" hidden></div><button class="special" id="pin" type="button" aria-pressed="false" hidden>破陣釘</button></section>
-    <details class="rules" open><summary>怎麼玩</summary><p>你執綠棋，和對手輪流下一子。橫、直或斜連成五顆以上，對方立即落敗，滿血或有護盾也擋不住。</p><p><b>活三</b>能再補一子變成兩端皆空的四連。<b>死四</b>只有一個落點能補成五連，包含中間有缺口的四子。每個新棋型扣對方 1 點生命，同一手做出多個棋型可以疊加，棋子不會消除。雙方都適用。</p><p>打倒對手後三選一。你的生命與遺物會帶到下一關。生命歸零，就得從第一關開始。</p></details>
+    <section class="box"><p class="eyebrow">RELICS</p><h2>遺物</h2><p id="emptyRelics">每通過 3 關可以選 1 件遺物。</p><div class="inventory" id="inventory" hidden></div><button class="special" id="pin" type="button" aria-pressed="false" hidden>破陣釘</button></section>
+    <details class="rules" open><summary>怎麼玩</summary><p>你執綠棋，和對手輪流下一子。橫、直或斜連成五顆以上，對方立即落敗，滿血或有護盾也擋不住。</p><p><b>活三</b>能再補一子變成兩端皆空的四連。<b>死四</b>只有一個落點能補成五連，包含中間有缺口的四子。每個新棋型扣對方 1 點生命，同一手做出多個棋型可以疊加，棋子不會消除。雙方都適用。</p><p>第 3、6、9……關過關時遺物三選一，重複選到的遺物會升級。其餘關卡在回復 1 點生命與獲得 5 金幣中二選一。生命、金幣與遺物都會帶到下一關。生命歸零就得從頭開始。</p></details>
   </aside>
 </div>
-<div class="footer"><span class="version">GOMOKU ROGUELIKE</span><span class="version">v0.2.0</span></div>
+<div class="footer"><span class="version">GOMOKU ROGUELIKE</span><span class="version">v0.3.0</span></div>
 </main>
 <dialog id="modal" aria-labelledby="modalTitle"><p class="eyebrow" id="modalEyebrow"></p><h2 id="modalTitle"></h2><p id="modalText"></p><div class="choices" id="choices" hidden></div><div class="confirm-actions" id="modalActions"></div></dialog>
 <script>
@@ -79,11 +80,25 @@ const LEVELS=[
   {name:'石庭王',hp:4,offense:1,defense:1.07,attack:105,guard:85,desc:'挑戰・會預判你下一手的連五和扣血棋型。岩石會截斷棋路，雙方都不能落子。'}
 ];
 const RELICS={
-  ember:{name:'餘燼',icon:'✦',desc:'每關第一次在未滿血時以活三或死四傷到對手，可回復 1 點生命。'},
-  cross:{name:'交叉刃',icon:'×',desc:'同一手做出兩個以上的傷害棋型時，獲得可抵銷 1 點傷害的護盾。護盾不疊加。'},
-  pin:{name:'破陣釘',icon:'▣',desc:'每關一次，移除一顆上下左右緊鄰己方棋子的敵棋，取代該回合落子。'},
-  rest:{name:'整備',icon:'+',desc:'回復 1 點生命。若已滿血，下一關獲得可抵銷 1 點傷害的護盾。'}
+  ember:{name:'餘燼',icon:'✦',describe:rank=>'每關有 '+rank+' 次機會。在未滿血時用活三或死四造成傷害，可回復 1 點生命。'},
+  cross:{name:'交叉刃',icon:'×',describe:rank=>'同一手做出兩個以上的傷害棋型時，護盾補到 '+rank+' 點。'},
+  pin:{name:'破陣釘',icon:'▣',describe:rank=>'每關可用 '+rank+' 次。移除一顆上下左右緊鄰己方棋子的敵棋，取代該回合落子。'}
 };
+const SUPPLIES={
+  heal:{name:'回復 1 點生命',icon:'+',desc:'回復後的生命會帶到下一關。'},
+  gold:{name:'獲得 5 金幣',icon:'◆',desc:'金幣會累加，並帶到下一關。'}
+};
+const floorNo=stage=>String(stage+1).padStart(2,'0');
+const relicFloor=stage=>(stage+1)%LEVELS.length===0;
+const relicRank=id=>run.relics.get(id)||0;
+function levelFor(stage){
+  const depth=Math.floor(stage/LEVELS.length),level=LEVELS[stage%LEVELS.length];
+  if(!depth)return level;
+  return {...level,hp:Math.min(7,4+depth+Number(relicFloor(stage))),
+    offense:Math.max(1,level.offense),defense:Math.max(.9,level.defense),
+    attack:Math.max(100,level.attack),guard:Math.max(62,level.guard),
+    desc:(relicFloor(stage)?'會預判你的下一步。岩石會截斷棋路，這一關打完可以選遺物。':'會主動打出傷害棋型，也會預判你的下一步。')};
+}
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const $=id=>document.getElementById(id);
 const board=$('board'),status=$('status'),strike=$('strike'),modal=$('modal');
@@ -92,10 +107,10 @@ let run,focusIndex=60,timer,modalType='',soundEnabled=false,audioContext;
 function index(x,y){return x>=0&&x<SIZE&&y>=0&&y<SIZE?y*SIZE+x:-1}
 function point(i){return [i%SIZE,Math.floor(i/SIZE)]}
 function shuffle(values){const a=[...values];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function newRun(){return {stage:0,hp:MAX_HP,enemyHp:LEVELS[0].hp,relics:new Set(),shield:0,emberUsed:false,pinUsed:false,pinMode:false,mode:'player',last:-1,board:new Uint8Array(N),turns:0}}
+function newRun(){return {stage:0,hp:MAX_HP,enemyHp:levelFor(0).hp,coins:0,relics:new Map(),shield:0,emberUsed:0,pinUsed:0,pinMode:false,mode:'player',last:-1,board:new Uint8Array(N),turns:0}}
 function boardFor(stage){
   const b=new Uint8Array(N);
-  if(stage!==2)return b;
+  if(!relicFloor(stage))return b;
   const template=shuffle([[[3,3],[2,6],[5,2]],[[4,3],[2,4],[6,2]],[[3,4],[2,2],[5,3]]])[0];
   const rotate=Math.floor(Math.random()*4),reflect=Math.random()<.5;
   for(const [a,c] of template){let x=reflect?10-a:a,y=c;for(let i=0;i<rotate;i++)[x,y]=[10-y,x];b[index(x,y)]=b[index(10-x,10-y)]=ROCK}
@@ -184,7 +199,7 @@ function legalPin(b,i){
 }
 function pinTargets(){return run.board.some((_,i)=>legalPin(run.board,i))}
 function chooseEnemy(state){
-  const b=state.board,level=LEVELS[state.stage],moves=[];
+  const b=state.board,level=levelFor(state.stage),moves=[];
   const opening=state.stage===0&&b.filter(v=>v===ENEMY).length<2;
   for(let i=0;i<N;i++){
     if(b[i]!==0)continue;
@@ -211,7 +226,7 @@ function chooseEnemy(state){
   if(state.stage<2||moves[0].kill)return moves[0].i;
   // The king checks possible replies before committing to one of its best moves.
   let best=moves[0].i,bestScore=-Infinity;
-  for(const m of moves.slice(0,9)){
+  for(const m of moves.slice(0,relicFloor(state.stage)&&state.stage>2?11:9)){
     const enemyHp=state.enemyHp-m.damage;
     b[m.i]=ENEMY;
     let fives=0,fatal=0,worst=0;
@@ -234,7 +249,7 @@ function hpMeter(el,current,max,label){
 }
 function message(text,tone='player'){status.textContent=text;status.dataset.tone=tone}
 function render(){
-  const level=LEVELS[run.stage];
+  const level=levelFor(run.stage);
   board.classList.toggle('ready',run.mode==='player'&&!run.pinMode);
   $('reset').disabled=run.mode==='enemy'||run.mode==='effect';
   board.setAttribute('aria-busy',String(run.mode==='enemy'||run.mode==='effect'));
@@ -251,22 +266,29 @@ function render(){
     btn.setAttribute('aria-disabled',String(run.mode!=='player'||(run.pinMode?!legalPin(run.board,i):value!==0)));
   }
   hpMeter($('playerHP'),run.hp,MAX_HP,'玩家');hpMeter($('enemyHP'),run.enemyHp,level.hp,'敵方');
-  $('shield').hidden=run.shield===0;
+  $('shield').hidden=run.shield===0;$('shield').textContent='◆ '+run.shield;
+  $('shield').setAttribute('aria-label','護盾 '+run.shield+' 點');$('coins').textContent=run.coins;
   $('foeName').textContent=level.name;$('encounterTitle').textContent=level.name;$('encounter').textContent=level.desc;
-  $('floor').textContent='FLOOR 0'+(run.stage+1);
+  $('floor').textContent='FLOOR '+floorNo(run.stage);
+  const chapter=Math.floor(run.stage/LEVELS.length)*LEVELS.length;
   [...$('route').children].forEach((el,i)=>{
-    if(i===run.stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');
-    el.classList.toggle('cleared',i<run.stage||(i===run.stage&&run.enemyHp===0));
+    const stage=chapter+i;
+    if(stage===run.stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');
+    el.classList.toggle('cleared',stage<run.stage||(stage===run.stage&&run.enemyHp===0));
+    const num=document.createElement('span');num.textContent=floorNo(stage);
+    el.replaceChildren(num,LEVELS[i].name);
+    if(relicFloor(stage))el.title='過關後選擇遺物';
   });
   $('inventory').replaceChildren();
-  for(const id of run.relics){
-    const tag=document.createElement('span');tag.className='tag';tag.textContent=RELICS[id].name;tag.title=RELICS[id].desc;$('inventory').append(tag);
+  for(const [id,rank] of run.relics){
+    const tag=document.createElement('span');tag.className='tag';tag.textContent=RELICS[id].name+' Lv.'+rank;tag.title=RELICS[id].describe(rank);$('inventory').append(tag);
   }
   $('emptyRelics').hidden=run.relics.size>0;$('inventory').hidden=run.relics.size===0;
-  $('pin').hidden=!run.relics.has('pin');
-  $('pin').disabled=run.mode!=='player'||run.pinUsed||!pinTargets();
+  const remaining=relicRank('pin')-run.pinUsed;
+  $('pin').hidden=!relicRank('pin');
+  $('pin').disabled=run.mode!=='player'||remaining<=0||!pinTargets();
   $('pin').setAttribute('aria-pressed',String(run.pinMode));
-  $('pin').textContent=run.pinUsed?'破陣釘 · 已使用':run.pinMode?'取消破陣釘':pinTargets()?'破陣釘 · 可使用':'破陣釘 · 無相鄰目標';
+  $('pin').textContent=remaining<=0?'破陣釘 · 已用完':run.pinMode?'取消破陣釘':pinTargets()?'破陣釘 · 剩 '+remaining+' 次':'破陣釘 · 無相鄰目標';
 }
 function schedule(callback,delay){clearTimeout(timer);timer=setTimeout(callback,delay)}
 function clearEffects(){cells.forEach(c=>c.classList.remove('burst','removed','combo'));strike.hidden=true}
@@ -312,11 +334,11 @@ function place(i,side){
     else{run.hp=0;run.shield=0}
   }else if(side===PLAYER){
     run.enemyHp=Math.max(0,run.enemyHp-result.damage);
-    if(run.relics.has('ember')&&!run.emberUsed&&run.hp<MAX_HP){
-      run.emberUsed=true;run.hp++;relicEffect+=' 餘燼回復 1 點生命。';
+    if(run.emberUsed<relicRank('ember')&&run.hp<MAX_HP){
+      run.emberUsed++;run.hp++;relicEffect+=' 餘燼回復 1 點生命。';
     }
-    if(result.damage>=2&&run.relics.has('cross')&&!run.shield){
-      run.shield=1;relicEffect+=' 交叉刃提供護盾。';
+    if(result.damage>=2&&run.shield<relicRank('cross')){
+      run.shield=relicRank('cross');relicEffect+=' 交叉刃提供護盾。';
     }
   }else{
     blocked=Math.min(run.shield,result.damage);run.shield-=blocked;
@@ -341,13 +363,13 @@ function place(i,side){
   schedule(()=>{
     clearEffects();
     if(run.enemyHp===0){roundCleared();return}
-    if(run.hp===0){endRun(false);return}
+    if(run.hp===0){endRun();return}
     passTurn(side);
   },reduced.matches?440:(result.five?720:590));
 }
 function usePin(i){
-  if(run.mode!=='player'||!run.pinMode||run.pinUsed||!legalPin(run.board,i))return;
-  run.board[i]=0;run.pinUsed=true;run.pinMode=false;run.last=-1;run.turns++;run.mode='effect';
+  if(run.mode!=='player'||!run.pinMode||run.pinUsed>=relicRank('pin')||!legalPin(run.board,i))return;
+  run.board[i]=0;run.pinUsed++;run.pinMode=false;run.last=-1;run.turns++;run.mode='effect';
   cells[i].classList.add('removed');message('破陣釘移除一顆敵棋。','event');render();playSound('hit');
   schedule(()=>{clearEffects();passTurn(PLAYER)},reduced.matches?240:360);
 }
@@ -359,38 +381,49 @@ function showModal(type,eyebrow,title,body){
   $('choices').replaceChildren();$('choices').hidden=true;$('modalActions').replaceChildren();
 }
 function rewardsForRun(){
-  const pool=Object.keys(RELICS).filter(id=>id!=='rest'&&!run.relics.has(id));
-  if(run.hp<MAX_HP||pool.length<3)pool.push('rest');
-  return shuffle(pool).slice(0,3);
+  if(!relicFloor(run.stage))return Object.entries(SUPPLIES).map(([id,item])=>({id,...item,
+    disabled:id==='heal'&&run.hp>=MAX_HP,
+    desc:id==='heal'&&run.hp>=MAX_HP?'目前已滿血。':item.desc}));
+  return shuffle(Object.keys(RELICS)).map(id=>{
+    const item=RELICS[id],rank=relicRank(id);
+    return {id,name:item.name+(rank?'（升至 Lv.'+(rank+1)+'）':''),icon:item.icon,desc:item.describe(rank+1)};
+  });
 }
 function roundCleared(){
-  if(run.stage===LEVELS.length-1){endRun(true);return}
-  run.mode='reward';render();message('擊敗 '+LEVELS[run.stage].name+'！選一項獎勵。','event');playSound('clear');
-  showModal('reward','FLOOR 0'+(run.stage+1)+' / CLEAR','選一項獎勵','你的生命會帶到下一關。選定後立即前進。');
-  for(const id of rewardsForRun()){
-    const card=makeButton('','choice',()=>selectReward(id));
+  const boss=relicFloor(run.stage),level=levelFor(run.stage);
+  run.mode='reward';render();message('擊敗 '+level.name+'！選一項獎勵。','event');playSound('clear');
+  showModal('reward','FLOOR '+floorNo(run.stage)+' / CLEAR',boss?'選一件遺物':'過關補給',
+    boss?'每通過三關選一件遺物，已有的遺物可以升級。':'在回血或金幣中選一項，選定後進入下一關。');
+  for(const item of rewardsForRun()){
+    const card=makeButton('','choice',()=>selectReward(item.id));
     const icon=document.createElement('i'),name=document.createElement('b'),desc=document.createElement('small');
-    icon.textContent=RELICS[id].icon;icon.setAttribute('aria-hidden','true');name.textContent=RELICS[id].name;desc.textContent=RELICS[id].desc;
+    icon.textContent=item.icon;icon.setAttribute('aria-hidden','true');name.textContent=item.name;desc.textContent=item.desc;
+    card.disabled=Boolean(item.disabled);
     card.append(icon,name,desc);$('choices').append(card);
   }
   $('choices').hidden=false;modal.showModal();
 }
 function selectReward(id){
-  if(run.mode!=='reward'||!Object.hasOwn(RELICS,id))return;
+  if(run.mode!=='reward')return;
+  let result;
+  if(relicFloor(run.stage)){
+    if(!Object.hasOwn(RELICS,id))return;
+    const rank=relicRank(id)+1;
+    run.relics.set(id,rank);result=(rank>1?'升級 ':'獲得 ')+RELICS[id].name+'。';
+  }else if(id==='heal'&&run.hp<MAX_HP){
+    run.hp++;result='已回復 1 點生命。';
+  }else if(id==='gold'){
+    run.coins+=5;result='獲得 5 金幣。';
+  }else return;
   run.shield=0;
-  if(id==='rest'){
-    if(run.hp===MAX_HP)run.shield=1;
-    else run.hp++;
-  }else run.relics.add(id);
-  run.stage++;run.enemyHp=LEVELS[run.stage].hp;run.board=boardFor(run.stage);
-  run.last=-1;run.pinUsed=false;run.pinMode=false;run.emberUsed=false;focusIndex=60;
-  modal.close();modalType='';playerTurn('抵達 '+LEVELS[run.stage].name+'。輪到你先下。');cells[focusIndex].focus({preventScroll:true});
+  run.stage++;const level=levelFor(run.stage);
+  run.enemyHp=level.hp;run.board=boardFor(run.stage);
+  run.last=-1;run.pinUsed=0;run.pinMode=false;run.emberUsed=0;focusIndex=60;
+  modal.close();modalType='';playerTurn(result+' 第 '+(run.stage+1)+' 關・'+level.name+'，輪到你。');cells[focusIndex].focus({preventScroll:true});
 }
-function endRun(won){
-  run.mode=won?'win':'lost';render();
-  message(won?'你打倒了石庭王，通過地城！':'生命歸零，這趟挑戰結束。','event');
-  if(won)playSound('clear');
-  showModal('ending',won?'DUNGEON CLEAR':'RUN OVER',won?'地城通關！':'這趟挑戰結束',won?'你打倒了石庭王，帶著 '+run.hp+' 點生命走出地城。':'你在第 '+(run.stage+1)+' 關遇到 '+LEVELS[run.stage].name+'。重新出發時，遺物會重置。');
+function endRun(){
+  run.mode='lost';render();message('生命歸零，這趟挑戰結束。','event');
+  showModal('ending','RUN OVER','這趟挑戰結束','你打到第 '+(run.stage+1)+' 關，累積 '+run.coins+' 金幣。重新出發時，金幣與遺物會重置。');
   $('modalActions').append(makeButton('再闖一次','primary',resetRun));modal.showModal();
 }
 function resetRun(){
@@ -429,7 +462,7 @@ $('sound').addEventListener('click',()=>{
 $('reset').addEventListener('click',()=>{
   if(run.mode==='enemy'||run.mode==='effect')return;
   if(!run.turns){resetRun();return}
-  showModal('reset','NEW RUN','重新開始？','目前的關卡、生命和遺物都會重置。');
+  showModal('reset','NEW RUN','重新開始？','目前的關卡、生命、金幣和遺物都會重置。');
   $('modalActions').append(makeButton('取消','ghost',()=>{modal.close();modalType=''}),makeButton('重新開始','primary',resetRun));
   modal.showModal();
 });
