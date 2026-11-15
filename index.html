@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090a09">
-<meta name="description" content="五連地城是像素風的單人五子棋 Roguelike。連五消線、擊敗守關者，帶著遺物一路深入地城。">
+<meta name="description" content="五連地城是像素風的單人五子棋 Roguelike。五連必殺、棋型扣血，帶著遺物闖過三層地城。">
 <title>五連地城 | FIVE BELOW</title>
 <style>
 :root{color-scheme:dark;--bg:#090a09;--panel:#131512;--rim:#393c31;--ink:#f5efdc;--muted:#b1ac98;--sand:#e9c27b;--mint:#bfe9a5;--coral:#ff977c;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -22,13 +22,14 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;ma
 .cell[data-v="1"] .stone,.cell[data-v="2"] .stone,.cell[data-v="3"] .stone{visibility:visible}.cell[data-v="1"] .stone{background:#386044;--core:#a8d887;--glint:#e0f8c1}.cell[data-v="2"] .stone{background:#7e3a32;--core:#e57961;--glint:#ffc5a4}
 .cell[data-v="3"] .stone{width:80%;height:80%;background:#272921;--core:#8d9280;--glint:#d0cbb3;--shape:polygon(12% 24%,30% 24%,30% 8%,72% 8%,72% 21%,89% 21%,89% 43%,100% 43%,100% 80%,74% 80%,74% 93%,12% 93%,12% 79%,0 79%,0 40%,12% 40%)}
 @media(hover:hover){.board.ready .cell[data-v="0"]:hover{background:#645b42}.board.ready .cell[data-v="0"]:hover .stone{visibility:visible;background:#e0f8c1;opacity:.4}}
+.cell.combo{z-index:1;background:#807044}.cell.combo .stone{animation:combo .48s steps(4,end) both}@keyframes combo{0%,45%{filter:brightness(1.7);transform:scale(1.12)}100%{filter:brightness(1);transform:scale(1)}}
 .cell.burst{z-index:1;background:#806a38}.cell.burst .stone{animation:burst .36s steps(5,end) both}.cell.burst .stone:before{background:#fff2ad}.cell.removed .stone{visibility:visible;background:#d98a63;animation:burst .36s steps(5,end) both}@keyframes burst{0%,30%{transform:scale(1.14);opacity:1}100%{transform:scale(.25);opacity:0}}
 .strike{position:absolute;z-index:4;left:50%;top:47%;transform:translate(-50%,-50%);padding:7px 10px;background:#15130e;border:1px solid currentColor;font-size:clamp(15px,4.2vw,26px);font-weight:900;white-space:nowrap;pointer-events:none;color:#ffe7aa;box-shadow:0 3px #0008}.strike.hostile{color:#ffad93}
 .signal{min-height:45px;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);padding:8px 0 0}.signal:before{content:"";width:7px;height:7px;flex:none;background:var(--mint);box-shadow:2px 2px #35452d}.signal[data-tone="enemy"]:before{background:var(--coral);box-shadow:2px 2px #653e36}.signal[data-tone="event"]:before{background:var(--sand);box-shadow:2px 2px #5a492e}
 .tray{display:grid;gap:9px}.box,.rules{border:1px solid var(--rim);background:var(--panel);padding:10px 12px}.tray h2{font-size:15px;margin:2px 0 4px}.box p,.rules p{color:var(--muted);font-size:12px;line-height:1.5}.inventory{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.tag{color:#ffe0a0;border:1px solid #645538;background:#262217;padding:3px 6px;font-size:12px}.special{margin-top:9px;color:var(--sand);display:block;width:100%;text-align:left}.special[aria-pressed=true]{background:#432921;border-color:#d38a68}.special:disabled{opacity:.58}.rules summary{cursor:pointer;color:var(--ink);font-size:13px;font-weight:750}.rules p{margin-top:7px}.version{color:var(--muted);font-size:9px}.footer{margin-top:13px;display:flex;justify-content:space-between;gap:7px}
 dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;background:#191a13;border:2px solid #91734c;color:var(--ink);box-shadow:5px 6px 0 #000b;padding:18px}dialog::backdrop{background:#080908ca}dialog h2{color:#ffe0a0;font-size:25px;margin:4px 0 7px}dialog p{font-size:14px;color:var(--muted);line-height:1.55}.choices{display:grid;gap:7px;margin-top:14px}.choice{display:grid;grid-template-columns:25px 1fr;align-items:center;gap:0 9px;text-align:left;background:#292519;border:1px solid #655436;border-bottom-width:3px;padding:9px 10px}.choice:hover{border-color:var(--sand);background:#342d1e}.choice i{font:800 18px var(--mono);color:var(--sand);grid-row:1/span 2}.choice b{color:#ffe4ad;font-size:15px}.choice small{color:#d5cbb1;line-height:1.4}.primary{display:inline-block;background:#e9c27b;color:#1d170e;border-color:#af874d;margin-top:14px}.primary:hover{background:#ffda93}.confirm-actions{display:flex;align-items:baseline;gap:8px}
 @media(min-width:760px){.play{grid-template-columns:minmax(0,550px) minmax(218px,1fr);gap:22px}.tray{margin-top:33px}.frame{padding:14px}.box,.rules{padding:13px 14px}}
-@media(prefers-reduced-motion:reduce){.cell.burst .stone,.cell.removed .stone{animation:none}}
+@media(prefers-reduced-motion:reduce){.cell.burst .stone,.cell.combo .stone,.cell.removed .stone{animation:none}}
 </style>
 </head>
 <body>
@@ -62,10 +63,10 @@ dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;backgr
   <aside class="tray" aria-label="關卡資訊與遺物">
     <section class="box"><p class="eyebrow">ENCOUNTER</p><h2 id="encounterTitle">守門者</h2><p id="encounter"></p></section>
     <section class="box"><p class="eyebrow">RELICS</p><h2>遺物</h2><p id="emptyRelics">目前沒有遺物，擊敗守關者後可選擇獎勵。</p><div class="inventory" id="inventory" hidden></div><button class="special" id="pin" type="button" aria-pressed="false" hidden>破陣釘</button></section>
-    <details class="rules" open><summary>怎麼玩</summary><p>你執綠棋，和對手輪流下一子。橫、直或斜連成五顆以上，就消除整條線並扣對手 1 點生命。同一手連出兩個方向，就扣 2 點。</p><p>打倒對手後三選一。你的生命與遺物會帶到下一關。生命歸零，就得從第一關開始。</p></details>
+    <details class="rules" open><summary>怎麼玩</summary><p>你執綠棋，和對手輪流下一子。橫、直或斜連成五顆以上，對方立即落敗，滿血或有護盾也擋不住。</p><p><b>活三</b>能再補一子變成兩端皆空的四連。<b>死四</b>只有一個落點能補成五連，包含中間有缺口的四子。每個新棋型扣對方 1 點生命，同一手做出多個棋型可以疊加，棋子不會消除。雙方都適用。</p><p>打倒對手後三選一。你的生命與遺物會帶到下一關。生命歸零，就得從第一關開始。</p></details>
   </aside>
 </div>
-<div class="footer"><span class="version">GOMOKU ROGUELIKE</span><span class="version">v0.1.0</span></div>
+<div class="footer"><span class="version">GOMOKU ROGUELIKE</span><span class="version">v0.2.0</span></div>
 </main>
 <dialog id="modal" aria-labelledby="modalTitle"><p class="eyebrow" id="modalEyebrow"></p><h2 id="modalTitle"></h2><p id="modalText"></p><div class="choices" id="choices" hidden></div><div class="confirm-actions" id="modalActions"></div></dialog>
 <script>
@@ -73,13 +74,13 @@ dialog{width:min(92vw,450px);max-height:calc(100dvh - 36px);overflow:auto;backgr
 const SIZE=11,N=SIZE*SIZE,PLAYER=1,ENEMY=2,ROCK=3,MAX_HP=4;
 const DIRS=[[1,0],[0,1],[1,1],[1,-1]],ADJ=[[1,0],[-1,0],[0,1],[0,-1]];
 const LEVELS=[
-  {name:'守門者',hp:2,offense:.80,defense:1.15,desc:'擅長攔住你快成形的棋路。試著在同一手佈下兩個威脅。'},
-  {name:'追線者',hp:2,offense:1.12,defense:.86,desc:'更積極在不同方向下棋。進攻前，先確認你擋得住它的下一手。'},
-  {name:'石庭王',hp:3,offense:1,defense:1.05,desc:'岩石會截斷棋路，雙方都不能落子。找出還能交會的兩條線。'}
+  {name:'守門者',hp:2,offense:.62,defense:.10,attack:24,guard:0,desc:'入門・前兩手會讓出空間，不急著封活三。可以先練習做出活三。'},
+  {name:'追線者',hp:3,offense:1,defense:.65,attack:89,guard:42,desc:'進階・會主動做活三、死四，也會攔住你即將成形的棋路。'},
+  {name:'石庭王',hp:4,offense:1,defense:1.07,attack:105,guard:85,desc:'挑戰・會預判你下一手的連五和扣血棋型。岩石會截斷棋路，雙方都不能落子。'}
 ];
 const RELICS={
-  ember:{name:'餘燼',icon:'✦',desc:'五連消除後，保留你這回合剛落下的棋子。'},
-  cross:{name:'交叉刃',icon:'×',desc:'同一手完成兩個以上的五連方向時，額外造成 1 點傷害。'},
+  ember:{name:'餘燼',icon:'✦',desc:'每關第一次在未滿血時以活三或死四傷到對手，可回復 1 點生命。'},
+  cross:{name:'交叉刃',icon:'×',desc:'同一手做出兩個以上的傷害棋型時，獲得可抵銷 1 點傷害的護盾。護盾不疊加。'},
   pin:{name:'破陣釘',icon:'▣',desc:'每關一次，移除一顆上下左右緊鄰己方棋子的敵棋，取代該回合落子。'},
   rest:{name:'整備',icon:'+',desc:'回復 1 點生命。若已滿血，下一關獲得可抵銷 1 點傷害的護盾。'}
 };
@@ -91,7 +92,7 @@ let run,focusIndex=60,timer,modalType='',soundEnabled=false,audioContext;
 function index(x,y){return x>=0&&x<SIZE&&y>=0&&y<SIZE?y*SIZE+x:-1}
 function point(i){return [i%SIZE,Math.floor(i/SIZE)]}
 function shuffle(values){const a=[...values];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function newRun(){return {stage:0,hp:MAX_HP,enemyHp:2,relics:new Set(),shield:0,pinUsed:false,pinMode:false,mode:'player',last:-1,board:new Uint8Array(N),turns:0}}
+function newRun(){return {stage:0,hp:MAX_HP,enemyHp:LEVELS[0].hp,relics:new Set(),shield:0,emberUsed:false,pinUsed:false,pinMode:false,mode:'player',last:-1,board:new Uint8Array(N),turns:0}}
 function boardFor(stage){
   const b=new Uint8Array(N);
   if(stage!==2)return b;
@@ -100,79 +101,130 @@ function boardFor(stage){
   for(const [a,c] of template){let x=reflect?10-a:a,y=c;for(let i=0;i<rotate;i++)[x,y]=[10-y,x];b[index(x,y)]=b[index(10-x,10-y)]=ROCK}
   return b;
 }
-function linesAt(b,i,side){
-  if(i<0||i>=N||b[i]!==side)return [];
-  const [x,y]=point(i),lines=[];
-  for(const [dx,dy] of DIRS){
-    const line=[i];
-    for(const s of [1,-1]){
-      for(let n=1;n<SIZE;n++){
-        const j=index(x+n*s*dx,y+n*s*dy);if(j<0||b[j]!==side)break;
-        if(s===1)line.push(j);else line.unshift(j);
+const OPEN_THREE='活三', CLOSED_FOUR='死四';
+const GROWTH=[0,0,6,19,40,0];
+const AXES=Array.from({length:N},(_,i)=>{
+  const [x,y]=point(i);
+  return DIRS.map(([dx,dy])=>Array.from({length:9},(_,j)=>index(x+(j-4)*dx,y+(j-4)*dy)));
+});
+function describeMove(b,i,side,collect=false){
+  let five=false,damage=0,score=0,openFour=0;
+  const patterns=[],lines=[];
+  for(const [dir,axis] of AXES[i].entries()){
+    let lineFound=false;
+    const tape=axis.map((j,k)=>k===4?side:(b[j]??ROCK));
+    let shape=0,fours=null,threes=null;
+    for(let first=0;first<=4;first++){
+      let mask=0,gap=-1,count=0;
+      for(let k=first;k<first+5;k++){
+        const v=tape[k];
+        if(v===side){count++;mask|=1<<k}
+        else if(v===0)gap=k;
+        else{count=0;break}
+      }
+      if(count===5){
+        five=true;lineFound=true;
+        if(collect){
+          const [x,y]=point(i),[dx,dy]=DIRS[dir];
+          const line=[i];
+          for(const sign of [-1,1])for(let n=1;n<SIZE;n++){
+            const j=index(x+n*dx*sign,y+n*dy*sign);
+            if(j<0||b[j]!==side)break;
+            line.push(j);
+          }
+          lines.push(line);
+        }
+        break;
+      }
+      if(count>=2)shape=Math.max(shape,GROWTH[count]*(1+.17*(Number(tape[first-1]===0)+Number(tape[first+5]===0))));
+      if(count===4){
+        fours??=new Map();
+        fours.set(mask,(fours.get(mask)||0)|(1<<gap));
       }
     }
-    if(line.length>=5)lines.push(line);
+    if(lineFound){
+      if(!collect)return {five,damage:0,score:0,openFour:0,patterns,lines};
+      continue;
+    }
+    if(fours)for(const [mask,gaps] of fours){
+      if((gaps&(gaps-1))===0){
+        damage++;
+        if(collect)patterns.push({name:CLOSED_FOUR,cells:axis.filter((_,k)=>mask&(1<<k))});
+      }else openFour++;
+    }
+    // A three must become a consecutive four whose two outside cells remain empty.
+    for(let first=0;first<=3;first++){
+      if(tape[first]!==0||tape[first+5]!==0)continue;
+      let mask=0,count=0;
+      for(let k=first+1;k<first+5;k++){
+        if(tape[k]===side){count++;mask|=1<<k}
+        else if(tape[k]!==0){count=0;break}
+      }
+      if(count!==3)continue;
+      if(fours&&[...fours.keys()].some(m=>(m&mask)===mask))continue;
+      threes??=new Set();threes.add(mask);
+    }
+    if(threes)for(const mask of threes){
+      damage++;
+      if(collect)patterns.push({name:OPEN_THREE,cells:axis.filter((_,k)=>mask&(1<<k))});
+    }
+    score+=shape;
   }
-  return lines;
+  return {five,damage:five?0:damage,score,openFour,patterns:five?[]:patterns,lines};
 }
-function analyzePlacement(b,i,side,relics){
+function analyzePlacement(b,i,side){
   if(!Number.isInteger(i)||i<0||i>=N||b[i]!==0)return null;
+  const result=describeMove(b,i,side,true);
   b[i]=side;
-  const lines=linesAt(b,i,side);
-  const damage=lines.length+(lines.length>1&&side===PLAYER&&relics.has('cross')?1:0);
-  const cleared=[...new Set(lines.flat())].filter(j=>!(j===i&&side===PLAYER&&relics.has('ember')));
-  return {lines,damage,cleared};
+  return result;
 }
 function legalPin(b,i){
   if(i<0||i>=N||b[i]!==ENEMY)return false;
   const [x,y]=point(i);return ADJ.some(([dx,dy])=>b[index(x+dx,y+dy)]===PLAYER);
 }
 function pinTargets(){return run.board.some((_,i)=>legalPin(run.board,i))}
-function threatShape(b,i,side){
-  const [x,y]=point(i);let score=0,certain=0,openThrees=0,same=0;
-  for(const [dx,dy] of DIRS){
-    let best=0,extra=0,distEnds=0;
-    const tape=Array.from({length:9},(_,k)=>k===4?side:(b[index(x+(k-4)*dx,y+(k-4)*dy)]??ROCK));
-    if(tape[3]===side)same++;if(tape[5]===side)same++;
-    for(let k=0;k<=4;k++){
-      const w=tape.slice(k,k+5);
-      if(w.some(v=>v!==0&&v!==side))continue;
-      const count=w.filter(v=>v===side).length;
-      const open=Number(tape[k-1]===0)+Number(tape[k+5]===0);
-      if(count===5){certain=1;best=Math.max(best,6500);continue}
-      if(count===4){const gap=k+w.indexOf(0);extra|=1<<gap}
-      if(count===3&&open===2){const p=w.map((v,j)=>v===side?j:-10).filter(j=>j>=0);if(p[2]-p[0]<=3)distEnds=1}
-      best=Math.max(best,([0,0,7,48,115,0][count])*(1+open*.22));
-    }
-    score+=best+((extra&(extra-1))!==0?425:0);openThrees+=distEnds;
-  }
-  score+=openThrees>1?108:0;
-  return {score,certain,same};
-}
-function virtualDamage(b,i,side,relics){
-  b[i]=side;
-  const n=linesAt(b,i,side).length;
-  b[i]=0;
-  return n+(side===PLAYER&&n>1&&relics.has('cross')?1:0);
-}
 function chooseEnemy(state){
-  const b=state.board,level=LEVELS[state.stage];
-  let best=-1,value=-Infinity;
+  const b=state.board,level=LEVELS[state.stage],moves=[];
+  const opening=state.stage===0&&b.filter(v=>v===ENEMY).length<2;
   for(let i=0;i<N;i++){
     if(b[i]!==0)continue;
-    const [x,y]=point(i);
-    const ours=threatShape(b,i,ENEMY),theirs=threatShape(b,i,PLAYER);
-    let v=ours.score*level.offense+theirs.score*level.defense+
-      1.28*(10-Math.abs(x-5)-Math.abs(y-5))+2.5*ours.same+1.2*theirs.same+Math.random()*4;
-    if(ours.certain){
-      const harm=virtualDamage(b,i,ENEMY,state.relics);
-      v+=harm*15000+(harm>=state.hp+state.shield?120000:0);
+    const [x,y]=point(i),ours=describeMove(b,i,ENEMY),theirs=describeMove(b,i,PLAYER);
+    let score=ours.score*level.offense+theirs.score*level.defense+
+      ours.damage*level.attack+theirs.damage*level.guard+
+      ours.openFour*(state.stage===0?30:160)+theirs.openFour*(state.stage===0?0:155)+
+      .9*(10-Math.abs(x-5)-Math.abs(y-5))+Math.random()*(state.stage===0?12:3);
+    const kill=ours.five||ours.damage>=state.hp+state.shield;
+    if(kill)score+=200000+(ours.five?10000:0);
+    else if(theirs.five)score+=35000;
+    if(!kill&&opening){
+      if(Math.min(x,y,SIZE-1-x,SIZE-1-y)>1)score-=100;
+      for(let yy=Math.max(0,y-2);yy<=Math.min(SIZE-1,y+2);yy++)for(let xx=Math.max(0,x-2);xx<=Math.min(SIZE-1,x+2);xx++){
+        const v=b[index(xx,yy)];
+        if(v===PLAYER)score-=55;
+        if(v===ENEMY)score-=40;
+      }
     }
-    if(theirs.certain){
-      const harm=virtualDamage(b,i,PLAYER,state.relics);
-      v+=harm*8000+(harm>=state.enemyHp?48000:0);
+    moves.push({i,score,kill,damage:ours.damage});
+  }
+  moves.sort((a,c)=>c.score-a.score);
+  if(!moves.length)return -1;
+  if(state.stage<2||moves[0].kill)return moves[0].i;
+  // The king checks possible replies before committing to one of its best moves.
+  let best=moves[0].i,bestScore=-Infinity;
+  for(const m of moves.slice(0,9)){
+    const enemyHp=state.enemyHp-m.damage;
+    b[m.i]=ENEMY;
+    let fives=0,fatal=0,worst=0;
+    for(const reply of moves){
+      if(reply.i===m.i)continue;
+      const r=describeMove(b,reply.i,PLAYER);
+      if(r.five)fives++;
+      else if(r.damage>=enemyHp)fatal++;
+      else worst=Math.max(worst,r.damage);
     }
-    if(v>value){value=v;best=i}
+    b[m.i]=0;
+    const score=m.score-(fives+fatal?100000:0)-fives*1000-fatal*550-worst*115;
+    if(score>bestScore){bestScore=score;best=m.i}
   }
   return best;
 }
@@ -217,7 +269,7 @@ function render(){
   $('pin').textContent=run.pinUsed?'破陣釘 · 已使用':run.pinMode?'取消破陣釘':pinTargets()?'破陣釘 · 可使用':'破陣釘 · 無相鄰目標';
 }
 function schedule(callback,delay){clearTimeout(timer);timer=setTimeout(callback,delay)}
-function clearEffects(){cells.forEach(c=>c.classList.remove('burst','removed'));strike.hidden=true}
+function clearEffects(){cells.forEach(c=>c.classList.remove('burst','removed','combo'));strike.hidden=true}
 function playSound(kind){
   if(!soundEnabled)return;
   try{
@@ -250,32 +302,48 @@ function enemyTurn(){
 }
 function place(i,side){
   if((side===PLAYER&&run.mode!=='player')||(side===ENEMY&&run.mode!=='enemy'))return;
-  const result=analyzePlacement(run.board,i,side,run.relics);if(!result)return;
+  const result=analyzePlacement(run.board,i,side);if(!result)return;
   run.last=i;run.turns++;playSound(side===PLAYER?'stone':'enemy');
-  if(!result.damage){passTurn(side);return}
+  if(!result.five&&!result.damage){passTurn(side);return}
   run.mode='effect';
-  let blocked=0;
-  if(side===PLAYER)run.enemyHp=Math.max(0,run.enemyHp-result.damage);
-  else{
+  let blocked=0,relicEffect='';
+  if(result.five){
+    if(side===PLAYER)run.enemyHp=0;
+    else{run.hp=0;run.shield=0}
+  }else if(side===PLAYER){
+    run.enemyHp=Math.max(0,run.enemyHp-result.damage);
+    if(run.relics.has('ember')&&!run.emberUsed&&run.hp<MAX_HP){
+      run.emberUsed=true;run.hp++;relicEffect+=' 餘燼回復 1 點生命。';
+    }
+    if(result.damage>=2&&run.relics.has('cross')&&!run.shield){
+      run.shield=1;relicEffect+=' 交叉刃提供護盾。';
+    }
+  }else{
     blocked=Math.min(run.shield,result.damage);run.shield-=blocked;
     run.hp=Math.max(0,run.hp-result.damage+blocked);
   }
   render();
-  for(const j of result.cleared)cells[j].classList.add('burst');
-  const damage=result.damage-blocked;
-  strike.textContent=damage===0?'護盾抵銷':(result.lines.length>1?'交會連擊':'五連出招')+' −'+damage;
+  const who=side===PLAYER?'你':'對手';
+  if(result.five){
+    for(const j of result.lines.flat())cells[j].classList.add('burst');
+    strike.textContent='五連必殺';
+    message(who+'連成五子，直接獲勝！','event');
+  }else{
+    for(const p of result.patterns)for(const j of p.cells)cells[j].classList.add('combo');
+    const damage=result.damage-blocked;
+    const names=[...new Set(result.patterns.map(p=>p.name))].join('＋');
+    strike.textContent=names+(damage?' −'+damage:'・護盾抵銷');
+    message(who+'打出 '+names+'。'+(damage?'扣 '+damage+' 點生命。':'')+
+      (blocked?'護盾抵銷 '+blocked+' 點。':'')+relicEffect,'event');
+  }
   strike.classList.toggle('hostile',side===ENEMY);strike.hidden=false;
-  message((side===PLAYER?'你':'對手')+'完成 '+result.lines.length+' 條五連。'+
-    (damage?'造成 '+damage+' 點傷害。':'')+(blocked?'護盾抵銷 '+blocked+' 點。':''),'event');
   playSound(side===PLAYER?'hit':'hurt');
   schedule(()=>{
-    for(const j of result.cleared)run.board[j]=0;
-    if(run.board[run.last]===0)run.last=-1;
-    clearEffects();render();
+    clearEffects();
     if(run.enemyHp===0){roundCleared();return}
     if(run.hp===0){endRun(false);return}
     passTurn(side);
-  },reduced.matches?420:610);
+  },reduced.matches?440:(result.five?720:590));
 }
 function usePin(i){
   if(run.mode!=='player'||!run.pinMode||run.pinUsed||!legalPin(run.board,i))return;
@@ -315,7 +383,7 @@ function selectReward(id){
     else run.hp++;
   }else run.relics.add(id);
   run.stage++;run.enemyHp=LEVELS[run.stage].hp;run.board=boardFor(run.stage);
-  run.last=-1;run.pinUsed=false;run.pinMode=false;focusIndex=60;
+  run.last=-1;run.pinUsed=false;run.pinMode=false;run.emberUsed=false;focusIndex=60;
   modal.close();modalType='';playerTurn('抵達 '+LEVELS[run.stage].name+'。輪到你先下。');cells[focusIndex].focus({preventScroll:true});
 }
 function endRun(won){
