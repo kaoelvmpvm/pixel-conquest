@@ -165,9 +165,10 @@ function positiveGate(){
  return {...g};
 }
 function upgradeGate(p,x,y){
+ // 飽和後保留阻擋子彈的閘門，但不再無限增加粒子或等級
+ if(p.hits>=14)return;
  p.hits++;
- // 命中就增大閘門，且提高獎勵數值（各屬性有限制）
- p.width=Math.min(155,p.width+4);
+ p.width=Math.min(155,102+p.hits*4);
  if(p.type==='power')p.val=Math.min(45,p.val+1);
  if(p.type==='lanes')p.val=Math.min(6,p.val+1);
  if(p.type==='speed')p.val=Math.min(65,p.val+3);
@@ -402,7 +403,7 @@ function drawGate(g){
   rect(x+4,y+43,w-8,5,C.mint);
   rect(x+5,y+12,w-10,25,'#0d2538');
   txt(gateText(p),cx,y+27,16,C.white,'center');
-  txt('LV '+(p.hits+1),cx,y-12,11,p.hits?C.yellow:C.border,'center');
+  txt(p.hits>=14?'MAX':'LV '+(p.hits+1),cx,y-12,11,p.hits?C.yellow:C.border,'center');
   rect(x-2,y-2,5,10,C.yellow);rect(x+w-3,y-2,5,10,C.yellow);
  });
  rect(179,y-2,2,56,'#375777');
