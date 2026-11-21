@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0b1223">
-<meta name="description" content="像素火線 GATE RUSH：自動射擊、左右選擇強化閘門、擊退敵軍與首領的直向像素動作遊戲。">
-<title>像素火線 | GATE RUSH</title>
+<meta name="theme-color" content="#050611">
+<meta name="description" content="像素火線 GATE RUSH：復古 8-bit 太空射擊；擊中閘門能升級並擴張範圍，扇形彈幕迎戰密集敵群。">
+<title>像素火線 | 8-BIT GATE RUSH</title>
 <style>
-:root{color-scheme:dark;background:#080e18}
+:root{color-scheme:dark;background:#050611}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
-body{display:flex;align-items:center;justify-content:center;font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;background:radial-gradient(ellipse at 50% 30%,#203550 0,#0a1323 55%,#05090f 100%);color:#fff}
-#shell{position:relative;width:min(100vw,calc(100dvh * .5));aspect-ratio:1/2;max-height:100dvh;overflow:hidden;box-shadow:0 0 0 2px #263c52,0 12px 80px #0009;touch-action:none}
+body{display:flex;align-items:center;justify-content:center;font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;background:#050611;color:#fff}
+#shell{position:relative;width:min(100vw,calc(100dvh * .5));aspect-ratio:1/2;max-height:100dvh;overflow:hidden;box-shadow:0 0 0 3px #182f55,0 12px 80px #0009;touch-action:none}
 canvas{display:block;width:100%;height:100%;image-rendering:pixelated;touch-action:none;outline:none}
 #announce{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media (max-aspect-ratio:1/2){#shell{width:100vw;max-height:100dvh}}
@@ -31,44 +31,49 @@ const announce=document.getElementById('announce');
 const W=360,H=720,FIELD_TOP=72,FIELD_BOTTOM=660;
 ctx.imageSmoothingEnabled=false;
 const C={
- dark:'#0a1020',deep:'#101b2e',sky:'#365b83',brick:'#729dc3',brick2:'#638eb8',
- border:'#b1d3e4',steel:'#223955',white:'#f8f5dc',text:'#e9f5ff',
- yellow:'#ffe68c',gold:'#ffc65b',orange:'#ff964e',red:'#ff626c',
- green:'#90f3a3',mint:'#55dcb3',blue:'#7ed8ff',purple:'#bd9df8'
+ dark:'#050611',deep:'#090c1c',sky:'#1a3a70',brick:'#10172a',brick2:'#17233c',
+ border:'#72a7d8',steel:'#25436c',white:'#fff7dc',text:'#f4f1dc',
+ yellow:'#fff26b',gold:'#ffca55',orange:'#ff8749',red:'#fe5a73',
+ green:'#8afc8e',mint:'#41f8c5',blue:'#5dc8ff',purple:'#ba86ff'
 };
-const catArt=[
-'......OO...OO......',
-'.....OYYO.OYYO.....',
-'....OYYYYYYYYYO....',
-'....OYYYYYYYYYO....',
-'...OYYYYYYYYYYYO...',
-'...OYWYYWWYYWYYO...',
-'...OYWYYWWYYWYYO...',
-'...OYYYYPYYYYYYO...',
-'...OYYYYYYYYYYYO...',
-'....OYYKKKYYYO....',
-'....OYYYYYYYYYO....',
-'.....OOOOOOOOO.....',
-'......OTTTTTO......',
-'......OTTTTTO......',
-'.....OOTTTTTOO.....',
-'.....OOTTOTTOO.....'
+const shipArt=[
+'........B........',
+'.......BBB.......',
+'.......BWB.......',
+'......BBWB.......',
+'.....BWWWB.......',
+'...BBWWWWWBB.....',
+'.BBBWWWWWWWBBB...',
+'BBBRWWWWWWWRBBB..',
+'BBBRWBBBBBWRBBB..',
+'.BBBRBBBBBRBBB...',
+'..BBBRBBBRBBB....',
+'....RR...RR......',
+'....OO...OO......'
 ];
-const catPal={O:'#493b46',Y:'#f5b45e',W:'#fff7df',P:'#f37b88',K:'#3c303d',T:'#694b44'};
-const botArt=[
-'...OOOOOOO...',
-'..OYYYYYYYO..',
-'.OOYYYYYYYOO.',
-'.OYYYWWYYYYO.',
-'.OYYYWWYYYYO.',
-'.OYYOKKOYYYO.',
-'.OOOYYYYYOOO.',
-'ORRROTTTORRRO',
-'ORRROTTTORRRO',
-'.OOTTGGGTTO..',
-'..OOO...OOO..'
+const shipPal={B:'#3989e3',W:'#e5fbff',R:'#ff596f',O:'#ffbc5d'};
+const bugArt=[
+'..P......P...',
+'..PP....PP...',
+'...PPPPPP....',
+'.PPCCPPCCPP..',
+'PPPCCPPCCPPP.',
+'PPCPPPPPPCPP.',
+'.PP.PPPP.PP..',
+'..PP.PP.PP...',
+'.PP......PP..',
+'P..........P.'
 ];
-const botPal={O:'#33384f',Y:'#eac75a',W:'#f9f6dd',K:'#24253a',R:'#eb5668',T:'#858b9e',G:'#6fd99c'};
+const bugPals=[
+ {P:'#a979ff',C:'#fff06d'},
+ {P:'#ff5e82',C:'#ffef9a'},
+ {P:'#54e6c3',C:'#d7fc7e'},
+ {P:'#74b8ff',C:'#ffba64'}
+];
+const stars=Array.from({length:92},(_,i)=>({
+ x:(i*137.47+13)%W,y:(i*83.63+29)%(FIELD_BOTTOM-FIELD_TOP),
+ speed:18+(i%6)*12,size:i%9===0?3:i%3===0?2:1,shade:i%7===0?'#ffee9b':i%3===0?'#6f91c8':'#b5cbe6'
+}));
 let audioContext=null,muted=false,sfxTick=0;
 const input={x:180,down:false,left:false,right:false};
 let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[];
@@ -81,7 +86,7 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function line(x1,y1,x2,y2,color,width=1){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(Math.round(x1)+.5,Math.round(y1)+.5);ctx.lineTo(Math.round(x2)+.5,Math.round(y2)+.5);ctx.stroke()}
 function txt(s,x,y,size=14,color=C.text,align='left',weight=800){
- ctx.textAlign=align;ctx.textBaseline='middle';ctx.font=weight+' '+size+'px system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif';
+ ctx.textAlign=align;ctx.textBaseline='middle';ctx.font=weight+' '+size+'px ui-monospace,SFMono-Regular,Consolas,"Noto Sans TC","Microsoft JhengHei",sans-serif';
  ctx.fillStyle=color;ctx.fillText(String(s),Math.round(x),Math.round(y));
 }
 function bordered(x,y,w,h,fill='#142842',edge='#79a0bd',thick=3){
