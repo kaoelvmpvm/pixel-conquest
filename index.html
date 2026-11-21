@@ -79,7 +79,7 @@ const input={x:180,down:false,left:false,right:false};
 let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[],coins=[],chains=[],laserRays=[];
 let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=22,baseMax=22;
 let best=0,waveTimer=0,gateTimer=0,shotTimer=0,shake=0,hitFlash=0,phase='waves',endReason='',finishChoice=0;
-let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,enemyId=0,hangarTab='ship',lootInfo=null,shopNotice='',earnedThisRun=0,stageCoins=0;
+let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,enemyId=0,hangarTab='ship',lootInfo=null,chestClock=0,shopNotice='',earnedThisRun=0,stageCoins=0;
 try{best=Number(localStorage.getItem('gate-rush-best'))||0}catch(e){}
 
 const PROFILE_KEY='gate-rush-profile-v03';
@@ -141,8 +141,8 @@ function openChest(type){
  if(!duplicate)owned.push(prize.id);
  if(refund)profile.wallet+=refund;
  lootInfo={type,prize,duplicate,refund};
- shopNotice='';saveProfile();mode='loot';
- sfx(duplicate?'gate':'win');buzz(duplicate?60:[50,50,120]);
+ shopNotice='';saveProfile();mode='opening';chestClock=0;
+ sfx('gate');buzz(duplicate?60:[50,50,120]);
  say('獲得 '+prize.name+(duplicate?'，重複道具折抵金幣':'，已加入收藏'));
 }
 function equip(type,id){
@@ -413,6 +413,15 @@ function update(dt){
  for(let i=chains.length-1;i>=0;i--){chains[i].life-=dt;if(chains[i].life<=0)chains.splice(i,1)}
  for(let i=laserRays.length-1;i>=0;i--){laserRays[i].life-=dt;if(laserRays[i].life<=0)laserRays.splice(i,1)}
  shake=Math.max(0,shake-20*dt);hitFlash=Math.max(0,hitFlash-dt);
+ if(mode==='opening'){
+  chestClock+=dt;
+  if(chestClock>=1.05){
+   mode='loot';sfx(lootInfo.duplicate?'gate':'win');
+   burst(180,313,RARITY[lootInfo.prize.rarity].color,42);
+   addText(lootInfo.prize.rarity+'!',180,246,RARITY[lootInfo.prize.rarity].color);
+  }
+  return;
+ }
  if(mode!=='play')return;
  elapsed+=dt;stageTime+=dt;player.inv=Math.max(0,player.inv-dt);
  if(input.left)input.x-=210*dt;
@@ -766,6 +775,33 @@ function drawHangar(){
  else txt('已獲得的機體與彈藥永久保存',180,640,13,C.green,'center');
  txt('收藏僅儲存在目前瀏覽器',180,681,12,C.border,'center');
 }
+function drawOpening(){
+ drawHangar();shade();
+ bordered(34,164,292,390,'#131c37','#547fa5',4);
+ txt('TREASURE BOX',180,218,26,C.yellow,'center');
+ txt('8-BIT LOOT',180,253,13,C.blue,'center');
+ const x=180+Math.sin(chestClock*58)*Math.min(9,chestClock*12);
+ const y=330+(chestClock>.76?-9:0);
+ const rarity=lootInfo?.prize?.rarity||'N';
+ const glow=RARITY[rarity].color;
+ if(chestClock>.74){
+  rect(86,y-73,188,113,glow+'4d');
+  for(let i=0;i<12;i++){
+   const a=i*Math.PI/6+chestClock;
+   rect(x+Math.cos(a)*(54+chestClock*26),y+Math.sin(a)*(50+chestClock*20),5,5,glow);
+  }
+ }
+ rect(x-75,y+3,150,77,'#5d3464');
+ rect(x-71,y+8,142,64,'#a25a78');
+ rect(x-63,y+9,126,8,'#d58f82');
+ rect(x-12,y+7,24,67,'#f6ce79');
+ rect(x-8,y+27,16,22,'#5a3455');
+ rect(x-80,y-17-(chestClock>.74?26:0),160,24,'#d48f8d');
+ rect(x-73,y-14-(chestClock>.74?26:0),146,14,'#f6b69d');
+ rect(x-14,y-17-(chestClock>.74?26:0),28,22,'#ffcf63');
+ txt(chestClock>.75?'光芒綻放！':'開啟中……',180,454,19,chestClock>.75?glow:C.white,'center');
+ txt('請勿重複點擊',180,504,12,C.border,'center');
+}
 function drawLoot(){
  drawHangar();shade();
  const p=lootInfo?.prize;
@@ -783,6 +819,7 @@ function drawLoot(){
  button(53,447,254,51,'再抽一次');
  button(53,508,254,51,'返回軍械庫',false);
  if(shopNotice)txt(shopNotice,180,599,13,C.red,'center');
+ drawEffects();
 }
 function drawClear(){
  shade();bordered(27,143,306,430,'#152b40','#a0cfdf',5);
@@ -824,6 +861,7 @@ function render(){
  ctx.save();
  if(mode==='menu'){drawMenu();ctx.restore();return}
  if(mode==='hangar'){drawHangar();ctx.restore();return}
+ if(mode==='opening'){drawOpening();ctx.restore();return}
  if(mode==='loot'){drawLoot();ctx.restore();return}
  if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
  background();
