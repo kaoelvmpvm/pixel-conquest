@@ -79,7 +79,7 @@ const input={x:180,down:false,left:false,right:false};
 let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[],coins=[],chains=[],laserRays=[];
 let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=16,baseMax=16;
 let best=0,waveTimer=0,gateTimer=0,shotTimer=0,shake=0,hitFlash=0,phase='waves',endReason='',finishChoice=0;
-let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,hangarTab='ship',lootInfo=null,shopNotice='',earnedThisRun=0,stageCoins=0;
+let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,enemyId=0,hangarTab='ship',lootInfo=null,shopNotice='',earnedThisRun=0,stageCoins=0;
 try{best=Number(localStorage.getItem('gate-rush-best'))||0}catch(e){}
 
 const PROFILE_KEY='gate-rush-profile-v03';
@@ -190,16 +190,20 @@ function buzz(ms){if(navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}}
 function saveBest(){if(score>best){best=score;try{localStorage.setItem('gate-rush-best',String(best))}catch(e){}}}
 function newRun(){
  player={x:180,y:600,hp:8,maxHp:8,power:8,lanes:1,interval:.29,inv:0};
- input.x=180;stage=1;score=0;kills=0;elapsed=0;
- startStage();mode='play';say('遊戲開始，拖曳移動，靠近強化閘門。');
+ input.x=180;stage=1;score=0;kills=0;elapsed=0;earnedThisRun=0;stageCoins=0;
+ baseMax=16;baseHp=baseMax;startStage();mode='play';
+ say('遊戲開始！射擊閘門強化戰機，收集掉落金幣。');
 }
 function startStage(){
- stageTime=0;phase='waves';waveIndex=0;enemies=[];bullets=[];badBullets=[];gates=[];parts=[];texts=[];boss=null;
- waveTimer=.6;gateTimer=3.7;shotTimer=.1;shake=0;hitFlash=0;
+ stageTime=0;phase='waves';waveIndex=0;
+ enemies=[];bullets=[];badBullets=[];gates=[];parts=[];texts=[];coins=[];chains=[];laserRays=[];boss=null;
+ waveTimer=.6;gateTimer=3.4;shotTimer=.1;shake=0;hitFlash=0;stageCoins=0;
 }
 function stageEnd(){
- mode='clear';saveBest();sfx('win');buzz([40,40,70]);finishChoice=0;
- say('第'+stage+'關完成。選擇獎勵前往下一關。');
+ const reward=20+stage*5+10;
+ gainCoins(reward);
+ mode='clear';saveBest();sfx('win');buzz([40,40,70]);
+ say('第 '+stage+' 關通關，獲得 '+reward+' 金幣。');
 }
 function gameOver(reason){
  if(mode!=='play')return;mode='dead';endReason=reason||'防線失守';saveBest();sfx('hit');buzz(110);
@@ -210,78 +214,141 @@ function burst(x,y,color,n=10){
  for(let i=0;i<n;i++){const a=rand(0,Math.PI*2),speed=rand(35,130);
  parts.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:rand(.2,.65),max:.65,color,size:rand(2,5)})}
 }
-function makeEnemy(x,y,hp,kind=0){
- return {x,y,hp,max:hp,speed:49+stage*3+rand(0,11),kind,wobble:rand(0,10),baseX:x,amp:rand(3,11)};
+function makeEnemy(x,y,hp,kind=0,elite=false){
+ const heavy=stage>=4&&Math.random()<.13,shield=heavy?Math.floor(hp*.6):0;
+ return {id:++enemyId,x,y,hp,max:hp,shield,maxShield:shield,elite,
+  heavy,speed:Math.max(32,51+stage*2+rand(-6,7)-(heavy?12:0)),
+  kind,wobble:rand(0,10),baseX:x,amp:stage>=3?rand(9,23):rand(3,9),
+  dive:stage>=5&&Math.random()<.14};
 }
 function spawnWave(){
  waveIndex++;
- // 每關從兩隻起步，隨波次增加敵人數量及排列層數
- const count=Math.min(10,1+Math.ceil(waveIndex*.86)+Math.floor((stage-1)/2));
- const rows=waveIndex>=8?3:waveIndex>=5?2:1;
- const step=count>1?290/(count-1):0;
+ const count=Math.min(9,1+Math.ceil(waveIndex*.84)+Math.floor((stage-1)/3));
+ const rows=waveIndex>=8&&stage>=3?3:waveIndex>=6?2:1;
+ const step=count>1?282/(count-1):0;
  for(let r=0;r<rows;r++)for(let c=0;c<count;c++){
-  const hp=6+stage*2+Math.floor(waveIndex*.65)+Math.floor(rand(0,4));
-  enemies.push(makeEnemy(35+c*step,-28-r*42,hp,(waveIndex+c+r)%bugPals.length));
+  const hp=10+stage*7+Math.floor(waveIndex*1.6)+Math.floor(rand(0,4));
+  const elite=stage>=3&&((c+r*count+waveIndex)%11===0);
+  enemies.push(makeEnemy(39+c*step,-28-r*43,elite?Math.floor(hp*1.7):hp,
+    (waveIndex+c+r)%bugPals.length,elite));
  }
 }
 function positiveGate(){
  const pool=[
-  {type:'power',val:3,label:'攻擊',good:true,hits:0,width:102},
-  {type:'lanes',val:1,label:'彈道',good:true,hits:0,width:102},
-  {type:'speed',val:9,label:'攻速',good:true,hits:0,width:102},
-  {type:'heal',val:2,label:'生命',good:true,hits:0,width:102}
+  {type:'power',val:3,label:'攻擊',hits:0,width:102},
+  {type:'lanes',val:1,label:'彈道',hits:0,width:102},
+  {type:'speed',val:9,label:'攻速',hits:0,width:102},
+  {type:'heal',val:2,label:'生命',hits:0,width:102}
  ];
- let g=pool[Math.floor(Math.random()*pool.length)];
- if(player.lanes>=12&&g.type==='lanes')g=pool[0];
- if(player.hp>=player.maxHp&&g.type==='heal')g=pool[2];
- return {...g};
+ let p={...pool[Math.floor(Math.random()*pool.length)]};
+ if(player.lanes>=12&&p.type==='lanes')p={...pool[0]};
+ if(player.hp>=player.maxHp&&p.type==='heal')p={...pool[2]};
+ return {...p,kind:'normal',lock:0,baseVal:p.val,lastHit:0,decay:0};
 }
-function upgradeGate(p,x,y){
- // 飽和後保留阻擋子彈的閘門，但不再無限增加粒子或等級
+function modifiedGate(kind){
+ const p=positiveGate();p.kind=kind;
+ if(kind==='reverse'){
+  p.val=p.type==='power'?-6:p.type==='lanes'?-3:p.type==='speed'?-18:-2;
+  p.baseVal=p.val;
+ }
+ if(kind==='locked'){p.lock=8+stage*2;p.val+=p.type==='speed'?4:1;p.baseVal=p.val}
+ return p;
+}
+function upgradeGate(p,x,y,impact=1,kind='pulse',volley=0){
+ if(kind==='laser'&&elapsed-(p.lastLaser||-99)<.19)return;
+ if(kind==='laser')p.lastLaser=elapsed;
+ if(kind==='spread'){
+  if(p.lastVolley!==volley){p.lastVolley=volley;p.volleyCount=0}
+  if(p.volleyCount>=3)return;
+  p.volleyCount++;
+ }
+ p.lastHit=elapsed;
+ if(p.lock>0){
+  p.lock=Math.max(0,p.lock-impact);
+  if(!p.lock){burst(x,y,C.gold,20);addText('UNLOCK!',x,y-18,C.yellow);sfx('gate')}
+  return;
+ }
  if(p.hits>=14)return;
- p.hits++;
+ p.hits=Math.min(14,p.hits+impact);
  p.width=Math.min(155,102+p.hits*4);
- if(p.type==='power')p.val=Math.min(45,p.val+1);
- if(p.type==='lanes')p.val=Math.min(6,p.val+1);
- if(p.type==='speed')p.val=Math.min(65,p.val+3);
- if(p.type==='heal')p.val=Math.min(8,p.val+1);
+ const inc=p.kind==='reverse'?1:impact;
+ if(p.type==='power')p.val=Math.min(45,p.val+inc);
+ if(p.type==='lanes')p.val=Math.min(6,p.val+inc);
+ if(p.type==='speed')p.val=Math.min(65,p.val+(p.kind==='reverse'?3:3*impact));
+ if(p.type==='heal')p.val=Math.min(8,p.val+inc);
  if(p.hits%2===1)burst(x,y,p.type==='lanes'?C.blue:C.mint,3);
- if(p.hits%3===0)addText('UP!',x,y-14,C.yellow);
+ if(p.hits%3===0)addText(p.kind==='reverse'&&p.val>0?'轉正!':'UP!',x,y-14,p.val>=0?C.yellow:C.red);
 }
 function spawnGate(){
  let a=positiveGate(),b=positiveGate();
  for(let i=0;i<6&&a.type===b.type;i++)b=positiveGate();
- gates.push({y:-56,left:a,right:b,glow:0});
+ const roll=Math.random();
+ if(stage>=2&&roll<.42){
+  if(Math.random()<.5)a=modifiedGate('reverse');else b=modifiedGate('reverse');
+ }else if(stage>=3&&roll<.73){
+  if(Math.random()<.5)a=modifiedGate('locked');else b=modifiedGate('locked');
+ }else if(stage>=5&&roll<.93){
+  if(Math.random()<.5)a=modifiedGate('unstable');else b=modifiedGate('unstable');
+ }
+ gates.push({y:-58,left:a,right:b,glow:0});
 }
 function applyGate(g){
+ if(g.lock>0){addText('LOCKED',player.x,player.y-101,C.red);sfx('hit');return}
+ const val=g.val;
  const old={power:player.power,lanes:player.lanes,interval:player.interval,hp:player.hp};
- if(g.type==='power')player.power=clamp(player.power+g.val,3,120);
- if(g.type==='lanes')player.lanes=clamp(player.lanes+g.val,1,13);
- if(g.type==='speed')player.interval=clamp(player.interval/(1+g.val/100),.09,.65);
- if(g.type==='heal')player.hp=Math.min(player.maxHp,player.hp+g.val);
- const gain=g.label+' +'+g.val+(g.type==='speed'?'%':'');
- addText(gain,player.x,player.y-100,C.green);
- burst(player.x,player.y-70,C.green,18);
- shake=Math.max(shake,2);sfx('gate');buzz(25);
- if(old.power!==player.power||old.lanes!==player.lanes||old.interval!==player.interval||old.hp!==player.hp)say('強化！'+gain);
+ if(g.type==='power')player.power=clamp(player.power+val,3,120);
+ if(g.type==='lanes')player.lanes=clamp(player.lanes+val,1,13);
+ if(g.type==='speed')player.interval=clamp(player.interval/(1+val/100),.09,.8);
+ if(g.type==='heal')player.hp=clamp(player.hp+val,0,player.maxHp);
+ const gain=g.label+' '+(val>=0?'+':'')+val+(g.type==='speed'?'%':'');
+ addText(gain,player.x,player.y-100,val>=0?C.green:C.red);
+ burst(player.x,player.y-70,val>=0?C.green:C.red,16);
+ shake=Math.max(shake,2);sfx(val>=0?'gate':'hit');buzz(25);
+ if(player.hp<=0){gameOver('負數閘門耗盡生命');return}
+ if(old.power!==player.power||old.lanes!==player.lanes||old.interval!==player.interval||old.hp!==player.hp)say('閘門效果 '+gain);
 }
 function spawnBoss(){
  phase='boss';enemies=[];gates=[];badBullets=[];boss={x:180,y:-85,hp:360+stage*210,max:360+stage*210,clock:0,fire:2.4};
  addText('警告！首領來襲',180,190,C.orange);shake=6;sfx('hit');
  say('首領來襲！');
 }
+function fireOne(angle,type,damage,extra={}){
+ const speed=type==='laser'?1120:type==='rail'?600:type==='homing'?350:type==='plasma'?540:470;
+ bullets.push({x:player.x+Math.sin(angle)*8,y:player.y-34,
+  vx:Math.sin(angle)*speed,vy:-Math.cos(angle)*speed,
+  damage:Math.max(1,Math.round(damage)),kind:type,age:0,volley:shotId,
+  pierce:type==='rail'?4:0,hitIds:new Set(),...extra});
+}
 function shoot(){
- const n=player.lanes;
- // 由船首向上展開對稱扇形彈道
- const arc=n===1?0:n===2?14:Math.min(62,22+(n-3)*5);
- for(let i=0;i<n;i++){
-  const a=(n===1?0:-arc/2+arc*i/(n-1))*Math.PI/180;
-  bullets.push({x:player.x+Math.sin(a)*8,y:player.y-35,
-    vx:Math.sin(a)*470,vy:-Math.cos(a)*470,damage:player.power,trail:rand(0,6)});
+ shotId++;
+ const ship=currentShip().id,n=player.lanes;
+ const arc=n===1?0:n===2?14:Math.min(68,22+(n-3)*5);
+ if(ship==='spread'){
+  const count=Math.min(27,5+2*(n-1)),range=Math.min(98,47+(n-1)*4);
+  for(let i=0;i<count;i++)fireOne((-range/2+range*i/(count-1))*Math.PI/180,'spread',player.power*.38);
+ }else if(ship==='laser'){
+  const count=Math.min(3,1+Math.floor((n-1)/5));
+  for(let i=0;i<count;i++){
+   const a=(count===1?0:-15+30*i/(count-1))*Math.PI/180;
+   fireOne(a,'laser',player.power*.72);
+   laserRays.push({x:player.x,a,life:.2});
+  }
+ }else if(ship==='rail'){
+  const count=Math.min(5,1+Math.floor((n-1)/3));
+  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'rail',player.power*3.2);
+ }else if(ship==='homing'){
+  const count=Math.min(6,1+Math.floor(n/2));
+  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'homing',player.power*1.7);
+ }else if(ship==='plasma'){
+  const count=Math.min(4,1+Math.floor((n-1)/3));
+  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'plasma',player.power*.95);
+ }else{
+  for(let i=0;i<n;i++)fireOne((n===1?0:-arc/2+arc*i/(n-1))*Math.PI/180,'pulse',player.power);
  }
+ if(bullets.length>340)bullets.splice(0,bullets.length-340);
  for(let i=0;i<2;i++)parts.push({x:player.x+rand(-6,6),y:player.y-34,
-  vx:rand(-20,20),vy:rand(-90,-35),life:.12,max:.12,color:C.yellow,size:3});
- if(++sfxTick%5===0)sfx('shoot');
+  vx:rand(-20,20),vy:rand(-90,-35),life:.12,max:.12,color:currentSkin().color,size:3});
+ if(++sfxTick%6===0)sfx('shoot');
 }
 function loseHealth(n=1){
  if(player.inv>0||mode!=='play')return;
@@ -289,14 +356,46 @@ function loseHealth(n=1){
  burst(player.x,player.y-24,C.red,16);sfx('hit');buzz(80);
  if(player.hp<=0)gameOver('生命耗盡');
 }
-function hitEnemy(e,dmg){
- e.hp-=dmg;
- if(e.hp<=0){
-  score+=10+stage*2;kills++;burst(e.x,e.y,C.gold,12);addText('+'+(10+stage*2),e.x,e.y-20,C.yellow);
-  return true;
+function dropCoins(e,bossDrop=false){
+ const amount=bossDrop?10:e.elite?3:Math.random()<.3?1:0;
+ if(!amount)return;
+ for(let i=0;i<amount;i++){
+  coins.push({x:clamp(e.x+rand(-15,15),26,334),y:e.y+rand(-8,8),
+   vy:85+rand(0,30),wobble:rand(0,6),value:1});
  }
- for(let i=0;i<3;i++)parts.push({x:e.x+rand(-8,8),y:e.y+rand(-8,8),vx:rand(-28,28),vy:rand(-50,-10),life:.2,max:.2,color:C.white,size:3});
+}
+function hitEnemy(e,dmg){
+ let damage=Math.max(1,dmg);
+ if(e.shield>0){
+  const absorbed=Math.min(e.shield,damage);
+  e.shield-=absorbed;damage-=absorbed;
+ }
+ if(damage>0)e.hp-=damage;
+ if(e.hp<=0){
+  score+=10+stage*2+(e.elite?20:0);kills++;
+  burst(e.x,e.y,e.elite?C.purple:C.gold,12);
+  addText('+'+(10+stage*2),e.x,e.y-20,C.yellow);
+  dropCoins(e);return true;
+ }
+ for(let i=0;i<2;i++)parts.push({x:e.x+rand(-8,8),y:e.y+rand(-8,8),
+  vx:rand(-28,28),vy:rand(-50,-10),life:.2,max:.2,color:e.shield>0?C.blue:C.white,size:3});
  return false;
+}
+function chainAttack(origin,exclude){
+ let hit=new Set([exclude.id]),from=exclude;
+ const count=Math.min(5,1+Math.floor((player.lanes-1)/2));
+ for(let i=0;i<count;i++){
+  let next=null,dist=85;
+  for(const e of enemies){const d=Math.hypot(e.x-from.x,e.y-from.y);
+   if(!hit.has(e.id)&&d<dist){dist=d;next=e}}
+  if(!next)break;
+  chains.push({x1:from.x,y1:from.y,x2:next.x,y2:next.y,life:.19});
+  hit.add(next.id);
+  if(hitEnemy(next,Math.max(1,Math.floor(origin*.65)))){
+   const idx=enemies.indexOf(next);if(idx>=0)enemies.splice(idx,1);
+  }
+  from=next;
+ }
 }
 function nextStage(choice){
  if(choice===0)player.lanes=Math.min(13,player.lanes+1);
