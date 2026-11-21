@@ -77,7 +77,7 @@ const stars=Array.from({length:92},(_,i)=>({
 let audioContext=null,muted=false,sfxTick=0;
 const input={x:180,down:false,left:false,right:false};
 let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[],coins=[],chains=[],laserRays=[];
-let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=16,baseMax=16;
+let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=22,baseMax=22;
 let best=0,waveTimer=0,gateTimer=0,shotTimer=0,shake=0,hitFlash=0,phase='waves',endReason='',finishChoice=0;
 let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,enemyId=0,hangarTab='ship',lootInfo=null,shopNotice='',earnedThisRun=0,stageCoins=0;
 try{best=Number(localStorage.getItem('gate-rush-best'))||0}catch(e){}
@@ -191,7 +191,7 @@ function saveBest(){if(score>best){best=score;try{localStorage.setItem('gate-rus
 function newRun(){
  player={x:180,y:600,hp:8,maxHp:8,power:8,lanes:1,interval:.29,inv:0};
  input.x=180;stage=1;score=0;kills=0;elapsed=0;earnedThisRun=0;stageCoins=0;
- baseMax=16;baseHp=baseMax;startStage();mode='play';
+ baseMax=22;baseHp=baseMax;startStage();mode='play';
  say('遊戲開始！射擊閘門強化戰機，收集掉落金幣。');
 }
 function startStage(){
@@ -202,8 +202,9 @@ function startStage(){
 function stageEnd(){
  const reward=20+stage*5+10;
  gainCoins(reward);
+ baseHp=Math.min(baseMax,baseHp+5);
  mode='clear';saveBest();sfx('win');buzz([40,40,70]);
- say('第 '+stage+' 關通關，獲得 '+reward+' 金幣。');
+ say('第 '+stage+' 關通關，獲得 '+reward+' 金幣，並修復基地耐久。');
 }
 function gameOver(reason){
  if(mode!=='play')return;mode='dead';endReason=reason||'防線失守';saveBest();sfx('hit');buzz(110);
@@ -789,7 +790,7 @@ function drawClear(){
  txt('第 '+stage+' 關完成',180,225,22,C.white,'center');
  txt('本次得分 '+score,180,264,17,C.gold,'center');
  txt('通關獎勵 +'+(30+stage*5)+' G',180,300,18,C.green,'center');
- txt('本關金幣 +'+stageCoins+' · 錢包 '+profile.wallet,180,332,14,C.border,'center');
+ txt('本關金幣 +'+stageCoins+' · 防線修復 +5',180,332,14,C.border,'center');
  rect(55,356,250,2,'#45647c');
  txt('選擇一項獎勵進入下一關',180,379,15,C.white,'center');
  bordered(43,401,134,100,'#254a42','#74d9ac',3);
