@@ -228,18 +228,19 @@ function spawnWave(){
  const rows=waveIndex>=8&&stage>=3?3:waveIndex>=6?2:1;
  const step=count>1?282/(count-1):0;
  for(let r=0;r<rows;r++)for(let c=0;c<count;c++){
-  const hp=10+stage*7+Math.floor(waveIndex*1.6)+Math.floor(rand(0,4));
+  const hp=20+stage*10+Math.floor(waveIndex*2.5)+Math.floor(rand(0,5));
   const elite=stage>=3&&((c+r*count+waveIndex)%11===0);
   enemies.push(makeEnemy(39+c*step,-28-r*43,elite?Math.floor(hp*1.7):hp,
     (waveIndex+c+r)%bugPals.length,elite));
  }
 }
 function positiveGate(){
+ // 降低每個閘門的起始獎勵，升級需要實際投入更多子彈
  const pool=[
-  {type:'power',val:3,label:'攻擊',hits:0,width:102},
+  {type:'power',val:2,label:'攻擊',hits:0,width:102},
   {type:'lanes',val:1,label:'彈道',hits:0,width:102},
-  {type:'speed',val:9,label:'攻速',hits:0,width:102},
-  {type:'heal',val:2,label:'生命',hits:0,width:102}
+  {type:'speed',val:4,label:'攻速',hits:0,width:102},
+  {type:'heal',val:1,label:'生命',hits:0,width:102}
  ];
  let p={...pool[Math.floor(Math.random()*pool.length)]};
  if(player.lanes>=12&&p.type==='lanes')p={...pool[0]};
@@ -249,13 +250,33 @@ function positiveGate(){
 function modifiedGate(kind){
  const p=positiveGate();p.kind=kind;
  if(kind==='reverse'){
-  p.val=p.type==='power'?-6:p.type==='lanes'?-3:p.type==='speed'?-18:-2;
+  p.val=p.type==='power'?-3:p.type==='lanes'?-2:p.type==='speed'?-9:-2;
   p.baseVal=p.val;
  }
- if(kind==='locked'){p.lock=8+stage*2;p.val+=p.type==='speed'?4:1;p.baseVal=p.val}
+ if(kind==='locked'){
+  p.lock=8+stage*2;
+  p.val+=p.type==='power'?1:p.type==='speed'?2:p.type==='heal'?1:0;
+  p.baseVal=p.val;
+ }
  return p;
 }
+function gateValue(p,hits=p.hits){
+ // 不同能力有不同的升級節奏，14 次命中後達到 MAX。
+ // 逆轉閘門需先將負數逐步提高，14 次內仍有機會轉正。
+ const h=Math.min(14,Math.max(0,hits));
+ if(p.kind==='reverse'){
+  if(p.type==='power')return Math.min(45,p.baseVal+Math.floor(h/3));
+  if(p.type==='lanes')return Math.min(6,p.baseVal+Math.floor(h/4));
+  if(p.type==='speed')return Math.min(65,p.baseVal+Math.floor(h/3)*3);
+  return Math.min(8,p.baseVal+Math.floor(h/4));
+ }
+ if(p.type==='power')return Math.min(45,p.baseVal+Math.floor(h/4));
+ if(p.type==='lanes')return Math.min(6,p.baseVal+Math.floor(h/7));
+ if(p.type==='speed')return Math.min(65,p.baseVal+Math.floor(h/4)*2);
+ return Math.min(8,p.baseVal+Math.floor(h/7));
+}
 function upgradeGate(p,x,y,impact=1,kind='pulse',volley=0){
+ if(p.lock<=0&&p.hits>=14)return;
  if(kind==='laser'&&elapsed-(p.lastLaser||-99)<.19)return;
  if(kind==='laser')p.lastLaser=elapsed;
  if(kind==='spread'){
@@ -269,16 +290,19 @@ function upgradeGate(p,x,y,impact=1,kind='pulse',volley=0){
   if(!p.lock){burst(x,y,C.gold,20);addText('UNLOCK!',x,y-18,C.yellow);sfx('gate')}
   return;
  }
- if(p.hits>=14)return;
+ const prev=p.val,prevHits=p.hits;
  p.hits=Math.min(14,p.hits+impact);
  p.width=Math.min(155,102+p.hits*4);
- const inc=p.kind==='reverse'?1:impact;
- if(p.type==='power')p.val=Math.min(45,p.val+inc);
- if(p.type==='lanes')p.val=Math.min(6,p.val+inc);
- if(p.type==='speed')p.val=Math.min(65,p.val+(p.kind==='reverse'?3:3*impact));
- if(p.type==='heal')p.val=Math.min(8,p.val+inc);
- if(p.hits%2===1)burst(x,y,p.type==='lanes'?C.blue:C.mint,3);
- if(p.hits%3===0)addText(p.kind==='reverse'&&p.val>0?'轉正!':'UP!',x,y-14,p.val>=0?C.yellow:C.red);
+ p.val=gateValue(p);
+ if(p.hits>prevHits&&p.hits%2===0)burst(x,y,p.type==='lanes'?C.blue:C.mint,3);
+ if(p.val!==prev){
+  if(prev<0&&p.val>=0)addText('轉正!',x,y-14,C.green);
+  else addText('+'+(p.val-prev),x,y-14,C.yellow);
+ }
+ if(p.hits>=14&&prevHits<14){
+  burst(x,y,C.white,12);
+  addText('MAX 穿透',x,y-26,C.blue);
+ }
 }
 function spawnGate(){
  let a=positiveGate(),b=positiveGate();
@@ -309,7 +333,7 @@ function applyGate(g){
  if(old.power!==player.power||old.lanes!==player.lanes||old.interval!==player.interval||old.hp!==player.hp)say('閘門效果 '+gain);
 }
 function spawnBoss(){
- phase='boss';enemies=[];gates=[];badBullets=[];boss={x:180,y:-85,hp:360+stage*210,max:360+stage*210,clock:0,fire:2.4};
+ phase='boss';enemies=[];gates=[];badBullets=[];boss={x:180,y:-85,hp:490+stage*360,max:490+stage*360,clock:0,fire:2.4};
  addText('警告！首領來襲',180,190,C.orange);shake=6;sfx('hit');
  say('首領來襲！');
 }
@@ -447,7 +471,7 @@ function update(dt){
     if(p.decay>=1.0){
      p.decay=0;p.hits=Math.max(0,p.hits-1);
      p.width=Math.max(102,p.width-4);
-     p.val=Math.max(p.baseVal,p.val-(p.type==='speed'?3:1));
+     p.val=gateValue(p);
     }
    }else p.decay=0;
   }
@@ -513,6 +537,8 @@ function update(dt){
    if(Math.min(oldY,b.y)<=g.y+52&&Math.max(oldY,b.y)>=g.y-5){
     for(const [p,cx] of [[g.left,99],[g.right,261]]){
      if(Math.abs(b.x-cx)<=p.width/2){
+      // 已升到 MAX 且解鎖的閘門不再吞彈，可繼續命中上方敵人
+      if(p.lock<=0&&p.hits>=14)continue;
       upgradeGate(p,b.x,b.y,b.kind==='rail'?2:1,b.kind,b.volley);
       used=true;break;
      }
@@ -685,7 +711,7 @@ function drawGate(g){
    rect(x+5,y+35,w-10,3,'#243b5c');
    rect(x+5,y+35,(w-10)*clamp(1-p.lock/(8+stage*2),0,1),3,C.gold);
   }else{
-   txt(p.hits>=14?'MAX':unstable?'衰減 LV'+(p.hits+1):p.kind==='reverse'?'逆轉 LV'+(p.hits+1):'LV '+(p.hits+1),
+   txt(p.lock<=0&&p.hits>=14?'MAX 穿透':unstable?'衰減 LV'+(p.hits+1):p.kind==='reverse'?'逆轉 LV'+(p.hits+1):'LV '+(p.hits+1),
      cx,y-13,10,negative?C.red:C.yellow,'center');
   }
   rect(x-3,y-2,5,10,C.yellow);rect(x+w-2,y-2,5,10,C.yellow);
