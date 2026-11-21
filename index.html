@@ -570,23 +570,35 @@ function background(){
  rect(14,FIELD_BOTTOM-14,332,14,'#111d34');
  for(let x=18;x<345;x+=24)rect(x,FIELD_BOTTOM-9,12,3,'#24466b');
 }
+function drawMiniShip(cx,cy,ship,scale=2){
+ const pal={...shipPal,B:ship.color,R:ship.id==='laser'?'#fae276':shipPal.R};
+ const x=Math.round(cx-8.5*scale),y=Math.round(cy-6*scale);
+ sprite(shipArt,pal,x,y,scale);
+ if(ship.id==='laser')rect(cx-2*scale,y-3*scale,4*scale,5*scale,C.yellow);
+ if(ship.id==='spread'){rect(x-5*scale,y+5*scale,5*scale,3*scale,C.orange);rect(x+17*scale,y+5*scale,5*scale,3*scale,C.orange)}
+ if(ship.id==='rail')rect(cx-2*scale,y-4*scale,4*scale,7*scale,C.mint);
+ if(ship.id==='homing'){rect(x-4*scale,y+6*scale,5*scale,4*scale,C.purple);rect(x+16*scale,y+6*scale,5*scale,4*scale,C.purple)}
+ if(ship.id==='plasma'){rect(x-4*scale,y+5*scale,5*scale,3*scale,C.blue);rect(x+16*scale,y+5*scale,5*scale,3*scale,C.blue)}
+}
 function drawCat(){
  if(player.inv>0&&Math.floor(elapsed*14)%2===0)return;
  const x=Math.round(player.x),y=Math.round(player.y);
- rect(x-23,y+11,46,4,'#1f3050');
- sprite(shipArt,shipPal,x-25,y-31,3);
+ rect(x-27,y+14,54,4,'#172a4e');
+ drawMiniShip(x,y-12,currentShip(),3);
  if(mode==='play'){
-  rect(x-10,y+7,6,7,Math.sin(elapsed*40)>0?C.yellow:C.orange);
-  rect(x+6,y+7,6,7,Math.sin(elapsed*40)>0?C.orange:C.yellow);
+  rect(x-10,y+18,6,6,Math.sin(elapsed*40)>0?C.yellow:C.orange);
+  rect(x+6,y+18,6,6,Math.sin(elapsed*40)>0?C.orange:C.yellow);
  }
 }
 function drawEnemy(e){
  const x=Math.round(e.x),y=Math.round(e.y);
  const pal=bugPals[e.kind]||bugPals[0];
  sprite(bugArt,pal,x-13,y-11,2);
- if(e.hp<e.max){
-  rect(x-15,y-22,30,4,'#25334f');
-  rect(x-14,y-21,28*clamp(e.hp/e.max,0,1),2,C.red);
+ if(e.elite){rect(x-18,y-15,3,24,C.gold);rect(x+15,y-15,3,24,C.gold)}
+ if(e.shield>0){rect(x-18,y-20,36,3,C.blue);rect(x-18,y+11,36,3,C.blue)}
+ if(e.hp<e.max||e.shield>0){
+  rect(x-15,y-26,30,4,'#25334f');
+  rect(x-14,y-25,28*clamp(e.hp/e.max,0,1),2,C.red);
  }
 }
 function drawBoss(){
@@ -604,57 +616,92 @@ function drawBoss(){
  rect(x-40,y-41,80*clamp(boss.hp/boss.max,0,1),3,C.orange);
  txt('GALACTIC BOSS',x,y-56,13,C.yellow,'center');
 }
+function drawCoins(){
+ for(const c of coins){
+  const x=Math.round(c.x),y=Math.round(c.y);
+  rect(x-5,y-5,10,10,'#a15e2b');rect(x-4,y-6,8,10,C.gold);
+  rect(x-2,y-4,4,7,C.yellow);rect(x-1,y-4,2,7,C.orange);
+  rect(x-4,y+3,8,2,C.orange);
+ }
+}
 function drawBullets(){
+ const skin=currentSkin();
  for(const b of bullets){
-  rect(b.x-2,b.y+5,4,12,'#ff86576c');
-  rect(b.x-2,b.y-6,4,13,C.yellow);
-  rect(b.x-1,b.y-10,2,6,C.white);
+  const color=skin.id==='rainbow'?[C.yellow,C.green,C.blue,C.purple,C.red][b.volley%5]:skin.color;
+  if(b.kind==='laser'){
+   rect(b.x-3,b.y-27,6,42,skin.trail);
+   rect(b.x-1,b.y-29,2,46,color);
+  }else if(b.kind==='rail'){
+   rect(b.x-6,b.y-11,12,21,skin.trail);rect(b.x-3,b.y-17,6,28,color);
+   rect(b.x-1,b.y-21,2,6,C.white);
+  }else if(b.kind==='homing'){
+   rect(b.x-5,b.y-4,10,14,skin.trail);rect(b.x-2,b.y-8,4,11,color);
+   rect(b.x-1,b.y+10,2,7,C.orange);
+  }else if(b.kind==='plasma'){
+   rect(b.x-6,b.y-6,12,12,skin.trail);rect(b.x-3,b.y-9,6,18,color);
+  }else{
+   rect(b.x-2,b.y+4,4,12,skin.trail);
+   rect(b.x-2,b.y-6,4,12,color);rect(b.x-1,b.y-10,2,5,C.white);
+  }
+ }
+ for(const ray of laserRays){
+  const x=ray.x,y=player.y-38;
+  const endX=x+Math.sin(ray.a)*300,endY=y-Math.cos(ray.a)*460;
+  line(x,y,endX,endY,skin.trail,5);line(x,y,endX,endY,skin.color,2);
+ }
+ for(const c of chains){
+  line(c.x1,c.y1,c.x2,c.y2,skin.trail,5);
+  line(c.x1,c.y1,c.x2,c.y2,skin.color,2);
  }
  for(const b of badBullets){
   rect(b.x-5,b.y-5,10,10,C.red);rect(b.x-2,b.y-2,4,4,C.yellow);
  }
 }
-function gateText(g){
- return g.label+' +'+g.val+(g.type==='speed'?'%':'');
-}
+function gateText(g){return g.label+' '+(g.val>=0?'+':'')+g.val+(g.type==='speed'?'%':'')}
 function drawGate(g){
  const y=Math.round(g.y);
  if(y>FIELD_BOTTOM||y<-72)return;
  [{p:g.left,cx:99},{p:g.right,cx:261}].forEach(({p,cx})=>{
-  const w=p.width,x=cx-w/2,lit=p.hits%3===0&&p.hits>0;
-  rect(x-2,y-2,w+4,57,lit?C.yellow:'#2b5272');
-  rect(x,y,w,53,'#153a42');
-  rect(x+3,y+4,w-6,44,'#164e56');
-  rect(x+4,y+4,w-8,5,p.type==='lanes'?C.blue:C.green);
-  rect(x+4,y+43,w-8,5,C.mint);
-  rect(x+5,y+12,w-10,25,'#0d2538');
-  txt(gateText(p),cx,y+27,16,C.white,'center');
-  txt(p.hits>=14?'MAX':'LV '+(p.hits+1),cx,y-12,11,p.hits?C.yellow:C.border,'center');
-  rect(x-2,y-2,5,10,C.yellow);rect(x+w-3,y-2,5,10,C.yellow);
+  const w=p.width,x=cx-w/2,locked=p.lock>0,negative=p.val<0,unstable=p.kind==='unstable';
+  const edge=locked?C.blue:negative?C.red:unstable?C.orange:C.green;
+  const fill=locked?'#1a294b':negative?'#411b34':unstable?'#51401b':'#103d37';
+  rect(x-2,y-2,w+4,57,edge);rect(x,y,w,53,fill);
+  rect(x+3,y+4,w-6,5,edge);
+  rect(x+3,y+45,w-6,4,edge);
+  rect(x+5,y+12,w-10,28,'#0b1828');
+  txt(gateText(p),cx,y+26,16,C.white,'center');
+  if(locked){
+   txt('LOCK '+p.lock,cx,y-14,11,C.blue,'center');
+   rect(x+5,y+35,w-10,3,'#243b5c');
+   rect(x+5,y+35,(w-10)*clamp(1-p.lock/(8+stage*2),0,1),3,C.gold);
+  }else{
+   txt(p.hits>=14?'MAX':unstable?'衰減 LV'+(p.hits+1):p.kind==='reverse'?'逆轉 LV'+(p.hits+1):'LV '+(p.hits+1),
+     cx,y-13,10,negative?C.red:C.yellow,'center');
+  }
+  rect(x-3,y-2,5,10,C.yellow);rect(x+w-2,y-2,5,10,C.yellow);
  });
  rect(179,y-2,2,56,'#375777');
 }
 function drawHud(){
  rect(0,0,W,FIELD_TOP,'#0a1128');rect(0,FIELD_TOP-4,W,4,C.steel);
- txt('像素火線',13,17,18,C.yellow);
- txt('8-BIT SHOOTER',13,38,10,C.blue);
+ txt('像素火線',13,16,17,C.yellow);
+ txt('G '+profile.wallet,13,48,13,C.gold);
  txt('STAGE '+stage,170,16,14,C.white,'center');
- rect(117,34,106,10,'#34506b');rect(119,36,102*(phase==='boss'?1:Math.min(1,stageTime/33)),6,phase==='boss'?C.orange:C.mint);
- txt(phase==='boss'?'BOSS':'進度',170,58,10,C.border,'center');
- txt('✦'+score,251,19,15,C.gold);
- txt('♥ '+player.hp+'/'+player.maxHp,250,47,15,C.red);
+ rect(117,34,106,10,'#243653');
+ rect(119,36,102*(phase==='boss'?1:Math.min(1,stageTime/36)),6,phase==='boss'?C.orange:C.mint);
+ txt('基地 '+baseHp+'/'+baseMax,170,59,12,baseHp<=5?C.red:C.green,'center');
+ txt('✦'+score,253,17,14,C.gold);
+ txt('♥ '+player.hp+'/'+player.maxHp,253,48,14,C.red);
  bordered(323,8,29,30,'#20384f','#84a6b7',2);
- txt('Ⅱ',337.5,22,16,C.white,'center');
- rect(0,FIELD_BOTTOM,W,H-FIELD_BOTTOM,'#0b1127');
- rect(0,FIELD_BOTTOM,W,3,'#759cb6');
- const cols=[['攻擊',player.power,C.gold],['彈道',player.lanes,C.blue],['攻速',(1/player.interval).toFixed(1),C.green]];
+ txt('Ⅱ',337,23,16,C.white,'center');
+ rect(0,FIELD_BOTTOM,W,H-FIELD_BOTTOM,'#0b1127');rect(0,FIELD_BOTTOM,W,3,'#759cb6');
+ const cols=[['攻擊',player.power,C.gold],['彈道',player.lanes,C.blue],['攻速',(1/Math.max(.085,player.interval*currentShip().rate)).toFixed(1),C.green]];
  cols.forEach((a,i)=>{
   const x=19+i*111;
   if(i>0)rect(x-9,669,1,35,'#3d5870');
-  txt(a[0],x,678,12,'#a4bace');
-  txt(String(a[1]),x+57,678,18,a[2],'center');
+  txt(a[0],x,678,12,'#a4bace');txt(String(a[1]),x+57,678,18,a[2],'center');
  });
- txt('射擊閘門升級 · 扇形火力',180,709,11,C.border,'center');
+ txt(currentShip().weapon+' · 拾取金幣',180,709,11,C.border,'center');
 }
 function drawEffects(){
  ctx.save();
