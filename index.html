@@ -326,98 +326,91 @@ function update(dt){
  }
 }
 function background(){
- rect(0,0,W,H,C.deep);
- rect(13,FIELD_TOP,334,FIELD_BOTTOM-FIELD_TOP,'#537ba5');
- const off=Math.floor(backScroll%30);
- for(let y=FIELD_TOP-30+off;y<FIELD_BOTTOM;y+=30){
-  const row=(Math.floor((y-off)/30)%2+2)%2;
-  for(let x=17-(row?25:0);x<346;x+=50){
-   rect(x+2,y+2,47,26,(row?'#628db7':'#6b97c0'));
-   rect(x+3,y+3,44,2,'#8cb6d4');rect(x+2,y+27,47,2,'#355b84');
-   rect(x+49,y+2,2,27,'#3d648c');
-  }
+ rect(0,0,W,H,'#050711');
+ rect(14,FIELD_TOP,332,FIELD_BOTTOM-FIELD_TOP,'#080c1c');
+ // 各自移動的彩色像素星點，呈現 8-bit 太空背景
+ for(const p of stars){
+  const sy=FIELD_TOP+(p.y+backScroll*p.speed/52)%(FIELD_BOTTOM-FIELD_TOP);
+  rect(18+p.x*.90,sy,p.size,p.size,p.shade);
  }
- const symbolY=155+(backScroll*.27%450);
- rect(75,symbolY,210,190,'#ffffff0a');
- for(let a=0;a<10;a++){
-  const angle=a*Math.PI/5;
-  const cx=180+Math.cos(angle)*66,cy=symbolY+92+Math.sin(angle)*66;
-  rect(cx-8,cy-8,16,16,'#bedcef17');
+ for(let y=FIELD_TOP+Math.floor(backScroll*.2)%96;y<FIELD_BOTTOM;y+=96){
+  rect(21,y,2,7,'#1b3654');rect(337,y+38,2,7,'#1b3654');
  }
- rect(158,symbolY+67,44,44,'#b0d9f022');
- for(let y=FIELD_TOP-60+backScroll%90;y<FIELD_BOTTOM;y+=90){
-  rect(0,y,18,78,'#283e62');rect(342,y,18,78,'#283e62');
-  rect(8,y+9,6,55,'#94c5de');rect(346,y+9,6,55,'#94c5de');
-  rect(0,y+20,6,12,'#cfdbdc');rect(354,y+20,6,12,'#cfdbdc');
- }
- rect(17,FIELD_TOP,3,FIELD_BOTTOM-FIELD_TOP,'#d1e5eb');
- rect(340,FIELD_TOP,3,FIELD_BOTTOM-FIELD_TOP,'#d1e5eb');
- rect(17,640,326,18,'#705341');rect(17,643,326,6,'#b78a5e');
- for(let x=18;x<345;x+=33){rect(x,650,30,13,'#956b4c');rect(x+27,650,3,13,'#503c40');rect(x+3,654,5,5,'#c28d63')}
+ rect(10,FIELD_TOP,4,FIELD_BOTTOM-FIELD_TOP,'#233e65');
+ rect(346,FIELD_TOP,4,FIELD_BOTTOM-FIELD_TOP,'#233e65');
+ rect(15,FIELD_TOP,2,FIELD_BOTTOM-FIELD_TOP,'#4b85aa');
+ rect(344,FIELD_TOP,2,FIELD_BOTTOM-FIELD_TOP,'#4b85aa');
+ rect(14,FIELD_BOTTOM-14,332,14,'#111d34');
+ for(let x=18;x<345;x+=24)rect(x,FIELD_BOTTOM-9,12,3,'#24466b');
 }
 function drawCat(){
- const flick=player.inv>0&&Math.floor(elapsed*14)%2===0;
- if(flick)return;
- const x=player.x,y=player.y;
- rect(x-28,y+9,56,9,'#132b3b9e');
- sprite(catArt,catPal,Math.round(x-28),Math.round(y-31),3);
- rect(x+16,y-42,11,39,'#222b3e');rect(x+19,y-49,5,30,'#7d879b');
- rect(x+17,y-40,5,8,'#ccd8d7');rect(x+20,y-49,4,3,'#d5f5ff');
- rect(x+12,y-4,15,7,'#4c4151');
- if(mode==='play'&&Math.sin(elapsed*35)>0.4){
-  rect(x+16,y-55,11,5,C.yellow);rect(x+20,y-61,4,7,C.orange);
+ if(player.inv>0&&Math.floor(elapsed*14)%2===0)return;
+ const x=Math.round(player.x),y=Math.round(player.y);
+ rect(x-23,y+11,46,4,'#1f3050');
+ sprite(shipArt,shipPal,x-25,y-31,3);
+ if(mode==='play'){
+  rect(x-10,y+7,6,7,Math.sin(elapsed*40)>0?C.yellow:C.orange);
+  rect(x+6,y+7,6,7,Math.sin(elapsed*40)>0?C.orange:C.yellow);
  }
 }
 function drawEnemy(e){
  const x=Math.round(e.x),y=Math.round(e.y);
- rect(x-14,y+12,28,4,'#12375a6e');
- sprite(botArt,botPal,x-13,y-12,2);
- if(e.hp<e.max){rect(x-17,y-23,34,5,C.dark);rect(x-16,y-22,32*clamp(e.hp/e.max,0,1),3,C.red)}
- txt(Math.ceil(e.hp),x,y-28,11,C.white,'center');
+ const pal=bugPals[e.kind]||bugPals[0];
+ sprite(bugArt,pal,x-13,y-11,2);
+ if(e.hp<e.max){
+  rect(x-15,y-22,30,4,'#25334f');
+  rect(x-14,y-21,28*clamp(e.hp/e.max,0,1),2,C.red);
+ }
 }
 function drawBoss(){
  if(!boss)return;
- const x=Math.round(boss.x),y=Math.round(boss.y);
- bordered(x-46,y-34,92,68,'#3c4a56','#1b2a40',5);
- rect(x-52,y-22,9,39,C.red);rect(x+43,y-22,9,39,C.red);
- rect(x-33,y-23,66,18,'#c6d6aa');rect(x-29,y-19,24,10,'#bd83e2');rect(x+5,y-19,24,10,'#82dba2');
- rect(x-29,y+1,58,21,'#203049');rect(x-23,y+6,17,7,C.red);rect(x+6,y+6,17,7,C.red);
- for(let i=0;i<6;i++){rect(x-33+i*11,y+21,7,8,C.white)}
- rect(x-39,y-42,78,6,C.dark);rect(x-36,y-41,72*clamp(boss.hp/boss.max,0,1),4,C.orange);
- txt('機械暴君',x,y-56,13,C.yellow,'center');
+ const x=Math.round(boss.x),y=Math.round(boss.y),tick=Math.floor(elapsed*6)%2;
+ // 原創 8-bit 宇宙昆蟲首領：左右扇翼、金色雙眼與裝甲核心
+ rect(x-52,y-15,18,10,C.purple);rect(x+34,y-15,18,10,C.purple);
+ rect(x-58,y-5,21,10,tick?C.red:C.purple);rect(x+37,y-5,21,10,tick?C.red:C.purple);
+ rect(x-41,y-27,82,48,'#583ca3');rect(x-35,y-33,70,52,'#8968eb');
+ rect(x-23,y-19,46,36,'#1e2549');
+ rect(x-19,y-11,13,9,C.yellow);rect(x+6,y-11,13,9,C.yellow);
+ rect(x-15,y+9,30,8,C.red);rect(x-5,y+12,10,5,C.white);
+ rect(x-49,y+16,15,9,C.blue);rect(x+34,y+16,15,9,C.blue);
+ rect(x-42,y-43,84,6,C.dark);
+ rect(x-40,y-41,80*clamp(boss.hp/boss.max,0,1),3,C.orange);
+ txt('GALACTIC BOSS',x,y-56,13,C.yellow,'center');
 }
 function drawBullets(){
  for(const b of bullets){
-  rect(b.x-2,b.y+5,4,13,'#ff8f4a9b');
-  rect(b.x-3,b.y-6,6,14,C.yellow);rect(b.x-1,b.y-10,2,6,C.white);
+  rect(b.x-2,b.y+5,4,12,'#ff86576c');
+  rect(b.x-2,b.y-6,4,13,C.yellow);
+  rect(b.x-1,b.y-10,2,6,C.white);
  }
  for(const b of badBullets){
   rect(b.x-5,b.y-5,10,10,C.red);rect(b.x-2,b.y-2,4,4,C.yellow);
  }
 }
 function gateText(g){
- const prefix=g.label;
- return prefix+(g.val>0&&prefix.endsWith(' ')?'+':'')+g.val+(g.type==='speed'?'%':'');
+ return g.label+' +'+g.val+(g.type==='speed'?'%':'');
 }
 function drawGate(g){
  const y=Math.round(g.y);
  if(y>FIELD_BOTTOM||y<-72)return;
- const options=[g.left,g.right];
- options.forEach((p,i)=>{
-  const x=20+i*160;
-  rect(x,y,158,52,p.good?'#2a8a5bbd':'#a14655c7');
-  rect(x,y,158,7,p.good?'#b8ffd1':'#ffd1bb');
-  rect(x,y+46,158,5,p.good?'#4af3a3':'#ff6679');
-  rect(x,y,4,52,p.good?'#1e503d':'#5e2633');
-  rect(x+154,y,4,52,p.good?'#1e503d':'#5e2633');
-  txt(gateText(p),x+79,y+26,19,C.white,'center');
+ [{p:g.left,cx:99},{p:g.right,cx:261}].forEach(({p,cx})=>{
+  const w=p.width,x=cx-w/2,lit=p.hits%3===0&&p.hits>0;
+  rect(x-2,y-2,w+4,57,lit?C.yellow:'#2b5272');
+  rect(x,y,w,53,'#153a42');
+  rect(x+3,y+4,w-6,44,'#164e56');
+  rect(x+4,y+4,w-8,5,p.type==='lanes'?C.blue:C.green);
+  rect(x+4,y+43,w-8,5,C.mint);
+  rect(x+5,y+12,w-10,25,'#0d2538');
+  txt(gateText(p),cx,y+27,16,C.white,'center');
+  txt('LV '+(p.hits+1),cx,y-12,11,p.hits?C.yellow:C.border,'center');
+  rect(x-2,y-2,5,10,C.yellow);rect(x+w-3,y-2,5,10,C.yellow);
  });
- rect(175,y-5,10,63,'#163647');rect(177,y,6,52,'#cee9dd');
+ rect(179,y-2,2,56,'#375777');
 }
 function drawHud(){
- rect(0,0,W,FIELD_TOP,'#0b182b');rect(0,FIELD_TOP-4,W,4,C.steel);
+ rect(0,0,W,FIELD_TOP,'#0a1128');rect(0,FIELD_TOP-4,W,4,C.steel);
  txt('像素火線',13,17,18,C.yellow);
- txt('GATE RUSH',13,38,10,C.blue);
+ txt('8-BIT SHOOTER',13,38,10,C.blue);
  txt('STAGE '+stage,170,16,14,C.white,'center');
  rect(117,34,106,10,'#34506b');rect(119,36,102*(phase==='boss'?1:Math.min(1,stageTime/33)),6,phase==='boss'?C.orange:C.mint);
  txt(phase==='boss'?'BOSS':'進度',170,58,10,C.border,'center');
@@ -425,7 +418,7 @@ function drawHud(){
  txt('♥ '+player.hp+'/'+player.maxHp,250,47,15,C.red);
  bordered(323,8,29,30,'#20384f','#84a6b7',2);
  txt('Ⅱ',337.5,22,16,C.white,'center');
- rect(0,FIELD_BOTTOM,W,H-FIELD_BOTTOM,'#0b1728');
+ rect(0,FIELD_BOTTOM,W,H-FIELD_BOTTOM,'#0b1127');
  rect(0,FIELD_BOTTOM,W,3,'#759cb6');
  const cols=[['攻擊',player.power,C.gold],['彈道',player.lanes,C.blue],['攻速',(1/player.interval).toFixed(1),C.green]];
  cols.forEach((a,i)=>{
@@ -434,7 +427,7 @@ function drawHud(){
   txt(a[0],x,678,12,'#a4bace');
   txt(String(a[1]),x+57,678,18,a[2],'center');
  });
- txt('拖曳移動 · 自動射擊',180,709,11,C.border,'center');
+ txt('射擊閘門升級 · 扇形火力',180,709,11,C.border,'center');
 }
 function drawEffects(){
  ctx.save();
@@ -450,24 +443,23 @@ function button(x,y,w,h,label,hot=true){
 function shade(){rect(0,0,W,H,'#050d1bdc')}
 function drawMenu(){
  background();
- drawGate({y:135,left:{label:'攻擊 +',val:5,good:true},right:{label:'彈道 +',val:2,good:true}});
- const bx=80;
- for(let i=0;i<4;i++)drawEnemy({x:67+i*75,y:265,hp:20,max:20});
- rect(0,0,W,H,'#05101aa3');
- bordered(22,89,316,527,'#10233b','#77a9c6',5);
- txt('PIXEL',180,139,37,C.blue,'center',900);
- txt('GATE RUSH',180,179,37,C.yellow,'center',900);
- txt('像 素 火 線',180,215,24,C.white,'center');
- rect(49,248,262,2,'#42617a');
- sprite(catArt,catPal,128,277,5);
- rect(224,270,13,89,C.dark);rect(228,247,7,55,C.border);
- rect(223,257,13,8,C.orange);
- txt('左右滑動，選擇強化！',180,401,17,C.white,'center');
- txt('自動射擊・穿越閘門・擊敗首領',180,429,13,C.border,'center');
- button(55,476,250,60,'▶ 開始遊戲');
- button(55,550,250,43,'原版五子棋',false);
- txt('最高紀錄 '+best,180,639,13,C.gold,'center');
- txt('手機拖曳 / 電腦方向鍵移動',180,673,12,C.border,'center');
+ const dummy={y:150,left:{label:'攻擊',val:7,hits:4,width:122,good:true},
+  right:{label:'彈道',val:4,hits:5,width:132,good:true}};
+ drawGate(dummy);
+ for(let i=0;i<6;i++)drawEnemy({x:53+i*51,y:276,hp:16,max:16,kind:i%4});
+ rect(0,0,W,H,'#050714aa');
+ bordered(22,89,316,527,'#0b1330','#487bb2',5);
+ txt('GATE RUSH',180,150,37,C.yellow,'center',900);
+ txt('8-BIT GALAXY',180,188,17,C.blue,'center',900);
+ txt('像 素 火 線',180,224,24,C.white,'center');
+ rect(51,248,258,3,C.purple);
+ sprite(shipArt,shipPal,141,275,5);
+ txt('打中閘門：升級 + 擴大範圍',180,387,16,C.green,'center');
+ txt('扇形彈幕 × 越來越密集的敵軍',180,417,14,C.white,'center');
+ button(55,475,250,65,'▶ 開始遊戲');
+ txt('最高紀錄 '+best,180,572,14,C.gold,'center');
+ txt('拖曳左右移動 / 方向鍵操作',180,601,12,C.border,'center');
+ txt('原創 8-BIT 像素太空射擊',180,656,12,C.border,'center');
 }
 function drawClear(){
  shade();bordered(28,167,304,375,'#152b40','#a0cfdf',5);
@@ -478,7 +470,7 @@ function drawClear(){
  txt('選擇一項獎勵進入下一關',180,353,16,C.border,'center');
  bordered(47,389,127,95,'#254a42','#74d9ac',3);
  txt('✦ 彈道 +1',110,424,17,C.green,'center');
- txt('火力更密集',110,456,12,C.white,'center');
+ txt('扇形火力更廣',110,456,12,C.white,'center');
  bordered(186,389,127,95,'#4b3546','#ffc18c',3);
  txt('♥ 生命 +3',250,424,17,C.yellow,'center');
  txt('恢復生命值',250,456,12,C.white,'center');
@@ -492,7 +484,7 @@ function drawDead(){
  txt('本次得分 '+score,180,341,24,C.gold,'center');
  txt('最高得分 '+best,180,374,15,C.border,'center');
  button(60,416,240,58,'↻ 再玩一次');
- txt('持續射擊，選擇有利的閘門',180,504,13,C.border,'center');
+ txt('射擊閘門增強升級，再迎戰敵群',180,504,13,C.border,'center');
 }
 function drawPaused(){
  shade();bordered(40,223,280,279,'#172d43','#93b5cd',5);
@@ -518,7 +510,6 @@ function render(){
 function handleTap(x,y){
  if(mode==='menu'){
   if(y>=472&&y<=541){newRun();return}
-  if(y>=545&&y<=602){window.location.href='./gomoku.html';return}
   return;
  }
  if(mode==='dead'){if(y>=408&&y<=482)newRun();return}
