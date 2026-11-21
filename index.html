@@ -717,83 +717,161 @@ function button(x,y,w,h,label,hot=true){
 function shade(){rect(0,0,W,H,'#050d1bdc')}
 function drawMenu(){
  background();
- const dummy={y:150,left:{label:'攻擊',val:7,hits:4,width:122,good:true},
-  right:{label:'彈道',val:4,hits:5,width:132,good:true}};
- drawGate(dummy);
- for(let i=0;i<6;i++)drawEnemy({x:53+i*51,y:276,hp:16,max:16,kind:i%4});
+ for(let i=0;i<6;i++)drawEnemy({x:55+i*49,y:206,hp:12,max:12,shield:0,elite:false,kind:i%4});
  rect(0,0,W,H,'#050714aa');
- bordered(22,89,316,527,'#0b1330','#487bb2',5);
- txt('GATE RUSH',180,150,37,C.yellow,'center',900);
- txt('8-BIT GALAXY',180,188,17,C.blue,'center',900);
- txt('像 素 火 線',180,224,24,C.white,'center');
- rect(51,248,258,3,C.purple);
- sprite(shipArt,shipPal,141,275,5);
- txt('打中閘門：升級 + 擴大範圍',180,387,16,C.green,'center');
- txt('扇形彈幕 × 越來越密集的敵軍',180,417,14,C.white,'center');
- button(55,475,250,65,'▶ 開始遊戲');
- txt('最高紀錄 '+best,180,572,14,C.gold,'center');
- txt('拖曳左右移動 / 方向鍵操作',180,601,12,C.border,'center');
- txt('原創 8-BIT 像素太空射擊',180,656,12,C.border,'center');
+ bordered(22,78,316,560,'#0b1330','#487bb2',5);
+ txt('GATE RUSH',180,128,37,C.yellow,'center',900);
+ txt('GALAXY ARMORY',180,164,16,C.blue,'center',900);
+ txt('像 素 火 線',180,196,23,C.white,'center');
+ rect(52,228,256,3,C.purple);
+ drawMiniShip(180,298,currentShip(),5);
+ txt(currentShip().name+' · '+currentShip().weapon,180,372,15,C.white,'center');
+ txt('闖關賺金幣，解鎖新武器戰機',180,408,14,C.green,'center');
+ button(54,445,252,54,'▶ 開始遊戲');
+ button(54,510,252,54,'軍械庫 / 寶箱',false);
+ txt('G '+profile.wallet+'   ·   BEST '+best,180,593,15,C.gold,'center');
+ txt('拖曳左右移動 · 自動射擊',180,672,12,C.border,'center');
+}
+function drawHangar(){
+ background();
+ rect(0,0,W,H,'#070e22ef');
+ bordered(13,12,334,693,'#0d1a31','#3b678f',3);
+ txt('銀河軍械庫',22,35,25,C.yellow);
+ txt('G '+profile.wallet,24,66,17,C.gold);
+ bordered(292,22,42,39,'#263f59','#789dc5',2);txt('×',313,42,24,C.white,'center');
+ const tab=hangarTab;
+ bordered(22,98,151,49,tab==='ship'?'#28567c':'#172b42',tab==='ship'?C.yellow:'#5988a8',3);
+ bordered(186,98,151,49,tab==='bullet'?'#28567c':'#172b42',tab==='bullet'?C.yellow:'#5988a8',3);
+ txt('戰機 / 武器',97,122,15,C.white,'center');
+ txt('子彈外觀',262,122,15,C.white,'center');
+ const items=tab==='ship'?SHIPS:SKINS,owned=tab==='ship'?profile.ships:profile.bullets,selected=tab==='ship'?profile.ship:profile.bullet;
+ items.forEach((p,i)=>{
+  const x=22+(i%2)*165,y=157+Math.floor(i/2)*111,has=owned.includes(p.id),equipped=selected===p.id;
+  bordered(x,y,150,102,equipped?'#1e4c51':'#15233e',equipped?C.green:has?'#5a85a8':'#35465d',3);
+  if(tab==='ship')drawMiniShip(x+75,y+28,p,2);
+  else{
+   rect(x+53,y+10,44,30,'#0d1832');rect(x+70,y+9,10,26,p.trail);
+   rect(x+72,y+7,6,27,p.color);rect(x+73,y+3,4,8,C.white);
+  }
+  txt(p.name,x+75,y+54,14,C.white,'center');
+  txt(tab==='ship'?p.weapon:p.rarity+' 彈藥外觀',x+75,y+74,11,RARITY[p.rarity].color,'center');
+  txt(equipped?'已裝備':has?'點擊裝備':'未解鎖 · '+p.rarity,x+75,y+92,11,equipped?C.green:has?C.yellow:C.border,'center');
+ });
+ button(19,503,153,58,'戰機寶箱 120G',false);
+ button(188,503,153,58,'子彈寶箱 60G',false);
+ txt('寶箱機率 N55% / R30% / SR12% / SSR3%',180,586,12,C.border,'center');
+ txt('第10抽保底 SR 以上｜重複物品返還半價',180,609,12,C.border,'center');
+ if(shopNotice)txt(shopNotice,180,640,13,shopNotice.startsWith('已')?C.green:C.red,'center');
+ else txt('已獲得的機體與彈藥永久保存',180,640,13,C.green,'center');
+ txt('收藏僅儲存在目前瀏覽器',180,681,12,C.border,'center');
+}
+function drawLoot(){
+ drawHangar();shade();
+ const p=lootInfo?.prize;
+ if(!p)return;
+ bordered(24,157,312,419,'#101d35',RARITY[p.rarity].color,6);
+ txt('OPEN!',180,198,29,RARITY[p.rarity].color,'center');
+ txt(p.rarity+' · '+(lootInfo.type==='ship'?'戰機寶箱':'子彈寶箱'),180,238,16,C.white,'center');
+ if(lootInfo.type==='ship')drawMiniShip(180,324,p,4);
+ else{
+  rect(158,286,44,77,p.trail);rect(169,272,22,89,p.color);rect(175,261,10,22,C.white);
+ }
+ txt(p.name,180,389,22,C.yellow,'center');
+ txt(lootInfo.duplicate?'重複獲得，返還 '+lootInfo.refund+' 金幣':'全新收藏！已加入軍械庫',
+  180,416,13,lootInfo.duplicate?C.border:C.green,'center');
+ button(53,447,254,51,'再抽一次');
+ button(53,508,254,51,'返回軍械庫',false);
+ if(shopNotice)txt(shopNotice,180,599,13,C.red,'center');
 }
 function drawClear(){
- shade();bordered(28,167,304,375,'#152b40','#a0cfdf',5);
- txt('STAGE CLEAR!',180,207,27,C.yellow,'center');
- txt('第 '+stage+' 關完成',180,253,22,C.white,'center');
- txt('累積分數  '+score,180,291,17,C.gold,'center');
- rect(54,321,252,2,'#45647c');
- txt('選擇一項獎勵進入下一關',180,353,16,C.border,'center');
- bordered(47,389,127,95,'#254a42','#74d9ac',3);
- txt('✦ 彈道 +1',110,424,17,C.green,'center');
- txt('扇形火力更廣',110,456,12,C.white,'center');
- bordered(186,389,127,95,'#4b3546','#ffc18c',3);
- txt('♥ 生命 +3',250,424,17,C.yellow,'center');
- txt('恢復生命值',250,456,12,C.white,'center');
- txt('點選獎勵繼續',180,515,12,C.border,'center');
+ shade();bordered(27,143,306,430,'#152b40','#a0cfdf',5);
+ txt('STAGE CLEAR!',180,183,27,C.yellow,'center');
+ txt('第 '+stage+' 關完成',180,225,22,C.white,'center');
+ txt('本次得分 '+score,180,264,17,C.gold,'center');
+ txt('通關獎勵 +'+(30+stage*5)+' G',180,300,18,C.green,'center');
+ txt('本關金幣 +'+stageCoins+' · 錢包 '+profile.wallet,180,332,14,C.border,'center');
+ rect(55,356,250,2,'#45647c');
+ txt('選擇一項獎勵進入下一關',180,379,15,C.white,'center');
+ bordered(43,401,134,100,'#254a42','#74d9ac',3);
+ txt('✦ 彈道 +1',110,437,17,C.green,'center');
+ txt('扇形覆蓋更廣',110,472,12,C.white,'center');
+ bordered(183,401,134,100,'#4b3546','#ffc18c',3);
+ txt('♥ 生命 +3',250,437,17,C.yellow,'center');
+ txt('恢復生命值',250,472,12,C.white,'center');
+ txt('點選獎勵繼續',180,534,12,C.border,'center');
 }
 function drawDead(){
- shade();bordered(27,170,306,355,'#2b2033','#e39b86',5);
- txt('GAME OVER',180,220,32,C.red,'center');
- txt(endReason,180,263,18,C.white,'center');
- txt('到達第 '+stage+' 關',180,306,17,C.border,'center');
- txt('本次得分 '+score,180,341,24,C.gold,'center');
- txt('最高得分 '+best,180,374,15,C.border,'center');
- button(60,416,240,58,'↻ 再玩一次');
- txt('射擊閘門增強升級，再迎戰敵群',180,504,13,C.border,'center');
+ shade();bordered(27,147,306,426,'#2b2033','#e39b86',5);
+ txt('GAME OVER',180,194,31,C.red,'center');
+ txt(endReason,180,239,17,C.white,'center');
+ txt('到達第 '+stage+' 關',180,276,17,C.border,'center');
+ txt('本次得分 '+score,180,315,24,C.gold,'center');
+ txt('本局收入 +'+earnedThisRun+' G',180,351,16,C.green,'center');
+ txt('錢包餘額 '+profile.wallet+' G',180,379,15,C.border,'center');
+ button(56,421,248,53,'↻ 再玩一次');
+ button(56,488,248,52,'返回首頁',false);
 }
 function drawPaused(){
- shade();bordered(40,223,280,279,'#172d43','#93b5cd',5);
- txt('遊戲暫停',180,273,28,C.white,'center');
- button(64,313,232,58,'▶ 繼續遊戲');
- button(64,389,232,50,'重新開始',false);
- txt('按 P / Esc 也能繼續',180,471,12,C.border,'center');
+ shade();bordered(40,213,280,316,'#172d43','#93b5cd',5);
+ txt('遊戲暫停',180,256,28,C.white,'center');
+ txt('目前金幣 '+profile.wallet+' G',180,296,15,C.gold,'center');
+ button(64,322,232,55,'▶ 繼續遊戲');
+ button(64,390,232,50,'重新開始',false);
+ button(64,452,232,50,'返回首頁',false);
 }
 function render(){
  ctx.save();
  if(mode==='menu'){drawMenu();ctx.restore();return}
+ if(mode==='hangar'){drawHangar();ctx.restore();return}
+ if(mode==='loot'){drawLoot();ctx.restore();return}
  if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
  background();
  for(const g of gates)drawGate(g);
  for(const e of enemies)drawEnemy(e);
- drawBoss();drawBullets();drawCat();drawEffects();
- ctx.restore();
- drawHud();
+ drawBoss();drawCoins();drawBullets();drawCat();drawEffects();
+ ctx.restore();drawHud();
  if(mode==='clear')drawClear();
  if(mode==='dead')drawDead();
  if(mode==='paused')drawPaused();
 }
 function handleTap(x,y){
  if(mode==='menu'){
-  if(y>=472&&y<=541){newRun();return}
+  if(y>=445&&y<=505&&x>=50&&x<=310){newRun();return}
+  if(y>=507&&y<=571&&x>=50&&x<=310){hangarTab='ship';shopNotice='';mode='hangar';return}
   return;
  }
- if(mode==='dead'){if(y>=408&&y<=482)newRun();return}
+ if(mode==='hangar'){
+  if(x>=290&&y<78){mode='menu';return}
+  if(y>=95&&y<=148){hangarTab=x<180?'ship':'bullet';shopNotice='';return}
+  if(y>=503&&y<=568){if(x<=180)openChest('ship');else openChest('bullet');return}
+  if(y>=157&&y<=481){
+   const col=x<181?0:1,base=col===0?22:187;
+   const row=Math.floor((y-157)/111),inY=(y-157)%111;
+   if(x>=base&&x<=base+150&&inY<=102&&row>=0&&row<3){
+    const i=row*2+col,p=(hangarTab==='ship'?SHIPS:SKINS)[i];
+    if(p)equip(hangarTab,p.id);
+   }
+  }
+  return;
+ }
+ if(mode==='loot'){
+  if(y>=447&&y<=501){openChest(lootInfo.type);return}
+  if(y>=508&&y<=565){mode='hangar';shopNotice='';return}
+  return;
+ }
+ if(mode==='dead'){
+  if(y>=418&&y<=480){newRun();return}
+  if(y>=487&&y<=551){mode='menu';return}
+  return;
+ }
  if(mode==='clear'){
-  if(y>=384&&y<=493){if(x>=40&&x<180)nextStage(0);else if(x>180&&x<321)nextStage(1)}
+  if(y>=398&&y<=505){if(x>=40&&x<180)nextStage(0);else if(x>180&&x<322)nextStage(1)}
   return;
  }
  if(mode==='paused'){
-  if(y>=308&&y<=382){mode='play';return}
-  if(y>=386&&y<=449){newRun();return}
+  if(y>=320&&y<=382){mode='play';return}
+  if(y>=389&&y<=447){newRun();return}
+  if(y>=451&&y<=508){mode='menu';return}
   return;
  }
  if(mode==='play'&&x>318&&y<54){mode='paused';say('遊戲暫停');return}
