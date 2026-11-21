@@ -76,11 +76,83 @@ const stars=Array.from({length:92},(_,i)=>({
 }));
 let audioContext=null,muted=false,sfxTick=0;
 const input={x:180,down:false,left:false,right:false};
-let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[];
-let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0;
+let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[],coins=[],chains=[],laserRays=[];
+let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=16,baseMax=16;
 let best=0,waveTimer=0,gateTimer=0,shotTimer=0,shake=0,hitFlash=0,phase='waves',endReason='',finishChoice=0;
-let lastFrame=0,backScroll=0,waveIndex=0;
+let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,hangarTab='ship',lootInfo=null,shopNotice='',earnedThisRun=0,stageCoins=0;
 try{best=Number(localStorage.getItem('gate-rush-best'))||0}catch(e){}
+
+const PROFILE_KEY='gate-rush-profile-v03';
+const SHIPS=[
+ {id:'pulse',name:'突擊戰機',weapon:'脈衝機砲',rarity:'N',color:'#3993ed',desc:'穩定連射與經典扇形彈幕',rate:1},
+ {id:'laser',name:'雷射戰機',weapon:'持續光束',rarity:'R',color:'#ff5278',desc:'密集光束，善於精準破閘',rate:.56},
+ {id:'spread',name:'擴散戰機',weapon:'散彈砲',rarity:'R',color:'#f5b948',desc:'近距離多顆彈丸，適合掃射',rate:2},
+ {id:'rail',name:'重砲戰機',weapon:'電磁穿甲砲',rarity:'SR',color:'#60ecad',desc:'慢速重砲，可貫穿多名敵人',rate:2.6},
+ {id:'homing',name:'追蹤戰機',weapon:'導引飛彈',rarity:'SR',color:'#bd8cff',desc:'導引彈自動追擊分散目標',rate:1.65},
+ {id:'plasma',name:'電漿戰機',weapon:'連鎖電弧',rarity:'SSR',color:'#68e6ed',desc:'電流可連鎖鄰近敵人',rate:1.4}
+];
+const SKINS=[
+ {id:'gold',name:'經典金彈',rarity:'N',color:'#fff26b',trail:'#ff8b4a'},
+ {id:'ice',name:'冰藍光彈',rarity:'R',color:'#91e6ff',trail:'#3899f9'},
+ {id:'neon',name:'霓虹紫彈',rarity:'R',color:'#d59cff',trail:'#a24ce6'},
+ {id:'ember',name:'熔岩火彈',rarity:'SR',color:'#ff754f',trail:'#fbcc66'},
+ {id:'ghost',name:'幽靈光彈',rarity:'SR',color:'#bbffe4',trail:'#48afbd'},
+ {id:'rainbow',name:'彩虹星彈',rarity:'SSR',color:'#ff92c6',trail:'#82e8fa'}
+];
+const RARITY={N:{rate:55,color:'#b0b7c5'},R:{rate:30,color:'#69baff'},
+ SR:{rate:12,color:'#c095ff'},SSR:{rate:3,color:'#ffc85a'}};
+function defaultProfile(){return {wallet:0,ships:['pulse'],bullets:['gold'],ship:'pulse',bullet:'gold',pityShip:0,pityBullet:0}}
+function loadProfile(){
+ let data={};
+ try{data=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')||{}}catch(e){}
+ let p={...defaultProfile(),...data};
+ p.wallet=Math.max(0,Math.min(9999999,Math.floor(Number(p.wallet)||0)));
+ p.ships=Array.isArray(p.ships)?p.ships.filter(x=>SHIPS.some(i=>i.id===x)):['pulse'];
+ p.bullets=Array.isArray(p.bullets)?p.bullets.filter(x=>SKINS.some(i=>i.id===x)):['gold'];
+ if(!p.ships.includes('pulse'))p.ships.unshift('pulse');
+ if(!p.bullets.includes('gold'))p.bullets.unshift('gold');
+ if(!p.ships.includes(p.ship))p.ship='pulse';
+ if(!p.bullets.includes(p.bullet))p.bullet='gold';
+ p.pityShip=Math.max(0,Math.min(9,Number(p.pityShip)||0));
+ p.pityBullet=Math.max(0,Math.min(9,Number(p.pityBullet)||0));
+ return p;
+}
+let profile=loadProfile();
+function saveProfile(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile))}catch(e){shopNotice='儲存失敗：請確認瀏覽器允許網站資料'}}
+function currentShip(){return SHIPS.find(s=>s.id===profile.ship)||SHIPS[0]}
+function currentSkin(){return SKINS.find(s=>s.id===profile.bullet)||SKINS[0]}
+function gainCoins(n){
+ const amount=Math.max(0,Math.floor(n));
+ profile.wallet+=amount;earnedThisRun+=amount;stageCoins+=amount;
+ saveProfile();
+}
+function openChest(type){
+ const price=type==='ship'?120:60,options=type==='ship'?SHIPS:SKINS;
+ if(profile.wallet<price){shopNotice='金幣不足，需要 '+price+' 金幣';sfx('hit');return}
+ profile.wallet-=price;
+ const pityKey=type==='ship'?'pityShip':'pityBullet',roll=Math.random()*100;
+ let rarity=roll<3?'SSR':roll<15?'SR':roll<45?'R':'N';
+ if(profile[pityKey]>=9&&['N','R'].includes(rarity))rarity='SR';
+ profile[pityKey]=['SR','SSR'].includes(rarity)?0:profile[pityKey]+1;
+ const candidates=options.filter(x=>x.rarity===rarity);
+ const prize=candidates[Math.floor(Math.random()*candidates.length)]||options[0];
+ const owned=type==='ship'?profile.ships:profile.bullets,duplicate=owned.includes(prize.id);
+ const refund=duplicate?(type==='ship'?60:30):0;
+ if(!duplicate)owned.push(prize.id);
+ if(refund)profile.wallet+=refund;
+ lootInfo={type,prize,duplicate,refund};
+ shopNotice='';saveProfile();mode='loot';
+ sfx(duplicate?'gate':'win');buzz(duplicate?60:[50,50,120]);
+ say('獲得 '+prize.name+(duplicate?'，重複道具折抵金幣':'，已加入收藏'));
+}
+function equip(type,id){
+ const owned=type==='ship'?profile.ships:profile.bullets;
+ if(!owned.includes(id)){shopNotice='尚未解鎖，需透過寶箱取得';return}
+ if(type==='ship')profile.ship=id;else profile.bullet=id;
+ shopNotice='已裝備 '+(type==='ship'?currentShip().name:currentSkin().name);
+ saveProfile();sfx('gate');
+}
+
 function rand(a,b){return a+Math.random()*(b-a)}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
