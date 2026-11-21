@@ -135,7 +135,7 @@ function burst(x,y,color,n=10){
 }
 function makeEnemy(x,y,hp,kind='bot'){return {x,y,hp,max:hp,speed:rand(42,51)+stage*4,kind,wobble:rand(0,10)}}
 function spawnWave(){
- const count=Math.min(5,3+Math.floor((stage+1)/2)),rows=stage>=2&&Math.random()<.5?2:1;
+ const count=Math.min(5,4+Math.floor((stage+1)/2)),rows=stage>=2&&Math.random()<.5?2:1;
  const step=count===1?0:260/(count-1);
  for(let r=0;r<rows;r++)for(let c=0;c<count;c++){
   const hp=Math.round(16+stage*7+r*5+Math.random()*5);
@@ -204,7 +204,7 @@ function loseHealth(n=1){
 function hitEnemy(e,dmg){
  e.hp-=dmg;
  if(e.hp<=0){
-  score+=10+stage*2;kills++;burst(e.x,e.y,C.gold,12);addText('+10',e.x,e.y-20,C.yellow);
+  score+=10+stage*2;kills++;burst(e.x,e.y,C.gold,12);addText('+'+(10+stage*2),e.x,e.y-20,C.yellow);
   return true;
  }
  for(let i=0;i<3;i++)parts.push({x:e.x+rand(-8,8),y:e.y+rand(-8,8),vx:rand(-28,28),vy:rand(-50,-10),life:.2,max:.2,color:C.white,size:3});
