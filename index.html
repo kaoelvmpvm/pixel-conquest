@@ -409,8 +409,9 @@ function update(dt){
   if(p.life<=0)parts.splice(i,1);
  }
  for(let i=texts.length-1;i>=0;i--){const t=texts[i];t.y-=32*dt;t.life-=dt;if(t.life<=0)texts.splice(i,1)}
- if(shake>0)shake=Math.max(0,shake-20*dt);
- if(hitFlash>0)hitFlash=Math.max(0,hitFlash-dt);
+ for(let i=chains.length-1;i>=0;i--){chains[i].life-=dt;if(chains[i].life<=0)chains.splice(i,1)}
+ for(let i=laserRays.length-1;i>=0;i--){laserRays[i].life-=dt;if(laserRays[i].life<=0)laserRays.splice(i,1)}
+ shake=Math.max(0,shake-20*dt);hitFlash=Math.max(0,hitFlash-dt);
  if(mode!=='play')return;
  elapsed+=dt;stageTime+=dt;player.inv=Math.max(0,player.inv-dt);
  if(input.left)input.x-=210*dt;
@@ -420,29 +421,50 @@ function update(dt){
  player.x=clamp(player.x,37,323);
  if(phase==='waves'){
   waveTimer-=dt;gateTimer-=dt;
-  if(waveTimer<=0){spawnWave();waveTimer=Math.max(2.55,4.25-stage*.12-waveIndex*.09)}
-  if(gateTimer<=0){spawnGate();gateTimer=7.25}
-  if(stageTime>=33){spawnBoss()}
+  if(waveTimer<=0){spawnWave();waveTimer=Math.max(2.6,4.4-stage*.12-waveIndex*.1)}
+  if(gateTimer<=0){spawnGate();gateTimer=7.5}
+  if(stageTime>=36)spawnBoss();
  }
+ const cadence=Math.max(.085,player.interval*currentShip().rate);
  shotTimer-=dt;
- if(shotTimer<=0){shoot();shotTimer+=player.interval;if(shotTimer<=0)shotTimer=player.interval}
+ if(shotTimer<=0){shoot();shotTimer+=cadence;if(shotTimer<=0)shotTimer=cadence}
+ // 閘門自頂向下，玩家到達時領取；上鎖未解鎖則失效
  for(let i=gates.length-1;i>=0;i--){
   const g=gates[i];g.y+=91*dt;g.glow+=dt;
+  for(const p of [g.left,g.right]){
+   if(p.kind==='unstable'&&p.hits>0&&elapsed-p.lastHit>.85){
+    p.decay+=dt;
+    if(p.decay>=1.0){
+     p.decay=0;p.hits=Math.max(0,p.hits-1);
+     p.width=Math.max(102,p.width-4);
+     p.val=Math.max(p.baseVal,p.val-(p.type==='speed'?3:1));
+    }
+   }else p.decay=0;
+  }
   if(g.y>=player.y-88){
    const chosen=[{p:g.left,cx:99},{p:g.right,cx:261}]
-     .find(item=>Math.abs(player.x-item.cx)<=item.p.width/2+12);
+    .find(item=>Math.abs(player.x-item.cx)<=item.p.width/2+12);
    if(chosen)applyGate(chosen.p);
    else addText('MISSED',player.x,player.y-95,C.red);
    gates.splice(i,1);
   }else if(g.y>FIELD_BOTTOM)gates.splice(i,1);
  }
  for(let i=enemies.length-1;i>=0;i--){
-  const e=enemies[i];e.y+=e.speed*dt;e.wobble+=dt;e.x=clamp(e.baseX+Math.sin(e.wobble*1.7)*e.amp,32,328);
-  if(e.y>player.y-10){
-   if(Math.abs(e.x-player.x)<25)loseHealth(1);
-   enemies.splice(i,1);
+  const e=enemies[i];e.y+=e.speed*dt;e.wobble+=dt;
+  const amp=e.dive?e.amp+Math.min(34,stageTime):e.amp;
+  e.x=clamp(e.baseX+Math.sin(e.wobble*(e.dive?2.8:1.7))*amp,30,330);
+  if(e.y>=player.y-18&&e.y<player.y+19&&Math.abs(e.x-player.x)<22){
+   loseHealth(e.heavy?2:1);enemies.splice(i,1);continue;
+  }
+  if(e.y>FIELD_BOTTOM-19){
+   baseHp=Math.max(0,baseHp-(e.heavy?2:1));
+   burst(e.x,FIELD_BOTTOM-18,C.red,7);
+   addText('-'+(e.heavy?2:1)+' BASE',e.x,FIELD_BOTTOM-30,C.red);
+   enemies.splice(i,1);shake=Math.max(shake,2);
+   if(baseHp<=0){gameOver('防線耐久歸零');break}
   }
  }
+ if(mode!=='play')return;
  if(boss){
   boss.clock+=dt;boss.y+=(138-boss.y)*Math.min(1,dt*1.35);
   boss.x=180+Math.sin(boss.clock*.9)*100;
@@ -453,42 +475,75 @@ function update(dt){
      const dx=player.x-boss.x,dy=player.y-boss.y,mag=Math.hypot(dx,dy)||1;
      badBullets.push({x:boss.x+i*20,y:boss.y+32,vx:dx/mag*100+i*40,vy:dy/mag*190});
     }
-    boss.fire=Math.max(.78,1.8-stage*.08);
+    boss.fire=Math.max(.75,1.8-stage*.075);
    }
   }
  }
  for(let i=bullets.length-1;i>=0;i--){
-  const b=bullets[i];b.x+=b.vx*dt;b.y+=b.vy*dt;
-  if(b.y<FIELD_TOP||b.x<17||b.x>343){bullets.splice(i,1);continue}
+  const b=bullets[i];b.age+=dt;
+  if(b.kind==='homing'&&b.age>.23){
+   let target=null,dd=1e9;
+   for(const e of enemies){
+    if(e.y>=b.y+14)continue;
+    const d=Math.hypot(e.x-b.x,e.y-b.y);
+    if(d<dd){dd=d;target=e}
+   }
+   if(boss&&boss.y<b.y){target=boss}
+   if(target){
+    const dx=target.x-b.x,dy=target.y-b.y,m=Math.hypot(dx,dy)||1;
+    b.vx+=(dx/m*350-b.vx)*Math.min(1,dt*5);
+    b.vy+=(dy/m*350-b.vy)*Math.min(1,dt*5);
+   }
+  }
+  const oldY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;
+  if(b.y<FIELD_TOP||b.x<17||b.x>343||b.age>3){bullets.splice(i,1);continue}
   let used=false;
+  // 閘門優先吸收子彈，雷射按時間計數、散彈每輪最多累積三次
   for(const g of gates){
-   if(b.y>=g.y-5&&b.y<=g.y+52){
+   if(Math.min(oldY,b.y)<=g.y+52&&Math.max(oldY,b.y)>=g.y-5){
     for(const [p,cx] of [[g.left,99],[g.right,261]]){
      if(Math.abs(b.x-cx)<=p.width/2){
-      upgradeGate(p,b.x,b.y);used=true;break;
+      upgradeGate(p,b.x,b.y,b.kind==='rail'?2:1,b.kind,b.volley);
+      used=true;break;
      }
     }
    }
    if(used)break;
   }
   if(used){bullets.splice(i,1);continue}
-  if(boss&&boss.y>60&&Math.abs(b.x-boss.x)<45&&Math.abs(b.y-boss.y)<34){
+  const pad=b.kind==='rail'?8:b.kind==='homing'?9:5;
+  if(boss&&boss.y>60&&Math.abs(b.x-boss.x)<43+pad&&Math.abs(b.y-boss.y)<31+pad){
    boss.hp-=b.damage;used=true;
-   if(Math.random()<.35)burst(b.x,b.y,C.blue,2);
+   if(Math.random()<.25)burst(b.x,b.y,currentSkin().color,2);
    if(boss.hp<=0){
-    score+=150*stage;kills++;burst(boss.x,boss.y,C.gold,55);boss=null;bullets.splice(i,1);stageEnd();break;
+    score+=150*stage;kills++;burst(boss.x,boss.y,C.gold,45);
+    boss=null;bullets.splice(i,1);stageEnd();break;
    }
   }else{
    for(let j=enemies.length-1;j>=0;j--){
     const e=enemies[j];
-    if(Math.abs(b.x-e.x)<16&&Math.abs(b.y-e.y)<15){
-     if(hitEnemy(e,b.damage))enemies.splice(j,1);
-     used=true;break;
+    if(Math.abs(b.x-e.x)<15+pad*.3&&Math.abs(b.y-e.y)<14+pad*.3&&!b.hitIds.has(e.id)){
+     b.hitIds.add(e.id);
+     const dead=hitEnemy(e,b.damage);
+     if(b.kind==='plasma')chainAttack(b.damage,e);
+     if(dead)enemies.splice(j,1);
+     if(b.pierce>0){b.pierce--;}else used=true;
+     break;
     }
    }
   }
   if(used)bullets.splice(i,1);
  }
+ // 撿取金幣才會存入錢包，未拾取的金幣離開畫面即消失
+ let collected=0;
+ for(let i=coins.length-1;i>=0;i--){
+  const c=coins[i];c.y+=c.vy*dt;c.wobble+=dt;
+  c.x+=Math.sin(c.wobble*5)*8*dt;
+  if(Math.abs(c.x-player.x)<28&&Math.abs(c.y-(player.y-10))<32){
+   collected+=c.value;coins.splice(i,1);
+  }else if(c.y>FIELD_BOTTOM-10)coins.splice(i,1);
+ }
+ if(collected){gainCoins(collected);addText('+'+collected+'G',player.x,player.y-57,C.gold);sfx('gate')}
  for(let i=badBullets.length-1;i>=0;i--){
   const b=badBullets[i];b.x+=b.vx*dt;b.y+=b.vy*dt;
   if(b.y>660||b.x<15||b.x>345){badBullets.splice(i,1);continue}
