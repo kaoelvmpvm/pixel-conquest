@@ -121,6 +121,26 @@ if(act==='radio'&&n===7){d.heard=d.channel===2;beep(d.heard?650:180,.13);renderS
 if(act==='light'&&n===8){flip(d.cells,+val);beep(d.cells[+val]?660:330,.04);renderStage();return;}
 if(act==='world'&&n===9){const w=d.world==='normal'?'shadow':'normal';if(!canWalk(w,...d.p)||!canWalk(w,...d.box)){note('切換失敗。另一個世界的牆擋住了東西。');beep(170);return;}d.history.push({p:[...d.p],box:[...d.box],world:d.world,lit:{...d.lit}});d.world=w;if(w==='shadow'&&[[2,2],[4,2],[2,4],[4,4]].some(a=>same(a,d.box)))d.lit[d.box.join(',')]=true;beep(750);renderStage();return;}
 }
+document.addEventListener('click',function(event){
+  const button=event.target.closest('[data-action]');
+  if(!button||button.disabled)return;
+  action(button.dataset.action,button.dataset.value);
+});
+document.addEventListener('keydown',function(event){
+  if(event.altKey||event.ctrlKey||event.metaKey||event.target.closest('input,textarea,[contenteditable="true"]'))return;
+  const moves={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R',w:'U',s:'D',a:'L',d:'R',W:'U',S:'D',A:'L',D:'R'};
+  if(moves[event.key]&&(game.idx===3||game.idx===9)&&!game.done){
+    event.preventDefault();
+    action('move',moves[event.key]);
+  }else if(/^[0-9]$/.test(event.key)){
+    action('key',event.key);
+  }else if(event.key==='Backspace'){
+    event.preventDefault();
+    action('key','X');
+  }else if(event.key==='Enter'){
+    action('key','OK');
+  }
+});
 makeKeypad();load(game.idx);
 })();
 </script>
