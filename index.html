@@ -109,9 +109,9 @@ function renderKeypad(){
  $('nextArea').innerHTML=g.done?'<div class="divider"></div>'+btn(g.level===10?'ending':'next',g.level===10?'閱讀事件結論':'下一關 →',undefined,'accent'):'';
 }
 function renderArchive(){
- const n=Math.min(saved.unlocked,10);
- return '<div class="archivePane casefile"><h3>▤ 調查檔案　'+(n+1)+' 件</h3><p>以下是調查時保存的原始資料，可以跨房間重新查看。鐘錶時間不一定代表真正時間。</p>'+
- ARCHIVE.slice(0,n+1).map((v,i)=>'<div class="archiveEntry"><strong>'+String(i).padStart(2,'0')+'　'+v[0]+'</strong><div>'+v[1]+'</div></div>').join('')+'</div>';
+ const n=Math.max(1,Math.min(saved.unlocked,11));
+ return '<div class="archivePane casefile"><h3>▤ 調查檔案　'+n+' 件</h3><p>以下是調查時保存的原始資料，可以跨房間重新查看。鐘錶時間不一定代表真正時間。</p>'+
+ ARCHIVE.slice(0,n).map((v,i)=>'<div class="archiveEntry"><strong>'+String(i).padStart(2,'0')+'　'+v[0]+'</strong><div>'+v[1]+'</div></div>').join('')+'</div>';
 }
 function render(){
  const level=LEVELS[g.level];
@@ -119,7 +119,7 @@ function render(){
  $('levelTag').textContent=level[1];
  $('description').textContent=level[3];
  $('count').textContent=String(g.level).padStart(2,'0')+' / 10';
- $('archiveCount').textContent='已保存 '+(Math.min(saved.unlocked,10)+1)+' 份檔案';
+ $('archiveCount').textContent='已保存 '+Math.max(1,Math.min(saved.unlocked,11))+' 份檔案';
  document.querySelector('[data-action="sound"]').textContent=saved.sound?'♫ 音效：開':'♫ 音效：關';
  $('nav').innerHTML=LEVELS.map((v,i)=>'<button data-action="level" data-value="'+i+'" '+(i>saved.unlocked?'disabled':'')+' class="'+(g.level===i?'active':i<saved.unlocked?'passed':'')+'" title="'+v[0]+'">'+(i===0?'教':String(i).padStart(2,'0'))+'</button>').join('');
  renderKeypad();renderScene();
@@ -138,7 +138,7 @@ function renderScene(){
  $('stage').innerHTML=body+'<div class="msg">'+(g.done?'遠處傳來門栓鬆開的聲音。':'記錄不一定完整；每個異常都可能有原因。')+'</div>';
  if(!g.archive&&g.level===5)drawFilm();
 }
-function scene0(){return note('抽屜紙條','接待員寫下四個數字：<span class="pixel-number">3　1　4　2</span>')+'<div class="statusbar">點擊右側數字鍵，輸入紙條上找到的數字。</div>'}
+function scene0(){return note('觀測站通告','凌晨 02:16，全站自動封鎖。緊急廣播重複一句話：「請調查異常事件，勿相信未核實的時間紀錄。」')+note('抽屜紙條','接待員寫下四個數字：<span class="pixel-number">3　1　4　2</span>')+'<div class="statusbar">點擊右側數字鍵，輸入紙條上找到的數字。</div>'}
 const FRAMES=[
  {n:1,num:'1',time:'02:08',progress:12,detail:'東門的警示燈剛亮'},
  {n:2,num:'3',time:'02:09',progress:37,detail:'維修車經過第一道燈'},
