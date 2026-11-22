@@ -2,990 +2,147 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#050611">
-<meta name="description" content="像素火線 GATE RUSH：復古 8-bit 太空射擊；擊中閘門能升級並擴張範圍，扇形彈幕迎戰密集敵群。">
-<title>像素火線 | 8-BIT GATE RUSH</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101321">
+<title>PIXEL LOCK | 像素解謎 BETA 01</title>
 <style>
-:root{color-scheme:dark;background:#050611}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
-body{display:flex;align-items:center;justify-content:center;font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;background:#050611;color:#fff}
-#shell{position:relative;width:min(100vw,calc(100dvh * .5));aspect-ratio:1/2;max-height:100dvh;overflow:hidden;box-shadow:0 0 0 3px #182f55,0 12px 80px #0009;touch-action:none}
-canvas{display:block;width:100%;height:100%;image-rendering:pixelated;touch-action:none;outline:none}
-#announce{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-@media (max-aspect-ratio:1/2){#shell{width:100vw;max-height:100dvh}}
+:root{--bg:#101321;--panel:#1b2133;--panel2:#252e43;--line:#394963;--txt:#f3f1db;--muted:#a0b0c7;--gold:#f7ca63;--mint:#78ebba;--red:#fa7a8a;--blue:#70c9e5;--shadow:#070912}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans TC",monospace}body{background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:25px 25px}
+button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}button:disabled{opacity:.28;cursor:default}#app{max-width:1200px;margin:auto;padding:18px 16px 70px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0 20px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mint)}h1{font-size:clamp(23px,4.6vw,38px);letter-spacing:2px;margin:5px 0 0;text-shadow:3px 3px #05070d}.sub{font-size:12px;color:var(--muted);margin-top:5px}.toolbox{display:flex;gap:8px;flex-wrap:wrap}.shell{display:grid;grid-template-columns:minmax(0,1fr) 295px;gap:14px}.panel{background:var(--panel);border:2px solid var(--line);box-shadow:6px 6px 0 var(--shadow);min-width:0}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel2);border-bottom:2px solid var(--line);padding:12px 15px}.panelhead b{font-size:15px}.chapter{font-size:11px;color:var(--gold);white-space:nowrap}.intro{padding:14px 16px 0;color:var(--muted);font-size:13px;line-height:1.75}.stage{min-height:430px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative}.msg{margin-top:auto;min-height:34px;border-top:1px dashed var(--line);width:100%;text-align:center;padding:12px 5px 2px;color:var(--mint);font-size:12px;line-height:1.6}.sidebody{padding:18px 17px}.exit{height:76px;display:flex;align-items:center;justify-content:center;gap:12px;border:3px solid var(--line);background:linear-gradient(90deg,#141724,#28374b,#141724);margin:0 auto 18px;max-width:200px;color:var(--red);box-shadow:inset 0 -7px #05080c}.exit.open{color:var(--mint);border-color:var(--mint);box-shadow:inset 0 0 20px #78ebba28}.exit span{font-size:32px}.smalltitle{text-align:center;letter-spacing:3px;color:var(--muted);font-size:12px}.digits{display:flex;gap:5px;justify-content:center;margin:13px 0 16px}.digit{width:48px;height:62px;border:2px solid #56647e;display:grid;place-items:center;background:#0d1421;font-size:27px;color:var(--gold)}.digit.filled{border-color:var(--gold)}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.key{min-height:53px;background:#303a50;border:2px solid #536580;color:var(--txt);box-shadow:0 3px #111827;font-weight:900;font-size:20px}.key:active,.btn:active,.cell:active{transform:translateY(2px);box-shadow:none}.key.del{color:var(--red)}.key.enter{background:#1d695c;border-color:#51bf9f;color:white;font-size:13px}.btn{background:#26384e;border:2px solid #49627e;color:var(--txt);padding:10px 12px;box-shadow:0 3px #111725;font-weight:700;font-size:12px}.btn.accent{color:#142822;background:var(--mint);border-color:#b8ffe1}.btn.gold{color:#332712;background:var(--gold);border-color:#ffe4a2}.btn.warn{color:var(--red)}.btn.sm{padding:8px 10px}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}.status{color:var(--muted);line-height:1.65;font-size:12px;min-height:20px;text-align:center}.divider{border-top:1px dashed var(--line);margin:17px 0}.hintbox{background:#10192b;border-left:3px solid var(--gold);padding:12px;color:var(--gold);font-size:12px;line-height:1.8;margin-top:11px;min-height:44px}.nav{display:flex;flex-wrap:wrap;gap:7px;margin:21px 0 0}.nav button{width:45px;height:44px;border:2px solid var(--line);background:#1e2637;color:#c0cddd;font-weight:900}.nav button.active{border-color:var(--gold);color:var(--gold);background:#544425}.nav button.passed{border-color:#449779;color:var(--mint)}.nav button:disabled{color:#546176;opacity:.65}.foot{color:#7e91ab;font-size:11px;padding-top:14px;line-height:1.65}.plaque{display:grid;place-items:center;background:#2d3548;border:4px solid #6d7485;box-shadow:5px 5px #05070c;color:var(--gold);font-size:42px;width:72px;height:82px}.grid{display:grid;gap:4px;align-self:center;max-width:100%;user-select:none}.cell{border:2px solid #495775;background:#222c40;color:#edf4ff;min-width:0;aspect-ratio:1;display:grid;place-items:center;position:relative;font-size:clamp(12px,3vw,22px);padding:0}.cell.power{background:#24534c;border-color:#76e7af}.cell.target{border-color:#c79c54;background:#4b3a29;color:#ffd782;font-size:13px}.cell.on{background:#1e8068;border-color:#7df4a5;color:white}.cell.wall{background:#0b1120;border-color:#192235;cursor:default}.cell.floor{background:#253247}.cell.goal{background:#263e44;border-color:#4c928e;color:#77eac2}.cell.box{background:#9a6d39;color:white;border-color:#ffe1a3;box-shadow:inset -4px -4px #5e432b}.cell.player{background:#467daa;color:white;border-color:#98daff}.cell.light-on{background:#e9c065;box-shadow:0 0 13px #f4db8b66;border-color:#fce8a6}.cell.light-off{background:#253047;border-color:#4b5f7e}.cell.mirror{background:#4b365c;border-color:#b594de;font-size:31px}.cell.laserpath{background:#304f5b}.cell.source{background:#35616d;color:#b6f9ff}.cell.receiver{font-weight:900;font-size:12px}.wirebox{width:100%;height:100%;position:absolute;inset:0;display:grid;place-items:center}.wire{background:#95a8c6;position:absolute}.power .wire{background:#7affc1}.wire.core{width:24%;height:24%}.wire.n{width:22%;height:40%;top:0;left:39%}.wire.s{width:22%;height:40%;bottom:0;left:39%}.wire.w{height:22%;width:40%;left:0;top:39%}.wire.e{height:22%;width:40%;right:0;top:39%}.boardlabel{position:absolute;top:2px;left:4px;font-size:9px;color:#f7d087}.world.normal{color:#79ddff}.world.shadow{color:#e4a3ff}.gears{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.gear{width:68px;height:74px;border:3px dashed #95a9c9;background:#293549;color:var(--gold);font-size:28px;box-shadow:inset 0 0 0 5px #141d2b}.gear span{display:inline-block;transition:transform .18s}.wave{display:flex;gap:4px;align-items:center;background:#101829;padding:9px 8px;border:1px solid #41516a;min-height:42px;width:100%;max-width:360px;overflow:hidden}.pulse{display:inline-block;background:var(--mint);height:20px;flex:0 0 auto;box-shadow:0 0 8px #7aecc37a}.pulse.short{width:12px}.pulse.long{width:33px}.wavegroup{display:flex;align-items:center;gap:5px;width:100%;max-width:420px}.wavegroup .number{width:26px;color:var(--gold);font-size:12px}.wavegroup .wave{flex:1}.overlay{background:#0a1727;border:2px solid #4d6e7c;image-rendering:pixelated;width:100%;max-width:440px;aspect-ratio:22/9}.tag{background:#101827;border:1px solid #46546c;padding:6px 10px;font-size:12px;color:var(--muted)}.spark{animation:flash .4s steps(2) infinite}@keyframes flash{50%{filter:brightness(1.8);transform:scale(1.08)}}.victory{color:var(--mint);font-size:24px;letter-spacing:2px;text-shadow:2px 2px #081b18}.notice{color:var(--gold);text-align:center;font-size:12px;line-height:1.65}.mobilepad{display:grid;grid-template-columns:repeat(3,52px);gap:5px;justify-content:center}.mobilepad .btn{height:45px;font-size:18px;padding:5px}.mobilepad .blank{visibility:hidden}.completed{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}.completed h2{color:var(--gold);margin:0}.progress{font-size:12px;color:var(--mint)}@media(max-width:790px){.shell{grid-template-columns:1fr}.stage{min-height:390px;padding:13px}.top{padding-top:2px}.panelhead{padding:10px 12px}.sidebody{padding:14px;max-width:480px;margin:auto;width:100%}.digits{margin:7px 0 12px}.digit{height:48px;width:45px;font-size:24px}.key{min-height:49px}.exit{height:56px;margin-bottom:12px}.exit span{font-size:25px}}@media(max-width:380px){#app{padding:8px 8px 40px}.grid{gap:2px}.cell{border-width:1px}.btn{padding:8px}.nav button{width:39px;height:39px}.plaque{width:55px;height:65px;font-size:29px}}
 </style>
 </head>
 <body>
-<main id="shell" aria-label="像素火線遊戲。拖曳左右移動，自動射擊。">
-<canvas id="game" width="360" height="720" tabindex="0" aria-label="像素火線，左右移動射擊"></canvas>
-<div id="announce" aria-live="polite"></div>
-</main>
+<div id="app">
+<header class="top"><div><div class="eyebrow">RETRO PUZZLE / BETA 01</div><h1>PIXEL LOCK <span style="color:var(--mint)">▣</span></h1><div class="sub">像素解謎 · 1 關教學 + 10 關正式關卡</div></div><div class="toolbox"><button class="btn sm" data-action="sound">♫ 音效：開</button><button class="btn sm warn" data-action="resetAll">清除進度</button></div></header>
+<section class="shell"><main class="panel"><div class="panelhead"><b id="levelTitle">LEVEL 00</b><span class="chapter" id="levelTag">TUTORIAL</span></div><div class="intro" id="description"></div><div class="stage" id="stage" aria-live="polite"></div></main>
+<aside class="panel"><div class="panelhead"><b>安全出口</b><span class="chapter" id="count">00 / 10</span></div><div class="sidebody"><div class="exit" id="exit"><span>▣</span><strong>LOCKED</strong></div><div class="smalltitle">4-DIGIT ACCESS CODE</div><div class="digits" id="digits"></div><div class="keypad" id="keypad"></div><div class="status" id="lockStatus">先操作機關，再輸入四位數密碼。</div><div class="divider"></div><div class="actions"><button class="btn sm" data-action="reset">↺ 重置本關</button><button class="btn sm gold" data-action="hint">◈ 取得提示</button></div><div class="hintbox" id="hintArea">每關設有三階段提示，不會直接公布完整答案。</div><div id="nextArea"></div></div></aside></section>
+<nav class="nav" id="nav" aria-label="關卡選擇"></nav><footer class="foot">方向鍵／WASD 可控制移動關卡。所有機關均可使用點擊或觸控操作。進度自動儲存於目前裝置。<br>PIXEL LOCK BETA 01 · HTML5 單檔遊戲</footer>
+</div>
 <script>
-(()=>{
+(function(){
 'use strict';
-const canvas=document.getElementById('game');
-const ctx=canvas.getContext('2d',{alpha:false});
-const announce=document.getElementById('announce');
-const W=360,H=720,FIELD_TOP=72,FIELD_BOTTOM=660;
-ctx.imageSmoothingEnabled=false;
-const C={
- dark:'#050611',deep:'#090c1c',sky:'#1a3a70',brick:'#10172a',brick2:'#17233c',
- border:'#72a7d8',steel:'#25436c',white:'#fff7dc',text:'#f4f1dc',
- yellow:'#fff26b',gold:'#ffca55',orange:'#ff8749',red:'#fe5a73',
- green:'#8afc8e',mint:'#41f8c5',blue:'#5dc8ff',purple:'#ba86ff'
+const LEVELS=[
+{t:'密碼鎖入門',tag:'TUTORIAL',code:'3142',desc:'觀察四張數字牌，輸入密碼開門。這一關只教會你操作方式。',h:['看著牆上的四張牌。','依照從左到右排列。','在右側面板輸入四位數，按確認。']},
+{t:'閃爍的密碼',tag:'SIGNAL ORDER',code:'1368',desc:'燈光亮起的先後次序，才是正確的排列方式。按下播放，觀察四盞燈。',h:['每盞燈下方都有固定數字。','記下燈亮起的順序，不是數字大小順序。','依序讀取第 2、4、1、3 盞燈上的數字。']},
+{t:'斷電的控制室',tag:'PIPE NETWORK',code:'6294',desc:'點擊管線使其旋轉 90°。由左側電源送電到四個接收器，讀取 A、B、C、D。',h:['必須讓管線兩端開口相對，電才能流動。','從左邊的電源開始，一路沿著已接通的線往外檢查。','上方需要分岔兩路，下方也需要分岔兩路。']},
+{t:'不能後退的箱子',tag:'SOKOBAN',code:'7045',desc:'用方向鍵或下方按鈕推動四個木箱，使它們全部停在發亮的壓力板上。箱子不能拉回。',h:['不要把箱子推到貼牆的死角。','先想好箱子到目的地需要從哪一側推。','可使用「復原一步」，不必每次都從頭開始。']},
+{t:'光線會說話',tag:'LASER MIRROR',code:'2851',desc:'旋轉三面鏡子並發射雷射。讓光線分別擊中 A、B、C、D 四個接收器。',h:['光線會依照鏡面角度改變方向。','中央鏡決定雷射往上或往下。','上下兩面鏡子再決定光往左或往右。']},
+{t:'重疊的真相',tag:'PIXEL OVERLAY',code:'3907',desc:'兩張像素膠片各有一半線索。旋轉、移動第二張膠片，使兩張圖完整重疊。',h:['青色與橘色像素應該能拼成完整數字。','先把膠片旋回正確方向，再調整位置。','重疊正確時，會出現四個清楚的數字。']},
+{t:'連動齒輪',tag:'LINKED GEARS',code:'8246',desc:'點擊齒輪會使自己順時針旋轉 90°，同時使右邊齒輪逆時針旋轉 90°。讓四個箭頭全部朝上。',h:['每一個操作會影響兩個齒輪。','右邊第四個齒輪也會連動到第一個。','可以先修正第一個齒輪，再處理後續連動。']},
+{t:'神祕電波',tag:'RADIO DECODE',code:'3526',desc:'調到清晰的頻道，播放四組訊號。短脈衝代表 1，長脈衝代表 2；每組加總得到一位數字。',h:['雜訊頻道無法提供穩定內容。','先把旋鈕調到訊號清晰的頻道。','每一排分別加總，短＝1，長＝2。']},
+{t:'一按全變',tag:'LIGHTS OUT',code:'6935',desc:'點擊方格會反轉自己及上、下、左、右相鄰方格的亮滅。將 16 格全部點亮。',h:['按同一格兩次等於沒有按。','可以先觀察每次按鍵影響哪些格。','試著從上方的暗格開始，逐排往下處理。']},
+{t:'兩個世界，一把鑰匙',tag:'DUAL WORLD',code:'4187',desc:'在正常世界推動箱子，切換到影子世界啟動四個感應板。兩個世界可走的範圍不同，但箱子位置不會重設。',h:['只有影子世界能啟動感應板。','某些站位只能在正常世界完成，另一些只能在影子世界完成。','箱子在最左邊時，用正常世界才能站到它的左側；在最右邊時則相反。']},
+{t:'最後一道門',tag:'FINAL CHAMBER',code:'9062',desc:'先觀看閃燈順序，再依正確順序用鏡面雷射啟動四個接收器。最後組合像素膠片找出真正的密碼。',h:['燈光先決定接收器 A、B、C、D 的正確次序。','發射到錯誤接收器會重置啟動順序，但鏡子不會重置。','依序解鎖四個接收器後，才會開啟像素膠片機關。']}
+];
+const $=id=>document.getElementById(id);
+const DIR=['N','E','S','W'],DELTA=[[0,-1],[1,0],[0,1],[-1,0]];
+const PIPE={
+'2,1':['N','E','W'],'1,1':['S','E'],'1,2':['W','E'],'1,3':['N','E','W'],'0,3':['S','E'],
+'2,2':['W','S'],'3,2':['N','S','E'],'3,3':['W','E'],'4,2':['N','E'],'4,3':['W','E']
 };
-const shipArt=[
-'........B........',
-'.......BBB.......',
-'.......BWB.......',
-'......BBWB.......',
-'.....BWWWB.......',
-'...BBWWWWWBB.....',
-'.BBBWWWWWWWBBB...',
-'BBBRWWWWWWWRBBB..',
-'BBBRWBBBBBWRBBB..',
-'.BBBRBBBBBRBBB...',
-'..BBBRBBBRBBB....',
-'....RR...RR......',
-'....OO...OO......'
-];
-const shipPal={B:'#3989e3',W:'#e5fbff',R:'#ff596f',O:'#ffbc5d'};
-const bugArt=[
-'..P......P...',
-'..PP....PP...',
-'...PPPPPP....',
-'.PPCCPPCCPP..',
-'PPPCCPPCCPPP.',
-'PPCPPPPPPCPP.',
-'.PP.PPPP.PP..',
-'..PP.PP.PP...',
-'.PP......PP..',
-'P..........P.'
-];
-const bugPals=[
- {P:'#a979ff',C:'#fff06d'},
- {P:'#ff5e82',C:'#ffef9a'},
- {P:'#54e6c3',C:'#d7fc7e'},
- {P:'#74b8ff',C:'#ffba64'}
-];
-const stars=Array.from({length:92},(_,i)=>({
- x:(i*137.47+13)%W,y:(i*83.63+29)%(FIELD_BOTTOM-FIELD_TOP),
- speed:18+(i%6)*12,size:i%9===0?3:i%3===0?2:1,shade:i%7===0?'#ffee9b':i%3===0?'#6f91c8':'#b5cbe6'
-}));
-let audioContext=null,muted=false,sfxTick=0;
-const input={x:180,down:false,left:false,right:false};
-let player=null,enemies=[],bullets=[],badBullets=[],gates=[],parts=[],texts=[],coins=[],chains=[],laserRays=[];
-let boss=null,mode='menu',stage=1,stageTime=0,elapsed=0,score=0,kills=0,baseHp=22,baseMax=22;
-let best=0,waveTimer=0,gateTimer=0,shotTimer=0,shake=0,hitFlash=0,phase='waves',endReason='',finishChoice=0;
-let lastFrame=0,backScroll=0,waveIndex=0,shotId=0,enemyId=0,hangarTab='ship',lootInfo=null,chestClock=0,shopNotice='',earnedThisRun=0,stageCoins=0;
-try{best=Number(localStorage.getItem('gate-rush-best'))||0}catch(e){}
-
-const PROFILE_KEY='gate-rush-profile-v03';
-const SHIPS=[
- {id:'pulse',name:'突擊戰機',weapon:'脈衝機砲',rarity:'N',color:'#3993ed',desc:'穩定連射與經典扇形彈幕',rate:1},
- {id:'laser',name:'雷射戰機',weapon:'持續光束',rarity:'R',color:'#ff5278',desc:'密集光束，善於精準破閘',rate:.56},
- {id:'spread',name:'擴散戰機',weapon:'散彈砲',rarity:'R',color:'#f5b948',desc:'近距離多顆彈丸，適合掃射',rate:2},
- {id:'rail',name:'重砲戰機',weapon:'電磁穿甲砲',rarity:'SR',color:'#60ecad',desc:'慢速重砲，可貫穿多名敵人',rate:2.6},
- {id:'homing',name:'追蹤戰機',weapon:'導引飛彈',rarity:'SR',color:'#bd8cff',desc:'導引彈自動追擊分散目標',rate:1.65},
- {id:'plasma',name:'電漿戰機',weapon:'連鎖電弧',rarity:'SSR',color:'#68e6ed',desc:'電流可連鎖鄰近敵人',rate:1.4}
-];
-const SKINS=[
- {id:'gold',name:'經典金彈',rarity:'N',color:'#fff26b',trail:'#ff8b4a'},
- {id:'ice',name:'冰藍光彈',rarity:'R',color:'#91e6ff',trail:'#3899f9'},
- {id:'neon',name:'霓虹紫彈',rarity:'R',color:'#d59cff',trail:'#a24ce6'},
- {id:'ember',name:'熔岩火彈',rarity:'SR',color:'#ff754f',trail:'#fbcc66'},
- {id:'ghost',name:'幽靈光彈',rarity:'SR',color:'#bbffe4',trail:'#48afbd'},
- {id:'rainbow',name:'彩虹星彈',rarity:'SSR',color:'#ff92c6',trail:'#82e8fa'}
-];
-const RARITY={N:{rate:55,color:'#b0b7c5'},R:{rate:30,color:'#69baff'},
- SR:{rate:12,color:'#c095ff'},SSR:{rate:3,color:'#ffc85a'}};
-function defaultProfile(){return {wallet:0,ships:['pulse'],bullets:['gold'],ship:'pulse',bullet:'gold',pityShip:0,pityBullet:0}}
-function loadProfile(){
- let data={};
- try{data=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')||{}}catch(e){}
- let p={...defaultProfile(),...data};
- p.wallet=Math.max(0,Math.min(9999999,Math.floor(Number(p.wallet)||0)));
- p.ships=Array.isArray(p.ships)?p.ships.filter(x=>SHIPS.some(i=>i.id===x)):['pulse'];
- p.bullets=Array.isArray(p.bullets)?p.bullets.filter(x=>SKINS.some(i=>i.id===x)):['gold'];
- if(!p.ships.includes('pulse'))p.ships.unshift('pulse');
- if(!p.bullets.includes('gold'))p.bullets.unshift('gold');
- if(!p.ships.includes(p.ship))p.ship='pulse';
- if(!p.bullets.includes(p.bullet))p.bullet='gold';
- p.pityShip=Math.max(0,Math.min(9,Number(p.pityShip)||0));
- p.pityBullet=Math.max(0,Math.min(9,Number(p.pityBullet)||0));
- return p;
+const TARGETS={'0,4':['A','6'],'1,4':['B','2'],'3,4':['C','9'],'4,4':['D','4']};
+const MIRRORS={'2,2':true,'2,0':true,'2,4':true};
+const RECEIVERS={'6,0':'A','6,4':'B','0,0':'C','0,4':'D'};
+const LIGHT_TAPS=[0,1,5,6,8,11,13,14];
+const BITMAP={'0':['111','101','101','101','111'],'1':['010','110','010','010','111'],'2':['111','001','111','100','111'],'3':['111','001','111','001','111'],'4':['101','101','111','001','001'],'5':['111','100','111','001','111'],'6':['111','100','111','101','111'],'7':['111','001','010','010','010'],'8':['111','101','111','101','111'],'9':['111','101','111','001','111']};
+let store={unlocked:0,hints:{},sound:true};try{const s=JSON.parse(localStorage.getItem('pixel-lock-beta01')||'{}');if(s&&typeof s==='object'){store.unlocked=Math.max(0,Math.min(11,Number(s.unlocked)||0));store.hints=s.hints||{};store.sound=s.sound!==false;}}catch(e){}
+let game={idx:Math.min(store.unlocked,10),input:'',done:false,data:{},notice:'',timers:[],playing:false};
+function save(){try{localStorage.setItem('pixel-lock-beta01',JSON.stringify(store));}catch(e){}}
+function later(f,ms){const t=setTimeout(f,ms);game.timers.push(t);}
+function stopTimers(){game.timers.forEach(clearTimeout);game.timers=[];game.playing=false;}
+function beep(freq=440,length=0.06){if(!store.sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=new A(),o=a.createOscillator(),g=a.createGain();o.type='square';o.frequency.value=freq;g.gain.value=.035;o.connect(g);g.connect(a.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+length);o.stop(a.currentTime+length);o.onended=()=>a.close();}catch(e){}}
+function key(k,cls){return '<button class="key '+(cls||'')+'" data-action="key" data-value="'+k+'">'+(k==='X'?'⌫':k==='OK'?'確認':k)+'</button>';}
+function makeKeypad(){const keys=['1','2','3','4','5','6','7','8','9','X','0','OK'];$('keypad').innerHTML=keys.map(k=>key(k,k==='X'?'del':k==='OK'?'enter':'')).join('');}
+function updateLock(){const s=game.input; $('digits').innerHTML=[0,1,2,3].map(i=>'<div class="digit '+(i<s.length?'filled':'')+'">'+(s[i]||'–')+'</div>').join('');$('exit').classList.toggle('open',game.done);$('exit').innerHTML=game.done?'<span>◇</span><strong>OPEN</strong>':'<span>▣</span><strong>LOCKED</strong>'; if(game.done){$('lockStatus').textContent='解鎖成功！出口已開啟。';}else{$('lockStatus').textContent=game.notice||'先完成機關，再輸入四位數密碼。';}}
+function init(n){if(n===1)return{played:false,speed:1};
+if(n===2){let rot={};Object.keys(PIPE).forEach((k,i)=>rot[k]=[1,2,3,1,2,3,2,1,3,1][i]);return{rot};}
+if(n===3)return{p:[5,6],boxes:[[3,4],[5,4],[2,5],[4,5]],goals:[[2,2],[4,2],[6,2],[4,3]],history:[]};
+if(n===4)return{mirrors:{'2,2':'/','2,0':'/','2,4':'/'},lit:{},path:[]};
+if(n===5)return{dx:2,dy:-1,rot:2};
+if(n===6){const g=[0,0,0,0];[0,1,0,3,2].forEach(i=>{g[i]=(g[i]+1)%4;g[(i+1)%4]=(g[(i+1)%4]+3)%4;});return{g};}
+if(n===7)return{channel:1,heard:false};
+if(n===8){let cells=Array(16).fill(true);LIGHT_TAPS.forEach(i=>flip(cells,i));return{cells};}
+if(n===9)return{world:'normal',p:[3,5],box:[3,3],lit:{},history:[]};
+if(n===10)return{phase:0,mirrors:{'2,2':'/','2,0':'/','2,4':'/'},lit:{},path:[],seq:0,dx:2,dy:-1,rot:2};
+return{};}
+function load(n){if(n<0||n>10||n>store.unlocked)return;stopTimers();game.idx=n;game.data=init(n);game.done=false;game.input='';game.notice='';render();}
+function render(){const l=LEVELS[game.idx];$('levelTitle').textContent='LEVEL '+String(game.idx).padStart(2,'0')+' / '+l.t;$('levelTag').textContent=l.tag;$('description').textContent=l.desc;$('count').textContent=String(game.idx).padStart(2,'0')+' / 10';document.querySelector('[data-action="sound"]').textContent=store.sound?'♫ 音效：開':'♫ 音效：關';$('nav').innerHTML=LEVELS.map((v,i)=>'<button data-action="level" data-value="'+i+'" '+(i>store.unlocked?'disabled':'')+' class="'+(game.idx===i?'active':i<store.unlocked?'passed':'')+'" title="'+v.t+'">'+(i===0?'教':String(i).padStart(2,'0'))+'</button>').join('');updateLock();renderHint();renderNext();renderStage();}
+function renderHint(){const count=store.hints[game.idx]||0;$('hintArea').textContent=count?LEVELS[game.idx].hints[count-1]:'需要協助時，可逐步開啟三階段提示。';document.querySelector('[data-action="hint"]').textContent=count>=3?'◈ 已達第 3 提示':'◈ 提示 '+(count+1)+'/3';}
+function renderNext(){const area=$('nextArea');if(!game.done){area.innerHTML='';return;}area.innerHTML='<div class="divider"></div><div class="actions"><button class="btn accent" data-action="'+(game.idx===10?'credits':'next')+'">'+(game.idx===10?'★ 查看結局':'下一關 →')+'</button></div>';}
+function note(s){$('stage').querySelector('.msg')?.remove();const div=document.createElement('div');div.className='msg';div.textContent=s;$('stage').appendChild(div);}
+function b(act,label,value,cl){return'<button class="btn '+(cl||'')+'" data-action="'+act+'"'+(value===undefined?'':' data-value="'+value+'"')+'>'+label+'</button>';}
+function wrapper(inner,msg){$('stage').innerHTML=inner+'<div class="msg">'+(msg||'')+'</div>';}
+function ready(){const d=game.data,n=game.idx;if(n===0)return true;if(n===1)return !!d.played;if(n===2)return pipePower().count===4;if(n===3)return d.goals.every(g=>d.boxes.some(x=>same(g,x)));if(n===4)return Object.keys(d.lit).length===4;if(n===5)return aligned();if(n===6)return d.g.every(x=>x===0);if(n===7)return d.channel===2&&d.heard;if(n===8)return d.cells.every(Boolean);if(n===9)return Object.keys(d.lit).length===4;if(n===10)return d.phase===1&&aligned();return false;}
+function aligned(){const d=game.data;return d.dx===0&&d.dy===0&&d.rot===0;}
+function same(a,b){return a[0]===b[0]&&a[1]===b[1];}
+function check(){if(game.input.length!==4){game.notice='請先輸入四位數。';beep(160);updateLock();return;}if(game.input!==LEVELS[game.idx].code){game.notice='密碼錯誤，可以重新檢查線索。';beep(145);game.input='';updateLock();return;}if(!ready()){game.notice='數字正確，但機關尚未完成；請先實際解開本關機關。';beep(180);updateLock();return;}game.done=true;store.unlocked=Math.max(store.unlocked,Math.min(11,game.idx+1));save();beep(784,.18);game.notice='';render();if(game.idx===10)note('全部十關正式機關已破解！按右側按鈕觀看結局。');}
+function flip(cells,i){let x=i%4,y=Math.floor(i/4);[[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(p=>{let xx=x+p[0],yy=y+p[1];if(xx>=0&&xx<4&&yy>=0&&yy<4)cells[yy*4+xx]=!cells[yy*4+xx];});}
+function pipeDirs(k){const rot=game.data.rot[k]||0;return PIPE[k].map(t=>DIR[(DIR.indexOf(t)+rot)%4]);}
+function pipePower(){const visited=new Set(['2,0']);let q=[[2,0]],dirsAt=(r,c)=>{const k=r+','+c;if(k==='2,0')return['E'];if(PIPE[k])return pipeDirs(k);if(TARGETS[k])return['W'];return[];};
+while(q.length){const [r,c]=q.shift();const here=dirsAt(r,c);here.forEach(d=>{const i=DIR.indexOf(d),nr=r+DELTA[i][1],nc=c+DELTA[i][0],k=nr+','+nc;if(nr<0||nc<0||nr>=5||nc>=5||visited.has(k))return;if(dirsAt(nr,nc).includes(DIR[(i+2)%4])){visited.add(k);q.push([nr,nc]);}});}
+let count=Object.keys(TARGETS).filter(k=>visited.has(k)).length;return{visited,count};}
+function wire(dirs){return'<div class="wirebox"><i class="wire core"></i>'+dirs.map(dir=>'<i class="wire '+dir.toLowerCase()+'"></i>').join('')+'</div>';}
+function boardPipe(){const p=pipePower();let arr=[];for(let r=0;r<5;r++){for(let c=0;c<5;c++){let k=r+','+c,cl='cell',inner='';if(k==='2,0'){cl+=' source';inner=wire(['E'])+'<small class="boardlabel">電</small>';}else if(PIPE[k]){cl+=(p.visited.has(k)?' power':'');inner=wire(pipeDirs(k));}else if(TARGETS[k]){cl+=' target'+(p.visited.has(k)?' on':'');inner=TARGETS[k][0]+'<small style="font-size:16px">'+(p.visited.has(k)?TARGETS[k][1]:'?')+'</small>';}else{cl+=' wall';}arr.push('<button class="'+cl+'" style="width:100%;height:100%" '+(PIPE[k]?'data-action="pipe" data-value="'+k+'"':'disabled')+' aria-label="管線 '+k+'">'+inner+'</button>');}}
+return'<div class="grid" style="grid-template-columns:repeat(5,minmax(42px,60px))">'+arr.join('')+'</div><div class="status">已接通 '+p.count+' / 4 個接收器　｜　'+(p.count===4?'A → B → C → D':'旋轉管線，讓電流流通')+'</div>';}
+function controls(){return'<div class="mobilepad">'+b('move','↑','U','')+b('move','↑','U','')+b('move','↑','U','')+'</div>';}
+function dpad(){return'<div class="mobilepad"><span class="blank"></span>'+b('move','▲','U')+'<span class="blank"></span>'+b('move','◀','L')+b('undo','↶')+b('move','▶','R')+'<span class="blank"></span>'+b('move','▼','D')+'<span class="blank"></span></div>';}
+function boardSokoban(){const d=game.data,out=[];for(let y=0;y<9;y++)for(let x=0;x<9;x++){const wall=x===0||x===8||y===0||y===8;const box=d.boxes.some(p=>same(p,[x,y])),goal=d.goals.some(p=>same(p,[x,y])),player=same(d.p,[x,y]);const cl=wall?'wall':box?'box':player?'player':goal?'goal':'floor';out.push('<div class="cell '+cl+'" title="'+(wall?'牆壁':box?'箱子':player?'機器人':goal?'壓力板':'地板')+'">'+(box?'▣':player?'◆':goal?'◎':'')+'</div>');}
+const complete=ready();return'<div class="grid" style="grid-template-columns:repeat(9,minmax(25px,42px))">'+out.join('')+'</div>'+dpad()+'<div class="status">'+(complete?'四個壓力板已啟動！顯示器：7 0 4 5':'◆ 為玩家，▣ 為箱子，◎ 為壓力板（可復原操作）')+'</div>';}
+function moveSok(dv){const dirs={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},v=dirs[dv];if(!v)return;const d=game.data,p=[d.p[0]+v[0],d.p[1]+v[1]],wall=t=>t[0]<=0||t[0]>=8||t[1]<=0||t[1]>=8;if(wall(p))return;const i=d.boxes.findIndex(a=>same(a,p));let next=null;if(i>=0){next=[p[0]+v[0],p[1]+v[1]];if(wall(next)||d.boxes.some(z=>same(z,next)))return;}d.history.push({p:[...d.p],boxes:d.boxes.map(x=>[...x])});d.p=p;if(i>=0)d.boxes[i]=next;beep(260,.025);renderStage();}
+function raycast(){let x=0,y=2,d='E',path=[[x,y]],seen=new Set(),hit=null;const mirrors=game.data.mirrors;for(let i=0;i<50;i++){const j=DIR.indexOf(d);x+=DELTA[j][0];y+=DELTA[j][1];if(x<0||x>=7||y<0||y>=5)break;const sig=x+','+y+','+d;if(seen.has(sig))break;seen.add(sig);path.push([x,y]);const k=x+','+y;if(RECEIVERS[k]){hit=RECEIVERS[k];break;}if(mirrors[k]){const slash=mirrors[k]==='/';d=(slash?{N:'E',E:'N',S:'W',W:'S'}:{N:'W',W:'N',S:'E',E:'S'})[d];}}
+return{path,hit};}
+function boardLaser(final){const d=game.data,path=new Set(d.path.map(p=>p.join(',')));let out=[];for(let y=0;y<5;y++)for(let x=0;x<7;x++){const k=x+','+y,m=d.mirrors[k],receiver=RECEIVERS[k],source=x===0&&y===2;let cl='cell '+(m?'mirror':receiver?'receiver target':source?'source':path.has(k)?'laserpath':'floor');if(receiver&&d.lit[receiver])cl+=' on';out.push('<button class="'+cl+'" '+(m?'data-action="mirror" data-value="'+k+'"':'disabled')+' title="'+(m?'旋轉反射鏡':receiver?'接收器 '+receiver:'')+'">'+(m?m:receiver?receiver:source?'➤':path.has(k)?'·':'')+'</button>');}
+return'<div class="grid" style="grid-template-columns:repeat(7,minmax(34px,52px))">'+out.join('')+'</div><div class="actions">'+b('fire','➤ 發射雷射',undefined,'gold')+b('clearBeam','清除光路')+'</div><div class="status">'+(final?'啟動進度 '+d.seq+' / 4，錯誤順序會重新計算': '已啟動 '+Object.keys(d.lit).length+' / 4 個接收器')+'</div>'+(final?'':'<div class="tag">A '+(d.lit.A?'2':'?')+'　B '+(d.lit.B?'8':'?')+'　C '+(d.lit.C?'5':'?')+'　D '+(d.lit.D?'1':'?')+'</div>');}
+function fire(final){const result=raycast(),d=game.data;d.path=result.path;beep(660,.09);if(result.hit){if(final){const target=['D','B','A','C'][d.seq];if(result.hit===target){d.seq++;d.lit[result.hit]=true;if(d.seq===4){d.phase=1;d.dx=2;d.dy=-1;d.rot=2;}}else{d.seq=0;d.lit={};game.notice='接收器順序錯誤，已重置啟動進度。';updateLock();}}else{d.lit[result.hit]=true;}}renderStage();}
+function overlayUI(){return'<div class="tag">青色 + 橘色 = 完整圖案　｜　先旋轉，再平移</div><canvas class="overlay" id="overlayCanvas" width="440" height="180" aria-label="兩層可移動的數字像素膠片"></canvas><div class="actions">'+b('overlay','↶ 旋轉', 'rot')+b('overlay','←','left')+b('overlay','→','right')+b('overlay','↑','up')+b('overlay','↓','down')+'</div><div class="status">'+(aligned()?'◈ 圖層已完全吻合，現在可以辨識密碼。':'調整兩層像素，讓碎片對齊並重組數字。')+'</div>';}
+function overlayPaint(){const canvas=$('overlayCanvas');if(!canvas)return;const ctx=canvas.getContext('2d');if(!ctx)return;const w=440,h=180;ctx.fillStyle='#0b1727';ctx.fillRect(0,0,w,h);const code=game.idx===10?'9062':'3907',a=[],b=[];for(let i=0;i<4;i++){BITMAP[code[i]].forEach((row,y)=>{for(let x=0;x<3;x++)if(row[x]==='1'){const p=[i*5+x,y];((x+y+i)%2===0?a:b).push(p);}});}
+const d=game.data,scale=17,centerX=220,centerY=90,ox=-8.5,oy=-2;function pts(points,color,dx,dy,rot){ctx.fillStyle=color;points.forEach(p=>{let x=p[0]-8.5,y=p[1]-2;for(let j=0;j<rot;j++){const a=x;x=-y;y=a;}ctx.fillRect(centerX+(x+dx)*scale,centerY+(y+dy)*scale,scale-2,scale-2);});}
+ctx.strokeStyle='#39516a';ctx.strokeRect(26,38,388,108);pts(a,'#5ce3df',0,0,0);pts(b,'#ffa356',d.dx,d.dy,d.rot);if(aligned()){ctx.strokeStyle='#9df4af';ctx.lineWidth=3;ctx.strokeRect(21,32,399,117);}}
+function adjustOverlay(v){const d=game.data;if(v==='rot')d.rot=(d.rot+1)%4;if(v==='left')d.dx=Math.max(-3,d.dx-1);if(v==='right')d.dx=Math.min(3,d.dx+1);if(v==='up')d.dy=Math.max(-3,d.dy-1);if(v==='down')d.dy=Math.min(3,d.dy+1);beep(340,.035);renderStage();}
+function boardGears(){const d=game.data;return'<div class="gears">'+d.g.map((n,i)=>'<button class="gear" data-action="gear" data-value="'+i+'" aria-label="旋轉齒輪 '+(i+1)+'"><span style="transform:rotate('+(n*90)+'deg)">↑</span></button>').join('')+'</div><div class="status">'+(ready()?'所有箭頭歸零！面板顯示：8 2 4 6':'點擊齒輪：自身順時針 +1，右側相鄰齒輪逆時針 −1')+'</div>';}
+function boardRadio(){const d=game.data;let waves=d.channel===2?[[1,1,1],[2,2,1],[1,1],[2,2,2]]:[[1,2,1,2,1,1],[2,1,2,1],[1,2,2,1,1],[2,1,1,2]];return'<div class="tag">調諧器：CH '+d.channel+' / 3　'+(d.channel===2?'● SIGNAL CLEAR':'◌ STATIC NOISE')+'</div><div class="actions">'+b('channel','◀ 降低頻道',-1)+b('channel','提高頻道 ▶',1)+b('radio','▶ 播放訊號',undefined,'gold')+'</div>'+waves.map((group,i)=>'<div class="wavegroup"><span class="number">'+(i+1)+'.</span><div class="wave">'+group.map(v=>'<i class="pulse '+(v===1?'short':'long')+'" style="'+(d.channel===2?'':'opacity:.3')+'"></i>').join('')+'</div></div>').join('')+'<div class="status">短脈衝 = 1　·　長脈衝 = 2<br>'+(d.channel===2?(d.heard?'訊號已記錄，請將每一組加總。':'頻道清晰，按播放確認訊號。'):'雜訊太強！請尋找可以穩定接收的頻道。')+'</div>';}
+function boardLights(){const d=game.data;return'<div class="grid" style="grid-template-columns:repeat(4,minmax(49px,72px))">'+d.cells.map((v,i)=>'<button class="cell '+(v?'light-on':'light-off')+'" data-action="light" data-value="'+i+'">'+(v?'✦':'·')+'</button>').join('')+'</div><div class="status">亮燈 '+d.cells.filter(Boolean).length+' / 16　'+(ready()?'全數點亮，顯示器：6 9 3 5':'點亮所有格子，不限制操作次數')+'</div>';}
+function canWalk(world,x,y){return y>=1&&y<=5&&(world==='normal'?x>=1&&x<=4:x>=2&&x<=5);}
+function boardWorld(){const d=game.data,pads=[[2,2],[4,2],[2,4],[4,4]],out=[];for(let y=0;y<7;y++)for(let x=0;x<7;x++){const ok=canWalk(d.world,x,y),onpad=pads.some(p=>same(p,[x,y]));const box=same(d.box,[x,y]),player=same(d.p,[x,y]);let cl=!ok?'wall':box?'box':player?'player':onpad?'goal':'floor';let symbol=box?'▣':player?'◆':onpad?(d.lit[x+','+y]?'✦':'◎'):'';out.push('<div class="cell '+cl+'">'+symbol+'</div>');}
+return'<div class="tag world '+d.world+'">WORLD : '+(d.world==='normal'?'NORMAL / 正常世界':'SHADOW / 影子世界')+'</div><div class="grid" style="grid-template-columns:repeat(7,minmax(32px,48px))">'+out.join('')+'</div><div class="actions">'+b('world','◉ 切換世界',undefined,'gold')+'</div>'+dpad()+'<div class="status">影子世界感應板 '+Object.keys(d.lit).length+' / 4　'+(ready()?'已解鎖：4 1 8 7':'箱子位置會保留；切換不能讓角色或箱子卡進牆內')+'</div>';}
+function moveWorld(v){const dirs={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},delta=dirs[v];if(!delta)return;const d=game.data,p=[d.p[0]+delta[0],d.p[1]+delta[1]];if(!canWalk(d.world,p[0],p[1]))return;let box=null;if(same(p,d.box)){box=[p[0]+delta[0],p[1]+delta[1]];if(!canWalk(d.world,box[0],box[1]))return;}d.history.push({p:[...d.p],box:[...d.box],world:d.world,lit:{...d.lit}});d.p=p;if(box)d.box=box;if(d.world==='shadow'&&[[2,2],[4,2],[2,4],[4,4]].some(a=>same(a,d.box)))d.lit[d.box.join(',')]=true;beep(260,.025);renderStage();}
+function boardFinal(){const d=game.data;if(d.phase===1)return'<div class="victory">FINAL LOCK / 解密膠片</div>'+overlayUI();return'<div class="tag">觀察四個啟動訊號的順序</div><div class="actions">'+b('blink','▶ 重播訊號',undefined,'gold')+'</div><div class="actions" id="lamps">'+['A','B','C','D'].map(n=>'<button class="btn" style="min-width:57px;min-height:58px" id="lamp'+n+'">'+n+'</button>').join('')+'</div>'+boardLaser(true);}
+function renderStage(){const d=game.data;let body='',msg='';switch(game.idx){
+case 0:body='<div class="tag">找到門鎖上的四位數密碼</div><div class="actions">'+['3','1','4','2'].map(n=>'<div class="plaque">'+n+'</div>').join('')+'</div><div class="status">讀取順序：由左至右 → 在右側密碼面板輸入</div>';break;
+case 1:body='<div class="actions" id="lamps">'+[6,1,8,3].map((n,i)=>'<button class="plaque" style="width:64px;height:75px;font-size:31px" id="lamp'+i+'" disabled>'+n+'</button>').join('')+'</div><div class="actions">'+b('blink','▶ 播放燈號',undefined,'gold')+b('speed','播放速度：'+(d.speed===1?'標準':'慢速'))+'</div><div class="status">'+(d.played?'序列已播放，請依亮起次序整理數字。':'按播放，觀察亮燈順序。')+'</div>';break;
+case 2:body=boardPipe();break;
+case 3:body=boardSokoban();break;
+case 4:body=boardLaser(false);break;
+case 5:body=overlayUI();break;
+case 6:body=boardGears();break;
+case 7:body=boardRadio();break;
+case 8:body=boardLights();break;
+case 9:body=boardWorld();break;
+case 10:body=boardFinal();break;
 }
-let profile=loadProfile();
-function saveProfile(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile))}catch(e){shopNotice='儲存失敗：請確認瀏覽器允許網站資料'}}
-function currentShip(){return SHIPS.find(s=>s.id===profile.ship)||SHIPS[0]}
-function currentSkin(){return SKINS.find(s=>s.id===profile.bullet)||SKINS[0]}
-function gainCoins(n){
- const amount=Math.max(0,Math.floor(n));
- profile.wallet+=amount;earnedThisRun+=amount;stageCoins+=amount;
- saveProfile();
+msg=ready()?'◈ 機關完成！請將推理得到的四位數輸入門鎖。':'操作場景中的物件，破解本關規則。';wrapper(body,msg);if((game.idx===5)||(game.idx===10&&d.phase===1))overlayPaint();}
+function blink(){if(game.playing)return;game.playing=true;const n=game.idx,sequence=n===1?[1,3,0,2]:['D','B','A','C'];const slow=n===1&&game.data.speed===2,step=slow?800:520;sequence.forEach((id,i)=>later(()=>{const e=$('lamp'+id);if(e){e.classList.add('spark');beep(350+i*95,.08);}later(()=>e&&e.classList.remove('spark'),step*.5);},i*step));later(()=>{game.playing=false;if(n===1){game.data.played=true;renderStage();}else if(n===10)note('訊號播放完畢。現在依順序啟動接收器。');},sequence.length*step+150);}
+function levelKey(k){if(game.done)return;if(k==='X'){game.input=game.input.slice(0,-1);game.notice='';beep(300,.025);}else if(k==='OK'){check();return;}else if(/^[0-9]$/.test(k)&&game.input.length<4){game.input+=k;game.notice='';beep(520,.025);}updateLock();}
+function endScreen(){stopTimers();$('stage').innerHTML='<div class="completed"><div style="font-size:70px;color:var(--gold)">✦</div><h2>ALL LOCKS CLEARED</h2><div>你已破解 10 個不同的機關，成功逃離像素密室。</div><div class="progress">PIXEL LOCK · BETA 01 COMPLETE</div>'+b('level','返回教學關','0','gold')+'</div>';$('nextArea').innerHTML='';}
+function action(act,val){const d=game.data,n=game.idx;if(act==='level'){load(+val);return;}if(act==='next'){load(Math.min(n+1,10));return;}if(act==='credits'){endScreen();return;}if(act==='sound'){store.sound=!store.sound;save();render();return;}if(act==='resetAll'){if(confirm('確定清除全部關卡進度及提示紀錄？此操作無法還原。')){store.unlocked=0;store.hints={};save();load(0);}return;}if(act==='reset'){load(n);return;}if(act==='hint'){store.hints[n]=Math.min(3,(store.hints[n]||0)+1);save();renderHint();beep(650);return;}if(act==='key'){levelKey(val);return;}if(game.done)return;
+if(act==='blink'&&(n===1||n===10&&d.phase===0)){blink();return;}
+if(act==='speed'&&n===1){d.speed=d.speed===1?2:1;renderStage();return;}
+if(act==='pipe'&&n===2&&PIPE[val]){d.rot[val]=(d.rot[val]+1)%4;beep(390,.03);renderStage();return;}
+if(act==='move'){if(n===3)moveSok(val);if(n===9)moveWorld(val);return;}
+if(act==='undo'&&(n===3||n===9)){const old=d.history.pop();if(old){d.p=old.p;if(n===3)d.boxes=old.boxes;else{d.box=old.box;d.world=old.world;d.lit=old.lit;}renderStage();}return;}
+if(act==='mirror'&&(n===4||n===10&&d.phase===0)&&d.mirrors[val]){d.mirrors[val]=d.mirrors[val]==='/'?'\\':'/';d.path=[];beep(350,.03);renderStage();return;}
+if(act==='fire'&&(n===4||n===10&&d.phase===0)){fire(n===10);return;}
+if(act==='clearBeam'&&(n===4||n===10)){d.path=[];renderStage();return;}
+if(act==='overlay'&&(n===5||n===10&&d.phase===1)){adjustOverlay(val);return;}
+if(act==='gear'&&n===6){const i=+val;d.g[i]=(d.g[i]+1)%4;d.g[(i+1)%4]=(d.g[(i+1)%4]+3)%4;beep(420,.04);renderStage();return;}
+if(act==='channel'&&n===7){d.channel=Math.max(1,Math.min(3,d.channel+(+val)));d.heard=false;beep(400,.03);renderStage();return;}
+if(act==='radio'&&n===7){d.heard=d.channel===2;beep(d.heard?650:180,.13);renderStage();return;}
+if(act==='light'&&n===8){flip(d.cells,+val);beep(d.cells[+val]?660:330,.04);renderStage();return;}
+if(act==='world'&&n===9){const w=d.world==='normal'?'shadow':'normal';if(!canWalk(w,...d.p)||!canWalk(w,...d.box)){note('無法切換！你或箱子會落入另一個世界的牆中。');beep(170);return;}d.history.push({p:[...d.p],box:[...d.box],world:d.world,lit:{...d.lit}});d.world=w;if(w==='shadow'&&[[2,2],[4,2],[2,4],[4,4]].some(a=>same(a,d.box)))d.lit[d.box.join(',')]=true;beep(750);renderStage();return;}
 }
-function openChest(type){
- const price=type==='ship'?120:60,options=type==='ship'?SHIPS:SKINS;
- if(profile.wallet<price){shopNotice='金幣不足，需要 '+price+' 金幣';sfx('hit');return}
- profile.wallet-=price;
- const pityKey=type==='ship'?'pityShip':'pityBullet',roll=Math.random()*100;
- let rarity=roll<3?'SSR':roll<15?'SR':roll<45?'R':'N';
- if(profile[pityKey]>=9&&['N','R'].includes(rarity))rarity='SR';
- profile[pityKey]=['SR','SSR'].includes(rarity)?0:profile[pityKey]+1;
- const candidates=options.filter(x=>x.rarity===rarity);
- const prize=candidates[Math.floor(Math.random()*candidates.length)]||options[0];
- const owned=type==='ship'?profile.ships:profile.bullets,duplicate=owned.includes(prize.id);
- const refund=duplicate?(type==='ship'?60:30):0;
- if(!duplicate)owned.push(prize.id);
- if(refund)profile.wallet+=refund;
- lootInfo={type,prize,duplicate,refund};
- shopNotice='';saveProfile();mode='opening';chestClock=0;
- sfx('gate');buzz(duplicate?60:[50,50,120]);
- say('獲得 '+prize.name+(duplicate?'，重複道具折抵金幣':'，已加入收藏'));
-}
-function equip(type,id){
- const owned=type==='ship'?profile.ships:profile.bullets;
- if(!owned.includes(id)){shopNotice='尚未解鎖，需透過寶箱取得';return}
- if(type==='ship')profile.ship=id;else profile.bullet=id;
- shopNotice='已裝備 '+(type==='ship'?currentShip().name:currentSkin().name);
- saveProfile();sfx('gate');
-}
-
-function rand(a,b){return a+Math.random()*(b-a)}
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
-function line(x1,y1,x2,y2,color,width=1){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(Math.round(x1)+.5,Math.round(y1)+.5);ctx.lineTo(Math.round(x2)+.5,Math.round(y2)+.5);ctx.stroke()}
-function txt(s,x,y,size=14,color=C.text,align='left',weight=800){
- ctx.textAlign=align;ctx.textBaseline='middle';ctx.font=weight+' '+size+'px ui-monospace,SFMono-Regular,Consolas,"Noto Sans TC","Microsoft JhengHei",sans-serif';
- ctx.fillStyle=color;ctx.fillText(String(s),Math.round(x),Math.round(y));
-}
-function bordered(x,y,w,h,fill='#142842',edge='#79a0bd',thick=3){
- rect(x,y,w,h,edge);rect(x+thick,y+thick,w-thick*2,h-thick*2,fill);
- rect(x+thick,y+thick,6,3,'#ffffff29');rect(x+w-thick-8,y+h-thick-3,8,3,'#0005');
-}
-function sprite(art,pal,x,y,s){
- for(let j=0;j<art.length;j++){for(let i=0;i<art[j].length;i++){const a=art[j][i];if(pal[a])rect(x+i*s,y+j*s,s,s,pal[a])}}
-}
-function say(s){announce.textContent=s}
-function sfx(kind){
- if(muted)return;
- try{
-  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-  if(!audioContext)audioContext=new AC();
-  if(audioContext.state==='suspended')audioContext.resume();
-  const osc=audioContext.createOscillator(),gain=audioContext.createGain(),now=audioContext.currentTime;
-  osc.type=kind==='shoot'?'square':kind==='hit'?'sawtooth':'triangle';
-  const v=kind==='shoot'?520:kind==='hit'?140:kind==='gate'?780:kind==='win'?660:210;
-  const d=kind==='shoot'?.035:kind==='hit'?.07:kind==='gate'?.16:.25;
-  osc.frequency.setValueAtTime(v,now);
-  osc.frequency.exponentialRampToValueAtTime(Math.max(50,v*(kind==='win'?1.4:.55)),now+d);
-  gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(kind==='shoot'?.018:.048,now+.006);
-  gain.gain.exponentialRampToValueAtTime(.0001,now+d);
-  osc.connect(gain);gain.connect(audioContext.destination);osc.start(now);osc.stop(now+d+.02);
- }catch(e){}
-}
-function buzz(ms){if(navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}}
-function saveBest(){if(score>best){best=score;try{localStorage.setItem('gate-rush-best',String(best))}catch(e){}}}
-function newRun(){
- player={x:180,y:600,hp:8,maxHp:8,power:8,lanes:1,interval:.29,inv:0};
- input.x=180;stage=1;score=0;kills=0;elapsed=0;earnedThisRun=0;stageCoins=0;
- baseMax=22;baseHp=baseMax;startStage();mode='play';
- say('遊戲開始！射擊閘門強化戰機，收集掉落金幣。');
-}
-function startStage(){
- stageTime=0;phase='waves';waveIndex=0;
- enemies=[];bullets=[];badBullets=[];gates=[];parts=[];texts=[];coins=[];chains=[];laserRays=[];boss=null;
- waveTimer=.6;gateTimer=3.4;shotTimer=.1;shake=0;hitFlash=0;stageCoins=0;
-}
-function stageEnd(){
- const reward=20+stage*5+10;
- gainCoins(reward);
- baseHp=Math.min(baseMax,baseHp+5);
- mode='clear';saveBest();sfx('win');buzz([40,40,70]);
- say('第 '+stage+' 關通關，獲得 '+reward+' 金幣，並修復基地耐久。');
-}
-function gameOver(reason){
- if(mode!=='play')return;mode='dead';endReason=reason||'防線失守';saveBest();sfx('hit');buzz(110);
- say('遊戲結束，總分'+score+'。');
-}
-function addText(s,x,y,col=C.yellow){texts.push({s,x,y,col,life:1.1})}
-function burst(x,y,color,n=10){
- for(let i=0;i<n;i++){const a=rand(0,Math.PI*2),speed=rand(35,130);
- parts.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:rand(.2,.65),max:.65,color,size:rand(2,5)})}
-}
-function makeEnemy(x,y,hp,kind=0,elite=false){
- const heavy=stage>=4&&Math.random()<.13,shield=heavy?Math.floor(hp*.6):0;
- return {id:++enemyId,x,y,hp,max:hp,shield,maxShield:shield,elite,
-  heavy,speed:Math.max(32,51+stage*2+rand(-6,7)-(heavy?12:0)),
-  kind,wobble:rand(0,10),baseX:x,amp:stage>=3?rand(9,23):rand(3,9),
-  dive:stage>=5&&Math.random()<.14};
-}
-function spawnWave(){
- waveIndex++;
- const count=Math.min(9,1+Math.ceil(waveIndex*.84)+Math.floor((stage-1)/3));
- const rows=waveIndex>=8&&stage>=3?3:waveIndex>=6?2:1;
- const step=count>1?282/(count-1):0;
- for(let r=0;r<rows;r++)for(let c=0;c<count;c++){
-  const hp=20+stage*10+Math.floor(waveIndex*2.5)+Math.floor(rand(0,5));
-  const elite=stage>=3&&((c+r*count+waveIndex)%11===0);
-  enemies.push(makeEnemy(39+c*step,-28-r*43,elite?Math.floor(hp*1.7):hp,
-    (waveIndex+c+r)%bugPals.length,elite));
- }
-}
-function positiveGate(){
- // 降低每個閘門的起始獎勵，升級需要實際投入更多子彈
- const pool=[
-  {type:'power',val:2,label:'攻擊',hits:0,width:102},
-  {type:'lanes',val:1,label:'彈道',hits:0,width:102},
-  {type:'speed',val:4,label:'攻速',hits:0,width:102},
-  {type:'heal',val:1,label:'生命',hits:0,width:102}
- ];
- let p={...pool[Math.floor(Math.random()*pool.length)]};
- if(player.lanes>=12&&p.type==='lanes')p={...pool[0]};
- if(player.hp>=player.maxHp&&p.type==='heal')p={...pool[2]};
- return {...p,kind:'normal',lock:0,baseVal:p.val,lastHit:0,decay:0};
-}
-function modifiedGate(kind){
- const p=positiveGate();p.kind=kind;
- if(kind==='reverse'){
-  p.val=p.type==='power'?-3:p.type==='lanes'?-2:p.type==='speed'?-9:-2;
-  p.baseVal=p.val;
- }
- if(kind==='locked'){
-  p.lock=8+stage*2;
-  p.val+=p.type==='power'?1:p.type==='speed'?2:p.type==='heal'?1:0;
-  p.baseVal=p.val;
- }
- return p;
-}
-function gateValue(p,hits=p.hits){
- // 不同能力有不同的升級節奏，14 次命中後達到 MAX。
- // 逆轉閘門需先將負數逐步提高，14 次內仍有機會轉正。
- const h=Math.min(14,Math.max(0,hits));
- if(p.kind==='reverse'){
-  if(p.type==='power')return Math.min(45,p.baseVal+Math.floor(h/3));
-  if(p.type==='lanes')return Math.min(6,p.baseVal+Math.floor(h/4));
-  if(p.type==='speed')return Math.min(65,p.baseVal+Math.floor(h/3)*3);
-  return Math.min(8,p.baseVal+Math.floor(h/4));
- }
- if(p.type==='power')return Math.min(45,p.baseVal+Math.floor(h/4));
- if(p.type==='lanes')return Math.min(6,p.baseVal+Math.floor(h/7));
- if(p.type==='speed')return Math.min(65,p.baseVal+Math.floor(h/4)*2);
- return Math.min(8,p.baseVal+Math.floor(h/7));
-}
-function upgradeGate(p,x,y,impact=1,kind='pulse',volley=0){
- if(p.lock<=0&&p.hits>=14)return;
- if(kind==='laser'&&elapsed-(p.lastLaser||-99)<.19)return;
- if(kind==='laser')p.lastLaser=elapsed;
- if(kind==='spread'){
-  if(p.lastVolley!==volley){p.lastVolley=volley;p.volleyCount=0}
-  if(p.volleyCount>=3)return;
-  p.volleyCount++;
- }
- p.lastHit=elapsed;
- if(p.lock>0){
-  p.lock=Math.max(0,p.lock-impact);
-  if(!p.lock){burst(x,y,C.gold,20);addText('UNLOCK!',x,y-18,C.yellow);sfx('gate')}
-  return;
- }
- const prev=p.val,prevHits=p.hits;
- p.hits=Math.min(14,p.hits+impact);
- p.width=Math.min(155,102+p.hits*4);
- p.val=gateValue(p);
- if(p.hits>prevHits&&p.hits%2===0)burst(x,y,p.type==='lanes'?C.blue:C.mint,3);
- if(p.val!==prev){
-  if(prev<0&&p.val>=0)addText('轉正!',x,y-14,C.green);
-  else addText('+'+(p.val-prev),x,y-14,C.yellow);
- }
- if(p.hits>=14&&prevHits<14){
-  burst(x,y,C.white,12);
-  addText('MAX 穿透',x,y-26,C.blue);
- }
-}
-function spawnGate(){
- let a=positiveGate(),b=positiveGate();
- for(let i=0;i<6&&a.type===b.type;i++)b=positiveGate();
- const roll=Math.random();
- if(stage>=2&&roll<.42){
-  if(Math.random()<.5)a=modifiedGate('reverse');else b=modifiedGate('reverse');
- }else if(stage>=3&&roll<.73){
-  if(Math.random()<.5)a=modifiedGate('locked');else b=modifiedGate('locked');
- }else if(stage>=5&&roll<.93){
-  if(Math.random()<.5)a=modifiedGate('unstable');else b=modifiedGate('unstable');
- }
- gates.push({y:-58,left:a,right:b,glow:0});
-}
-function applyGate(g){
- if(g.lock>0){addText('LOCKED',player.x,player.y-101,C.red);sfx('hit');return}
- const val=g.val;
- const old={power:player.power,lanes:player.lanes,interval:player.interval,hp:player.hp};
- if(g.type==='power')player.power=clamp(player.power+val,3,120);
- if(g.type==='lanes')player.lanes=clamp(player.lanes+val,1,13);
- if(g.type==='speed')player.interval=clamp(player.interval/(1+val/100),.09,.8);
- if(g.type==='heal')player.hp=clamp(player.hp+val,0,player.maxHp);
- const gain=g.label+' '+(val>=0?'+':'')+val+(g.type==='speed'?'%':'');
- addText(gain,player.x,player.y-100,val>=0?C.green:C.red);
- burst(player.x,player.y-70,val>=0?C.green:C.red,16);
- shake=Math.max(shake,2);sfx(val>=0?'gate':'hit');buzz(25);
- if(player.hp<=0){gameOver('負數閘門耗盡生命');return}
- if(old.power!==player.power||old.lanes!==player.lanes||old.interval!==player.interval||old.hp!==player.hp)say('閘門效果 '+gain);
-}
-function spawnBoss(){
- phase='boss';enemies=[];gates=[];badBullets=[];boss={x:180,y:-85,hp:490+stage*360,max:490+stage*360,clock:0,fire:2.4};
- addText('警告！首領來襲',180,190,C.orange);shake=6;sfx('hit');
- say('首領來襲！');
-}
-function fireOne(angle,type,damage,extra={}){
- const speed=type==='laser'?1120:type==='rail'?600:type==='homing'?350:type==='plasma'?540:470;
- bullets.push({x:player.x+Math.sin(angle)*8,y:player.y-34,
-  vx:Math.sin(angle)*speed,vy:-Math.cos(angle)*speed,
-  damage:Math.max(1,Math.round(damage)),kind:type,age:0,volley:shotId,
-  pierce:type==='rail'?4:0,hitIds:new Set(),...extra});
-}
-function shoot(){
- shotId++;
- const ship=currentShip().id,n=player.lanes;
- const arc=n===1?0:n===2?14:Math.min(68,22+(n-3)*5);
- if(ship==='spread'){
-  const count=Math.min(27,5+2*(n-1)),range=Math.min(98,47+(n-1)*4);
-  for(let i=0;i<count;i++)fireOne((-range/2+range*i/(count-1))*Math.PI/180,'spread',player.power*.38);
- }else if(ship==='laser'){
-  const count=Math.min(3,1+Math.floor((n-1)/5));
-  for(let i=0;i<count;i++){
-   const a=(count===1?0:-15+30*i/(count-1))*Math.PI/180;
-   fireOne(a,'laser',player.power*.72);
-   laserRays.push({x:player.x,a,life:.2});
-  }
- }else if(ship==='rail'){
-  const count=Math.min(5,1+Math.floor((n-1)/3));
-  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'rail',player.power*3.2);
- }else if(ship==='homing'){
-  const count=Math.min(6,1+Math.floor(n/2));
-  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'homing',player.power*1.7);
- }else if(ship==='plasma'){
-  const count=Math.min(4,1+Math.floor((n-1)/3));
-  for(let i=0;i<count;i++)fireOne((count===1?0:-arc/2+arc*i/(count-1))*Math.PI/180,'plasma',player.power*.95);
- }else{
-  for(let i=0;i<n;i++)fireOne((n===1?0:-arc/2+arc*i/(n-1))*Math.PI/180,'pulse',player.power);
- }
- if(bullets.length>340)bullets.splice(0,bullets.length-340);
- for(let i=0;i<2;i++)parts.push({x:player.x+rand(-6,6),y:player.y-34,
-  vx:rand(-20,20),vy:rand(-90,-35),life:.12,max:.12,color:currentSkin().color,size:3});
- if(++sfxTick%6===0)sfx('shoot');
-}
-function loseHealth(n=1){
- if(player.inv>0||mode!=='play')return;
- player.hp=Math.max(0,player.hp-n);player.inv=1.25;hitFlash=.3;shake=7;
- burst(player.x,player.y-24,C.red,16);sfx('hit');buzz(80);
- if(player.hp<=0)gameOver('生命耗盡');
-}
-function dropCoins(e,bossDrop=false){
- const amount=bossDrop?10:e.elite?3:Math.random()<.3?1:0;
- if(!amount)return;
- for(let i=0;i<amount;i++){
-  coins.push({x:clamp(e.x+rand(-15,15),26,334),y:e.y+rand(-8,8),
-   vy:85+rand(0,30),wobble:rand(0,6),value:1});
- }
-}
-function hitEnemy(e,dmg){
- let damage=Math.max(1,dmg);
- if(e.shield>0){
-  const absorbed=Math.min(e.shield,damage);
-  e.shield-=absorbed;damage-=absorbed;
- }
- if(damage>0)e.hp-=damage;
- if(e.hp<=0){
-  score+=10+stage*2+(e.elite?20:0);kills++;
-  burst(e.x,e.y,e.elite?C.purple:C.gold,12);
-  addText('+'+(10+stage*2),e.x,e.y-20,C.yellow);
-  dropCoins(e);return true;
- }
- for(let i=0;i<2;i++)parts.push({x:e.x+rand(-8,8),y:e.y+rand(-8,8),
-  vx:rand(-28,28),vy:rand(-50,-10),life:.2,max:.2,color:e.shield>0?C.blue:C.white,size:3});
- return false;
-}
-function chainAttack(origin,exclude){
- let hit=new Set([exclude.id]),from=exclude;
- const count=Math.min(5,1+Math.floor((player.lanes-1)/2));
- for(let i=0;i<count;i++){
-  let next=null,dist=85;
-  for(const e of enemies){const d=Math.hypot(e.x-from.x,e.y-from.y);
-   if(!hit.has(e.id)&&d<dist){dist=d;next=e}}
-  if(!next)break;
-  chains.push({x1:from.x,y1:from.y,x2:next.x,y2:next.y,life:.19});
-  hit.add(next.id);
-  if(hitEnemy(next,Math.max(1,Math.floor(origin*.65)))){
-   const idx=enemies.indexOf(next);if(idx>=0)enemies.splice(idx,1);
-  }
-  from=next;
- }
-}
-function nextStage(choice){
- if(choice===0)player.lanes=Math.min(13,player.lanes+1);
- if(choice===1)player.hp=Math.min(player.maxHp,player.hp+3);
- stage++;startStage();mode='play';say('第'+stage+'關開始');
-}
-function update(dt){
- backScroll+=dt*(mode==='play'?50:15);
- for(let i=parts.length-1;i>=0;i--){
-  const p=parts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=115*dt;p.life-=dt;
-  if(p.life<=0)parts.splice(i,1);
- }
- for(let i=texts.length-1;i>=0;i--){const t=texts[i];t.y-=32*dt;t.life-=dt;if(t.life<=0)texts.splice(i,1)}
- for(let i=chains.length-1;i>=0;i--){chains[i].life-=dt;if(chains[i].life<=0)chains.splice(i,1)}
- for(let i=laserRays.length-1;i>=0;i--){laserRays[i].life-=dt;if(laserRays[i].life<=0)laserRays.splice(i,1)}
- shake=Math.max(0,shake-20*dt);hitFlash=Math.max(0,hitFlash-dt);
- if(mode==='opening'){
-  chestClock+=dt;
-  if(chestClock>=1.05){
-   mode='loot';sfx(lootInfo.duplicate?'gate':'win');
-   burst(180,313,RARITY[lootInfo.prize.rarity].color,42);
-   addText(lootInfo.prize.rarity+'!',180,246,RARITY[lootInfo.prize.rarity].color);
-  }
-  return;
- }
- if(mode!=='play')return;
- elapsed+=dt;stageTime+=dt;player.inv=Math.max(0,player.inv-dt);
- if(input.left)input.x-=210*dt;
- if(input.right)input.x+=210*dt;
- input.x=clamp(input.x,37,323);
- player.x+=(input.x-player.x)*Math.min(1,dt*18);
- player.x=clamp(player.x,37,323);
- if(phase==='waves'){
-  waveTimer-=dt;gateTimer-=dt;
-  if(waveTimer<=0){spawnWave();waveTimer=Math.max(2.6,4.4-stage*.12-waveIndex*.1)}
-  if(gateTimer<=0){spawnGate();gateTimer=7.5}
-  if(stageTime>=36)spawnBoss();
- }
- const cadence=Math.max(.085,player.interval*currentShip().rate);
- shotTimer-=dt;
- if(shotTimer<=0){shoot();shotTimer+=cadence;if(shotTimer<=0)shotTimer=cadence}
- // 閘門自頂向下，玩家到達時領取；上鎖未解鎖則失效
- for(let i=gates.length-1;i>=0;i--){
-  const g=gates[i];g.y+=91*dt;g.glow+=dt;
-  for(const p of [g.left,g.right]){
-   if(p.kind==='unstable'&&p.hits>0&&elapsed-p.lastHit>.85){
-    p.decay+=dt;
-    if(p.decay>=1.0){
-     p.decay=0;p.hits=Math.max(0,p.hits-1);
-     p.width=Math.max(102,p.width-4);
-     p.val=gateValue(p);
-    }
-   }else p.decay=0;
-  }
-  if(g.y>=player.y-88){
-   const chosen=[{p:g.left,cx:99},{p:g.right,cx:261}]
-    .find(item=>Math.abs(player.x-item.cx)<=item.p.width/2+12);
-   if(chosen)applyGate(chosen.p);
-   else addText('MISSED',player.x,player.y-95,C.red);
-   gates.splice(i,1);
-  }else if(g.y>FIELD_BOTTOM)gates.splice(i,1);
- }
- for(let i=enemies.length-1;i>=0;i--){
-  const e=enemies[i];e.y+=e.speed*dt;e.wobble+=dt;
-  const amp=e.dive?e.amp+Math.min(34,stageTime):e.amp;
-  e.x=clamp(e.baseX+Math.sin(e.wobble*(e.dive?2.8:1.7))*amp,30,330);
-  if(e.y>=player.y-18&&e.y<player.y+19&&Math.abs(e.x-player.x)<22){
-   loseHealth(e.heavy?2:1);enemies.splice(i,1);continue;
-  }
-  if(e.y>FIELD_BOTTOM-19){
-   baseHp=Math.max(0,baseHp-(e.heavy?2:1));
-   burst(e.x,FIELD_BOTTOM-18,C.red,7);
-   addText('-'+(e.heavy?2:1)+' BASE',e.x,FIELD_BOTTOM-30,C.red);
-   enemies.splice(i,1);shake=Math.max(shake,2);
-   if(baseHp<=0){gameOver('防線耐久歸零');break}
-  }
- }
- if(mode!=='play')return;
- if(boss){
-  boss.clock+=dt;boss.y+=(138-boss.y)*Math.min(1,dt*1.35);
-  boss.x=180+Math.sin(boss.clock*.9)*100;
-  if(boss.y>118){
-   boss.fire-=dt;
-   if(boss.fire<=0){
-    for(let i=-1;i<=1;i++){
-     const dx=player.x-boss.x,dy=player.y-boss.y,mag=Math.hypot(dx,dy)||1;
-     badBullets.push({x:boss.x+i*20,y:boss.y+32,vx:dx/mag*100+i*40,vy:dy/mag*190});
-    }
-    boss.fire=Math.max(.75,1.8-stage*.075);
-   }
-  }
- }
- for(let i=bullets.length-1;i>=0;i--){
-  const b=bullets[i];b.age+=dt;
-  if(b.kind==='homing'&&b.age>.23){
-   let target=null,dd=1e9;
-   for(const e of enemies){
-    if(e.y>=b.y+14)continue;
-    const d=Math.hypot(e.x-b.x,e.y-b.y);
-    if(d<dd){dd=d;target=e}
-   }
-   if(boss&&boss.y<b.y){target=boss}
-   if(target){
-    const dx=target.x-b.x,dy=target.y-b.y,m=Math.hypot(dx,dy)||1;
-    b.vx+=(dx/m*350-b.vx)*Math.min(1,dt*5);
-    b.vy+=(dy/m*350-b.vy)*Math.min(1,dt*5);
-   }
-  }
-  const oldY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;
-  if(b.y<FIELD_TOP||b.x<17||b.x>343||b.age>3){bullets.splice(i,1);continue}
-  let used=false;
-  // 閘門優先吸收子彈，雷射按時間計數、散彈每輪最多累積三次
-  for(const g of gates){
-   if(Math.min(oldY,b.y)<=g.y+52&&Math.max(oldY,b.y)>=g.y-5){
-    for(const [p,cx] of [[g.left,99],[g.right,261]]){
-     if(Math.abs(b.x-cx)<=p.width/2){
-      // 已升到 MAX 且解鎖的閘門不再吞彈，可繼續命中上方敵人
-      if(p.lock<=0&&p.hits>=14)continue;
-      upgradeGate(p,b.x,b.y,b.kind==='rail'?2:1,b.kind,b.volley);
-      used=true;break;
-     }
-    }
-   }
-   if(used)break;
-  }
-  if(used){bullets.splice(i,1);continue}
-  const pad=b.kind==='rail'?8:b.kind==='homing'?9:5;
-  if(boss&&boss.y>60&&Math.abs(b.x-boss.x)<43+pad&&Math.abs(b.y-boss.y)<31+pad){
-   boss.hp-=b.damage;used=true;
-   if(Math.random()<.25)burst(b.x,b.y,currentSkin().color,2);
-   if(boss.hp<=0){
-    score+=150*stage;kills++;burst(boss.x,boss.y,C.gold,45);
-    boss=null;bullets.splice(i,1);stageEnd();break;
-   }
-  }else{
-   for(let j=enemies.length-1;j>=0;j--){
-    const e=enemies[j];
-    if(Math.abs(b.x-e.x)<15+pad*.3&&Math.abs(b.y-e.y)<14+pad*.3&&!b.hitIds.has(e.id)){
-     b.hitIds.add(e.id);
-     const dead=hitEnemy(e,b.damage);
-     if(b.kind==='plasma')chainAttack(b.damage,e);
-     if(dead)enemies.splice(j,1);
-     if(b.pierce>0){b.pierce--;}else used=true;
-     break;
-    }
-   }
-  }
-  if(used)bullets.splice(i,1);
- }
- // 撿取金幣才會存入錢包，未拾取的金幣離開畫面即消失
- let collected=0;
- for(let i=coins.length-1;i>=0;i--){
-  const c=coins[i];c.y+=c.vy*dt;c.wobble+=dt;
-  c.x+=Math.sin(c.wobble*5)*8*dt;
-  if(Math.abs(c.x-player.x)<28&&Math.abs(c.y-(player.y-10))<32){
-   collected+=c.value;coins.splice(i,1);
-  }else if(c.y>FIELD_BOTTOM-10)coins.splice(i,1);
- }
- if(collected){gainCoins(collected);addText('+'+collected+'G',player.x,player.y-57,C.gold);sfx('gate')}
- for(let i=badBullets.length-1;i>=0;i--){
-  const b=badBullets[i];b.x+=b.vx*dt;b.y+=b.vy*dt;
-  if(b.y>660||b.x<15||b.x>345){badBullets.splice(i,1);continue}
-  if(Math.abs(b.x-player.x)<18&&Math.abs(b.y-(player.y-17))<21){
-   loseHealth(1);badBullets.splice(i,1);
-  }
- }
-}
-function background(){
- rect(0,0,W,H,'#050711');
- rect(14,FIELD_TOP,332,FIELD_BOTTOM-FIELD_TOP,'#080c1c');
- // 各自移動的彩色像素星點，呈現 8-bit 太空背景
- for(const p of stars){
-  const sy=FIELD_TOP+(p.y+backScroll*p.speed/52)%(FIELD_BOTTOM-FIELD_TOP);
-  rect(18+p.x*.90,sy,p.size,p.size,p.shade);
- }
- for(let y=FIELD_TOP+Math.floor(backScroll*.2)%96;y<FIELD_BOTTOM;y+=96){
-  rect(21,y,2,7,'#1b3654');rect(337,y+38,2,7,'#1b3654');
- }
- rect(10,FIELD_TOP,4,FIELD_BOTTOM-FIELD_TOP,'#233e65');
- rect(346,FIELD_TOP,4,FIELD_BOTTOM-FIELD_TOP,'#233e65');
- rect(15,FIELD_TOP,2,FIELD_BOTTOM-FIELD_TOP,'#4b85aa');
- rect(344,FIELD_TOP,2,FIELD_BOTTOM-FIELD_TOP,'#4b85aa');
- rect(14,FIELD_BOTTOM-14,332,14,'#111d34');
- for(let x=18;x<345;x+=24)rect(x,FIELD_BOTTOM-9,12,3,'#24466b');
-}
-function drawMiniShip(cx,cy,ship,scale=2){
- const pal={...shipPal,B:ship.color,R:ship.id==='laser'?'#fae276':shipPal.R};
- const x=Math.round(cx-8.5*scale),y=Math.round(cy-6*scale);
- sprite(shipArt,pal,x,y,scale);
- if(ship.id==='laser')rect(cx-2*scale,y-3*scale,4*scale,5*scale,C.yellow);
- if(ship.id==='spread'){rect(x-5*scale,y+5*scale,5*scale,3*scale,C.orange);rect(x+17*scale,y+5*scale,5*scale,3*scale,C.orange)}
- if(ship.id==='rail')rect(cx-2*scale,y-4*scale,4*scale,7*scale,C.mint);
- if(ship.id==='homing'){rect(x-4*scale,y+6*scale,5*scale,4*scale,C.purple);rect(x+16*scale,y+6*scale,5*scale,4*scale,C.purple)}
- if(ship.id==='plasma'){rect(x-4*scale,y+5*scale,5*scale,3*scale,C.blue);rect(x+16*scale,y+5*scale,5*scale,3*scale,C.blue)}
-}
-function drawCat(){
- if(player.inv>0&&Math.floor(elapsed*14)%2===0)return;
- const x=Math.round(player.x),y=Math.round(player.y);
- rect(x-27,y+14,54,4,'#172a4e');
- drawMiniShip(x,y-12,currentShip(),3);
- if(mode==='play'){
-  rect(x-10,y+18,6,6,Math.sin(elapsed*40)>0?C.yellow:C.orange);
-  rect(x+6,y+18,6,6,Math.sin(elapsed*40)>0?C.orange:C.yellow);
- }
-}
-function drawEnemy(e){
- const x=Math.round(e.x),y=Math.round(e.y);
- const pal=bugPals[e.kind]||bugPals[0];
- sprite(bugArt,pal,x-13,y-11,2);
- if(e.elite){rect(x-18,y-15,3,24,C.gold);rect(x+15,y-15,3,24,C.gold)}
- if(e.shield>0){rect(x-18,y-20,36,3,C.blue);rect(x-18,y+11,36,3,C.blue)}
- if(e.hp<e.max||e.shield>0){
-  rect(x-15,y-26,30,4,'#25334f');
-  rect(x-14,y-25,28*clamp(e.hp/e.max,0,1),2,C.red);
- }
-}
-function drawBoss(){
- if(!boss)return;
- const x=Math.round(boss.x),y=Math.round(boss.y),tick=Math.floor(elapsed*6)%2;
- // 原創 8-bit 宇宙昆蟲首領：左右扇翼、金色雙眼與裝甲核心
- rect(x-52,y-15,18,10,C.purple);rect(x+34,y-15,18,10,C.purple);
- rect(x-58,y-5,21,10,tick?C.red:C.purple);rect(x+37,y-5,21,10,tick?C.red:C.purple);
- rect(x-41,y-27,82,48,'#583ca3');rect(x-35,y-33,70,52,'#8968eb');
- rect(x-23,y-19,46,36,'#1e2549');
- rect(x-19,y-11,13,9,C.yellow);rect(x+6,y-11,13,9,C.yellow);
- rect(x-15,y+9,30,8,C.red);rect(x-5,y+12,10,5,C.white);
- rect(x-49,y+16,15,9,C.blue);rect(x+34,y+16,15,9,C.blue);
- rect(x-42,y-43,84,6,C.dark);
- rect(x-40,y-41,80*clamp(boss.hp/boss.max,0,1),3,C.orange);
- txt('GALACTIC BOSS',x,y-56,13,C.yellow,'center');
-}
-function drawCoins(){
- for(const c of coins){
-  const x=Math.round(c.x),y=Math.round(c.y);
-  rect(x-5,y-5,10,10,'#a15e2b');rect(x-4,y-6,8,10,C.gold);
-  rect(x-2,y-4,4,7,C.yellow);rect(x-1,y-4,2,7,C.orange);
-  rect(x-4,y+3,8,2,C.orange);
- }
-}
-function drawBullets(){
- const skin=currentSkin();
- for(const b of bullets){
-  const color=skin.id==='rainbow'?[C.yellow,C.green,C.blue,C.purple,C.red][b.volley%5]:skin.color;
-  if(b.kind==='laser'){
-   rect(b.x-3,b.y-27,6,42,skin.trail);
-   rect(b.x-1,b.y-29,2,46,color);
-  }else if(b.kind==='rail'){
-   rect(b.x-6,b.y-11,12,21,skin.trail);rect(b.x-3,b.y-17,6,28,color);
-   rect(b.x-1,b.y-21,2,6,C.white);
-  }else if(b.kind==='homing'){
-   rect(b.x-5,b.y-4,10,14,skin.trail);rect(b.x-2,b.y-8,4,11,color);
-   rect(b.x-1,b.y+10,2,7,C.orange);
-  }else if(b.kind==='plasma'){
-   rect(b.x-6,b.y-6,12,12,skin.trail);rect(b.x-3,b.y-9,6,18,color);
-  }else{
-   rect(b.x-2,b.y+4,4,12,skin.trail);
-   rect(b.x-2,b.y-6,4,12,color);rect(b.x-1,b.y-10,2,5,C.white);
-  }
- }
- for(const ray of laserRays){
-  const x=ray.x,y=player.y-38;
-  const endX=x+Math.sin(ray.a)*300,endY=y-Math.cos(ray.a)*460;
-  line(x,y,endX,endY,skin.trail,5);line(x,y,endX,endY,skin.color,2);
- }
- for(const c of chains){
-  line(c.x1,c.y1,c.x2,c.y2,skin.trail,5);
-  line(c.x1,c.y1,c.x2,c.y2,skin.color,2);
- }
- for(const b of badBullets){
-  rect(b.x-5,b.y-5,10,10,C.red);rect(b.x-2,b.y-2,4,4,C.yellow);
- }
-}
-function gateText(g){return g.label+' '+(g.val>=0?'+':'')+g.val+(g.type==='speed'?'%':'')}
-function drawGate(g){
- const y=Math.round(g.y);
- if(y>FIELD_BOTTOM||y<-72)return;
- [{p:g.left,cx:99},{p:g.right,cx:261}].forEach(({p,cx})=>{
-  const w=p.width,x=cx-w/2,locked=p.lock>0,negative=p.val<0,unstable=p.kind==='unstable';
-  const edge=locked?C.blue:negative?C.red:unstable?C.orange:C.green;
-  const fill=locked?'#1a294b':negative?'#411b34':unstable?'#51401b':'#103d37';
-  rect(x-2,y-2,w+4,57,edge);rect(x,y,w,53,fill);
-  rect(x+3,y+4,w-6,5,edge);
-  rect(x+3,y+45,w-6,4,edge);
-  rect(x+5,y+12,w-10,28,'#0b1828');
-  txt(gateText(p),cx,y+26,16,C.white,'center');
-  if(locked){
-   txt('LOCK '+p.lock,cx,y-14,11,C.blue,'center');
-   rect(x+5,y+35,w-10,3,'#243b5c');
-   rect(x+5,y+35,(w-10)*clamp(1-p.lock/(8+stage*2),0,1),3,C.gold);
-  }else{
-   txt(p.lock<=0&&p.hits>=14?'MAX 穿透':unstable?'衰減 LV'+(p.hits+1):p.kind==='reverse'?'逆轉 LV'+(p.hits+1):'LV '+(p.hits+1),
-     cx,y-13,10,negative?C.red:C.yellow,'center');
-  }
-  rect(x-3,y-2,5,10,C.yellow);rect(x+w-2,y-2,5,10,C.yellow);
- });
- rect(179,y-2,2,56,'#375777');
-}
-function drawHud(){
- rect(0,0,W,FIELD_TOP,'#0a1128');rect(0,FIELD_TOP-4,W,4,C.steel);
- txt('像素火線',13,16,17,C.yellow);
- txt('G '+profile.wallet,13,48,13,C.gold);
- txt('STAGE '+stage,170,16,14,C.white,'center');
- rect(117,34,106,10,'#243653');
- rect(119,36,102*(phase==='boss'?1:Math.min(1,stageTime/36)),6,phase==='boss'?C.orange:C.mint);
- txt('基地 '+baseHp+'/'+baseMax,170,59,12,baseHp<=5?C.red:C.green,'center');
- txt('✦'+score,253,17,14,C.gold);
- txt('♥ '+player.hp+'/'+player.maxHp,253,48,14,C.red);
- bordered(323,8,29,30,'#20384f','#84a6b7',2);
- txt('Ⅱ',337,23,16,C.white,'center');
- rect(0,FIELD_BOTTOM,W,H-FIELD_BOTTOM,'#0b1127');rect(0,FIELD_BOTTOM,W,3,'#759cb6');
- const cols=[['攻擊',player.power,C.gold],['彈道',player.lanes,C.blue],['攻速',(1/Math.max(.085,player.interval*currentShip().rate)).toFixed(1),C.green]];
- cols.forEach((a,i)=>{
-  const x=19+i*111;
-  if(i>0)rect(x-9,669,1,35,'#3d5870');
-  txt(a[0],x,678,12,'#a4bace');txt(String(a[1]),x+57,678,18,a[2],'center');
- });
- txt(currentShip().weapon+' · 拾取金幣',180,709,11,C.border,'center');
-}
-function drawEffects(){
- ctx.save();
- for(const p of parts){ctx.globalAlpha=clamp(p.life/p.max,0,1);rect(p.x,p.y,p.size,p.size,p.color)}
- for(const t of texts){ctx.globalAlpha=clamp(t.life/.55,0,1);txt(t.s,t.x,t.y,18,t.col,'center')}
- ctx.restore();
- if(hitFlash>0)rect(0,FIELD_TOP,W,FIELD_BOTTOM-FIELD_TOP,'#ff2e4433');
-}
-function button(x,y,w,h,label,hot=true){
- bordered(x,y,w,h,hot?'#e7af57':'#2d4359',hot?'#fff0b5':'#8ca6bd',3);
- txt(label,x+w/2,y+h/2,18,hot?'#2a2631':C.white,'center');
-}
-function shade(){rect(0,0,W,H,'#050d1bdc')}
-function drawMenu(){
- background();
- for(let i=0;i<6;i++)drawEnemy({x:55+i*49,y:206,hp:12,max:12,shield:0,elite:false,kind:i%4});
- rect(0,0,W,H,'#050714aa');
- bordered(22,78,316,560,'#0b1330','#487bb2',5);
- txt('GATE RUSH',180,128,37,C.yellow,'center',900);
- txt('GALAXY ARMORY',180,164,16,C.blue,'center',900);
- txt('像 素 火 線',180,196,23,C.white,'center');
- rect(52,228,256,3,C.purple);
- drawMiniShip(180,298,currentShip(),5);
- txt(currentShip().name+' · '+currentShip().weapon,180,372,15,C.white,'center');
- txt('闖關賺金幣，解鎖新武器戰機',180,408,14,C.green,'center');
- button(54,445,252,54,'▶ 開始遊戲');
- button(54,510,252,54,'軍械庫 / 寶箱',false);
- txt('G '+profile.wallet+'   ·   BEST '+best,180,593,15,C.gold,'center');
- txt('拖曳左右移動 · 自動射擊',180,672,12,C.border,'center');
-}
-function drawHangar(){
- background();
- rect(0,0,W,H,'#070e22ef');
- bordered(13,12,334,693,'#0d1a31','#3b678f',3);
- txt('銀河軍械庫',22,35,25,C.yellow);
- txt('G '+profile.wallet,24,66,17,C.gold);
- bordered(292,22,42,39,'#263f59','#789dc5',2);txt('×',313,42,24,C.white,'center');
- const tab=hangarTab;
- bordered(22,98,151,49,tab==='ship'?'#28567c':'#172b42',tab==='ship'?C.yellow:'#5988a8',3);
- bordered(186,98,151,49,tab==='bullet'?'#28567c':'#172b42',tab==='bullet'?C.yellow:'#5988a8',3);
- txt('戰機 / 武器',97,122,15,C.white,'center');
- txt('子彈外觀',262,122,15,C.white,'center');
- const items=tab==='ship'?SHIPS:SKINS,owned=tab==='ship'?profile.ships:profile.bullets,selected=tab==='ship'?profile.ship:profile.bullet;
- items.forEach((p,i)=>{
-  const x=22+(i%2)*165,y=157+Math.floor(i/2)*111,has=owned.includes(p.id),equipped=selected===p.id;
-  bordered(x,y,150,102,equipped?'#1e4c51':'#15233e',equipped?C.green:has?'#5a85a8':'#35465d',3);
-  if(tab==='ship')drawMiniShip(x+75,y+28,p,2);
-  else{
-   rect(x+53,y+10,44,30,'#0d1832');rect(x+70,y+9,10,26,p.trail);
-   rect(x+72,y+7,6,27,p.color);rect(x+73,y+3,4,8,C.white);
-  }
-  txt(p.name,x+75,y+54,14,C.white,'center');
-  txt(tab==='ship'?p.weapon:p.rarity+' 彈藥外觀',x+75,y+74,11,RARITY[p.rarity].color,'center');
-  txt(equipped?'已裝備':has?'點擊裝備':'未解鎖 · '+p.rarity,x+75,y+92,11,equipped?C.green:has?C.yellow:C.border,'center');
- });
- button(19,503,153,58,'戰機寶箱 120G',false);
- button(188,503,153,58,'子彈寶箱 60G',false);
- txt('寶箱機率 N55% / R30% / SR12% / SSR3%',180,586,12,C.border,'center');
- txt('第10抽保底 SR 以上｜重複物品返還半價',180,609,12,C.border,'center');
- if(shopNotice)txt(shopNotice,180,640,13,shopNotice.startsWith('已')?C.green:C.red,'center');
- else txt('已獲得的機體與彈藥永久保存',180,640,13,C.green,'center');
- txt('收藏僅儲存在目前瀏覽器',180,681,12,C.border,'center');
-}
-function drawOpening(){
- drawHangar();shade();
- bordered(34,164,292,390,'#131c37','#547fa5',4);
- txt('TREASURE BOX',180,218,26,C.yellow,'center');
- txt('8-BIT LOOT',180,253,13,C.blue,'center');
- const x=180+Math.sin(chestClock*58)*Math.min(9,chestClock*12);
- const y=330+(chestClock>.76?-9:0);
- const rarity=lootInfo?.prize?.rarity||'N';
- const glow=RARITY[rarity].color;
- if(chestClock>.74){
-  rect(86,y-73,188,113,glow+'4d');
-  for(let i=0;i<12;i++){
-   const a=i*Math.PI/6+chestClock;
-   rect(x+Math.cos(a)*(54+chestClock*26),y+Math.sin(a)*(50+chestClock*20),5,5,glow);
-  }
- }
- rect(x-75,y+3,150,77,'#5d3464');
- rect(x-71,y+8,142,64,'#a25a78');
- rect(x-63,y+9,126,8,'#d58f82');
- rect(x-12,y+7,24,67,'#f6ce79');
- rect(x-8,y+27,16,22,'#5a3455');
- rect(x-80,y-17-(chestClock>.74?26:0),160,24,'#d48f8d');
- rect(x-73,y-14-(chestClock>.74?26:0),146,14,'#f6b69d');
- rect(x-14,y-17-(chestClock>.74?26:0),28,22,'#ffcf63');
- txt(chestClock>.75?'光芒綻放！':'開啟中……',180,454,19,chestClock>.75?glow:C.white,'center');
- txt('請勿重複點擊',180,504,12,C.border,'center');
-}
-function drawLoot(){
- drawHangar();shade();
- const p=lootInfo?.prize;
- if(!p)return;
- bordered(24,157,312,419,'#101d35',RARITY[p.rarity].color,6);
- txt('OPEN!',180,198,29,RARITY[p.rarity].color,'center');
- txt(p.rarity+' · '+(lootInfo.type==='ship'?'戰機寶箱':'子彈寶箱'),180,238,16,C.white,'center');
- if(lootInfo.type==='ship')drawMiniShip(180,324,p,4);
- else{
-  rect(158,286,44,77,p.trail);rect(169,272,22,89,p.color);rect(175,261,10,22,C.white);
- }
- txt(p.name,180,389,22,C.yellow,'center');
- txt(lootInfo.duplicate?'重複獲得，返還 '+lootInfo.refund+' 金幣':'全新收藏！已加入軍械庫',
-  180,416,13,lootInfo.duplicate?C.border:C.green,'center');
- button(53,447,254,51,'再抽一次');
- button(53,508,254,51,'返回軍械庫',false);
- if(shopNotice)txt(shopNotice,180,599,13,C.red,'center');
- drawEffects();
-}
-function drawClear(){
- shade();bordered(27,143,306,430,'#152b40','#a0cfdf',5);
- txt('STAGE CLEAR!',180,183,27,C.yellow,'center');
- txt('第 '+stage+' 關完成',180,225,22,C.white,'center');
- txt('本次得分 '+score,180,264,17,C.gold,'center');
- txt('通關獎勵 +'+(30+stage*5)+' G',180,300,18,C.green,'center');
- txt('本關金幣 +'+stageCoins+' · 防線修復 +5',180,332,14,C.border,'center');
- rect(55,356,250,2,'#45647c');
- txt('選擇一項獎勵進入下一關',180,379,15,C.white,'center');
- bordered(43,401,134,100,'#254a42','#74d9ac',3);
- txt('✦ 彈道 +1',110,437,17,C.green,'center');
- txt('扇形覆蓋更廣',110,472,12,C.white,'center');
- bordered(183,401,134,100,'#4b3546','#ffc18c',3);
- txt('♥ 生命 +3',250,437,17,C.yellow,'center');
- txt('恢復生命值',250,472,12,C.white,'center');
- txt('點選獎勵繼續',180,534,12,C.border,'center');
-}
-function drawDead(){
- shade();bordered(27,147,306,426,'#2b2033','#e39b86',5);
- txt('GAME OVER',180,194,31,C.red,'center');
- txt(endReason,180,239,17,C.white,'center');
- txt('到達第 '+stage+' 關',180,276,17,C.border,'center');
- txt('本次得分 '+score,180,315,24,C.gold,'center');
- txt('本局收入 +'+earnedThisRun+' G',180,351,16,C.green,'center');
- txt('錢包餘額 '+profile.wallet+' G',180,379,15,C.border,'center');
- button(56,421,248,53,'↻ 再玩一次');
- button(56,488,248,52,'返回首頁',false);
-}
-function drawPaused(){
- shade();bordered(40,213,280,316,'#172d43','#93b5cd',5);
- txt('遊戲暫停',180,256,28,C.white,'center');
- txt('目前金幣 '+profile.wallet+' G',180,296,15,C.gold,'center');
- button(64,322,232,55,'▶ 繼續遊戲');
- button(64,390,232,50,'重新開始',false);
- button(64,452,232,50,'返回首頁',false);
-}
-function render(){
- ctx.save();
- if(mode==='menu'){drawMenu();ctx.restore();return}
- if(mode==='hangar'){drawHangar();ctx.restore();return}
- if(mode==='opening'){drawOpening();ctx.restore();return}
- if(mode==='loot'){drawLoot();ctx.restore();return}
- if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
- background();
- for(const g of gates)drawGate(g);
- for(const e of enemies)drawEnemy(e);
- drawBoss();drawCoins();drawBullets();drawCat();drawEffects();
- ctx.restore();drawHud();
- if(mode==='clear')drawClear();
- if(mode==='dead')drawDead();
- if(mode==='paused')drawPaused();
-}
-function handleTap(x,y){
- if(mode==='menu'){
-  if(y>=445&&y<=505&&x>=50&&x<=310){newRun();return}
-  if(y>=507&&y<=571&&x>=50&&x<=310){hangarTab='ship';shopNotice='';mode='hangar';return}
-  return;
- }
- if(mode==='hangar'){
-  if(x>=290&&y<78){mode='menu';return}
-  if(y>=95&&y<=148){hangarTab=x<180?'ship':'bullet';shopNotice='';return}
-  if(y>=503&&y<=568){if(x<=180)openChest('ship');else openChest('bullet');return}
-  if(y>=157&&y<=481){
-   const col=x<181?0:1,base=col===0?22:187;
-   const row=Math.floor((y-157)/111),inY=(y-157)%111;
-   if(x>=base&&x<=base+150&&inY<=102&&row>=0&&row<3){
-    const i=row*2+col,p=(hangarTab==='ship'?SHIPS:SKINS)[i];
-    if(p)equip(hangarTab,p.id);
-   }
-  }
-  return;
- }
- if(mode==='loot'){
-  if(y>=447&&y<=501){openChest(lootInfo.type);return}
-  if(y>=508&&y<=565){mode='hangar';shopNotice='';return}
-  return;
- }
- if(mode==='dead'){
-  if(y>=418&&y<=480){newRun();return}
-  if(y>=487&&y<=551){mode='menu';return}
-  return;
- }
- if(mode==='clear'){
-  if(y>=398&&y<=505){if(x>=40&&x<180)nextStage(0);else if(x>180&&x<322)nextStage(1)}
-  return;
- }
- if(mode==='paused'){
-  if(y>=320&&y<=382){mode='play';return}
-  if(y>=389&&y<=447){newRun();return}
-  if(y>=451&&y<=508){mode='menu';return}
-  return;
- }
- if(mode==='play'&&x>318&&y<54){mode='paused';say('遊戲暫停');return}
-}
-function eventPoint(event){
- const r=canvas.getBoundingClientRect();
- return {x:(event.clientX-r.left)/r.width*W,y:(event.clientY-r.top)/r.height*H};
-}
-canvas.addEventListener('pointerdown',e=>{
- e.preventDefault();canvas.focus({preventScroll:true});
- const p=eventPoint(e);
- if(mode==='play'&&!(p.x>318&&p.y<54)){
-  input.down=true;input.x=clamp(p.x,37,323);
-  try{canvas.setPointerCapture(e.pointerId)}catch(err){}
- }else handleTap(p.x,p.y);
-});
-canvas.addEventListener('pointermove',e=>{
- if(!input.down||mode!=='play')return;
- const p=eventPoint(e);input.x=clamp(p.x,37,323);
-});
-function release(){input.down=false}
-canvas.addEventListener('pointerup',release);
-canvas.addEventListener('pointercancel',release);
-window.addEventListener('blur',()=>{release();input.left=false;input.right=false;if(mode==='play')mode='paused'});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='play')mode='paused'});
-window.addEventListener('keydown',e=>{
- if(['ArrowLeft','ArrowRight',' ','Enter','Escape','a','d','A','D','p','P'].includes(e.key))e.preventDefault();
- if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')input.left=true;
- if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')input.right=true;
- if(e.repeat)return;
- if(mode==='menu'&&(e.key==='Enter'||e.key===' '))newRun();
- else if(mode==='dead'&&(e.key==='Enter'||e.key===' '))newRun();
- else if(mode==='clear'&&e.key==='1')nextStage(0);
- else if(mode==='clear'&&e.key==='2')nextStage(1);
- else if((e.key==='p'||e.key==='P'||e.key==='Escape')&&mode==='play')mode='paused';
- else if((e.key==='p'||e.key==='P'||e.key==='Escape')&&mode==='paused')mode='play';
- else if(mode==='paused'&&(e.key==='Enter'||e.key===' '))mode='play';
-});
-window.addEventListener('keyup',e=>{
- if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')input.left=false;
- if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')input.right=false;
-});
-function frame(t){
- if(!lastFrame)lastFrame=t;
- let dt=Math.min(.05,(t-lastFrame)/1000);lastFrame=t;
- update(dt);render();requestAnimationFrame(frame);
-}
-player={x:180,y:600,hp:8,maxHp:8,power:8,lanes:1,interval:.29,inv:0};
-requestAnimationFrame(frame);
+document.addEventListener('click',e=>{const x=e.target.closest('[data-action]');if(x&&!x.disabled)action(x.dataset.action,x.dataset.value);});
+document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.target.closest('input,textarea'))return;const a={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R',w:'U',s:'D',a:'L',d:'R',W:'U',S:'D',A:'L',D:'R'};if(a[e.key]&&(game.idx===3||game.idx===9)&&!game.done){e.preventDefault();action('move',a[e.key]);}else if(/^\d$/.test(e.key)){action('key',e.key);}else if(e.key==='Backspace'){e.preventDefault();action('key','X');}else if(e.key==='Enter'){action('key','OK');}});
+makeKeypad();load(game.idx);
 })();
 </script>
 </body>
