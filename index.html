@@ -4,144 +4,317 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101321">
-<title>PIXEL LOCK | 像素解謎 BETA 02</title>
+<title>PIXEL LOCK | 像素解謎 BETA 03</title>
 <style>
 :root{--bg:#101321;--panel:#1b2133;--panel2:#252e43;--line:#394963;--txt:#f3f1db;--muted:#a0b0c7;--gold:#f7ca63;--mint:#78ebba;--red:#fa7a8a;--blue:#70c9e5;--shadow:#070912}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans TC",monospace}body{background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:25px 25px}
 button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}button:disabled{opacity:.28;cursor:default}#app{max-width:1200px;margin:auto;padding:18px 16px 70px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0 20px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mint)}h1{font-size:clamp(23px,4.6vw,38px);letter-spacing:2px;margin:5px 0 0;text-shadow:3px 3px #05070d}.sub{font-size:12px;color:var(--muted);margin-top:5px}.toolbox{display:flex;gap:8px;flex-wrap:wrap}.shell{display:grid;grid-template-columns:minmax(0,1fr) 295px;gap:14px}.panel{background:var(--panel);border:2px solid var(--line);box-shadow:6px 6px 0 var(--shadow);min-width:0}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel2);border-bottom:2px solid var(--line);padding:12px 15px}.panelhead b{font-size:15px}.chapter{font-size:11px;color:var(--gold);white-space:nowrap}.intro{padding:14px 16px 0;color:var(--muted);font-size:13px;line-height:1.75}.stage{min-height:430px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative}.msg{margin-top:auto;min-height:34px;border-top:1px dashed var(--line);width:100%;text-align:center;padding:12px 5px 2px;color:var(--mint);font-size:12px;line-height:1.6}.sidebody{padding:18px 17px}.exit{height:76px;display:flex;align-items:center;justify-content:center;gap:12px;border:3px solid var(--line);background:linear-gradient(90deg,#141724,#28374b,#141724);margin:0 auto 18px;max-width:200px;color:var(--red);box-shadow:inset 0 -7px #05080c}.exit.open{color:var(--mint);border-color:var(--mint);box-shadow:inset 0 0 20px #78ebba28}.exit span{font-size:32px}.smalltitle{text-align:center;letter-spacing:3px;color:var(--muted);font-size:12px}.digits{display:flex;gap:5px;justify-content:center;margin:13px 0 16px}.digit{width:48px;height:62px;border:2px solid #56647e;display:grid;place-items:center;background:#0d1421;font-size:27px;color:var(--gold)}.digit.filled{border-color:var(--gold)}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.key{min-height:53px;background:#303a50;border:2px solid #536580;color:var(--txt);box-shadow:0 3px #111827;font-weight:900;font-size:20px}.key:active,.btn:active,.cell:active{transform:translateY(2px);box-shadow:none}.key.del{color:var(--red)}.key.enter{background:#1d695c;border-color:#51bf9f;color:white;font-size:13px}.btn{background:#26384e;border:2px solid #49627e;color:var(--txt);padding:10px 12px;box-shadow:0 3px #111725;font-weight:700;font-size:12px}.btn.accent{color:#142822;background:var(--mint);border-color:#b8ffe1}.btn.gold{color:#332712;background:var(--gold);border-color:#ffe4a2}.btn.warn{color:var(--red)}.btn.sm{padding:8px 10px}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}.status{color:var(--muted);line-height:1.65;font-size:12px;min-height:20px;text-align:center}.divider{border-top:1px dashed var(--line);margin:17px 0}.hintbox{background:#10192b;border-left:3px solid var(--gold);padding:12px;color:var(--gold);font-size:12px;line-height:1.8;margin-top:11px;min-height:44px}.nav{display:flex;flex-wrap:wrap;gap:7px;margin:21px 0 0}.nav button{width:45px;height:44px;border:2px solid var(--line);background:#1e2637;color:#c0cddd;font-weight:900}.nav button.active{border-color:var(--gold);color:var(--gold);background:#544425}.nav button.passed{border-color:#449779;color:var(--mint)}.nav button:disabled{color:#546176;opacity:.65}.foot{color:#7e91ab;font-size:11px;padding-top:14px;line-height:1.65}.plaque{display:grid;place-items:center;background:#2d3548;border:4px solid #6d7485;box-shadow:5px 5px #05070c;color:var(--gold);font-size:42px;width:72px;height:82px}.grid{display:grid;gap:4px;align-self:center;max-width:100%;user-select:none}.cell{border:2px solid #495775;background:#222c40;color:#edf4ff;min-width:0;aspect-ratio:1;display:grid;place-items:center;position:relative;font-size:clamp(12px,3vw,22px);padding:0}.cell.power{background:#24534c;border-color:#76e7af}.cell.target{border-color:#c79c54;background:#4b3a29;color:#ffd782;font-size:13px}.cell.on{background:#1e8068;border-color:#7df4a5;color:white}.cell.wall{background:#0b1120;border-color:#192235;cursor:default}.cell.floor{background:#253247}.cell.goal{background:#263e44;border-color:#4c928e;color:#77eac2}.cell.box{background:#9a6d39;color:white;border-color:#ffe1a3;box-shadow:inset -4px -4px #5e432b}.cell.player{background:#467daa;color:white;border-color:#98daff}.cell.light-on{background:#e9c065;box-shadow:0 0 13px #f4db8b66;border-color:#fce8a6}.cell.light-off{background:#253047;border-color:#4b5f7e}.cell.mirror{background:#4b365c;border-color:#b594de;font-size:31px}.cell.laserpath{background:#304f5b}.cell.source{background:#35616d;color:#b6f9ff}.cell.receiver{font-weight:900;font-size:12px}.wirebox{width:100%;height:100%;position:absolute;inset:0;display:grid;place-items:center}.wire{background:#95a8c6;position:absolute}.power .wire{background:#7affc1}.wire.core{width:24%;height:24%}.wire.n{width:22%;height:40%;top:0;left:39%}.wire.s{width:22%;height:40%;bottom:0;left:39%}.wire.w{height:22%;width:40%;left:0;top:39%}.wire.e{height:22%;width:40%;right:0;top:39%}.boardlabel{position:absolute;top:2px;left:4px;font-size:9px;color:#f7d087}.world.normal{color:#79ddff}.world.shadow{color:#e4a3ff}.gears{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.gear{width:68px;height:74px;border:3px dashed #95a9c9;background:#293549;color:var(--gold);font-size:28px;box-shadow:inset 0 0 0 5px #141d2b}.gear span{display:inline-block;transition:transform .18s}.wave{display:flex;gap:4px;align-items:center;background:#101829;padding:9px 8px;border:1px solid #41516a;min-height:42px;width:100%;max-width:360px;overflow:hidden}.pulse{display:inline-block;background:var(--mint);height:20px;flex:0 0 auto;box-shadow:0 0 8px #7aecc37a}.pulse.short{width:12px}.pulse.long{width:33px}.wavegroup{display:flex;align-items:center;gap:5px;width:100%;max-width:420px}.wavegroup .number{width:26px;color:var(--gold);font-size:12px}.wavegroup .wave{flex:1}.overlay{background:#0a1727;border:2px solid #4d6e7c;image-rendering:pixelated;width:100%;max-width:440px;aspect-ratio:22/9}.tag{background:#101827;border:1px solid #46546c;padding:6px 10px;font-size:12px;color:var(--muted)}.spark{animation:flash .4s steps(2) infinite}@keyframes flash{50%{filter:brightness(1.8);transform:scale(1.08)}}.victory{color:var(--mint);font-size:24px;letter-spacing:2px;text-shadow:2px 2px #081b18}.notice{color:var(--gold);text-align:center;font-size:12px;line-height:1.65}.mobilepad{display:grid;grid-template-columns:repeat(3,52px);gap:5px;justify-content:center}.mobilepad .btn{height:45px;font-size:18px;padding:5px}.mobilepad .blank{visibility:hidden}.completed{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}.completed h2{color:var(--gold);margin:0}.progress{font-size:12px;color:var(--mint)}@media(max-width:790px){.shell{grid-template-columns:1fr}.stage{min-height:390px;padding:13px}.top{padding-top:2px}.panelhead{padding:10px 12px}.sidebody{padding:14px;max-width:480px;margin:auto;width:100%}.digits{margin:7px 0 12px}.digit{height:48px;width:45px;font-size:24px}.key{min-height:49px}.exit{height:56px;margin-bottom:12px}.exit span{font-size:25px}}@media(max-width:380px){#app{padding:8px 8px 40px}.grid{gap:2px}.cell{border-width:1px}.btn{padding:8px}.nav button{width:39px;height:39px}.plaque{width:55px;height:65px;font-size:29px}}
 .evidence{max-width:530px;width:100%;background:#151d2e;border:2px solid #40516a;border-left:5px solid #bca46a;padding:12px 15px;font-size:13px;line-height:1.85;box-shadow:3px 3px 0 #070912}.evidence em{color:#ffd984;font-style:normal}.evidence .signature{font-size:10px;letter-spacing:2px;color:#96a9c4}.ref-photo{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:auto;width:min(210px,65vw);padding:12px;background:#3b4049;border:4px solid #68634b;transform:rotate(-3deg)}.ref-photo div{aspect-ratio:1;min-width:0;background:#111827}.ref-photo .lit{background:#dfcc8f}.stamps{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.stamp{font-size:19px;padding:6px 10px;border:2px solid #657387;background:#20283a}.modebtn.active{background:#476c72;border-color:#8fe2ce;color:#fff}.cell.special{box-shadow:inset 0 0 0 2px #b68f52}.gearframe{display:flex;flex-direction:column;gap:8px;align-items:center}.gearframe small{font-size:12px;color:#e8c776}.gear{position:relative}.gear:after{content:'◆';font-size:9px;color:#f1b677;position:absolute;top:2px;left:45%}.gear span{transform-origin:center}.scenegrid{width:100%;display:flex;flex-direction:column;align-items:center;gap:13px}@media(max-width:400px){.evidence{font-size:12px}.stamp{font-size:15px;padding:6px}} 
-.plaque{position:relative;overflow:hidden}.plaque small{right:3px;top:2px}</style>
+.plaque{position:relative;overflow:hidden}.plaque small{right:3px;top:2px}
+.casefile{background:#131c2d;border:2px solid #63728d;box-shadow:5px 5px #080b12;padding:14px;width:100%;max-width:650px}.casefile h3{font-size:15px;color:#f3d486;margin:0 0 12px}.casefile p{font-size:12px;line-height:1.85;color:#cbd8e6;margin:7px 0}.casefile small{color:#92afc4}.case-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center}.casebox{border:2px solid #52617d;background:#252f46;padding:10px;min-width:0;line-height:1.7}.casebox.selected{border-color:#f4d075;background:#493e30}.casebox.good{border-color:#72d5b2}.casebox.bad{border-color:#e37785}.casebox button{width:100%;margin-top:8px}.case-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;width:100%;max-width:660px}.evidence2{font-size:13px;line-height:1.85;background:#242f41;border-left:4px solid #d0b06c;padding:13px 15px;width:100%;max-width:660px}.evidence2 .source{color:#d6bf8d;font-size:11px;letter-spacing:1px}.evidence2 p{margin:6px 0}.docid{font-size:10px;color:#a5b6c8}.statusbar{font-size:12px;color:#9ec6c9;text-align:center;line-height:1.7}.event{border:2px solid #52627a;background:#1a263a;padding:10px 7px;width:100%;cursor:pointer;color:#f4e7bd;min-height:136px;display:flex;flex-direction:column;gap:7px;align-items:center;justify-content:space-around}.event.selected{border-color:#ffc86d;background:#42392d}.road{width:100%;height:27px;border-top:3px dashed #71879c;border-bottom:3px solid #53687c;position:relative;background:#171e2c}.car{position:absolute;top:1px;width:20px;height:15px;background:#efb36b;border:3px solid #8c583b;box-shadow:0 5px #0f1521}.stamp{color:#a6b6c5;font-size:10px;letter-spacing:1px}.no-select{user-select:none}.btnrow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.lab-card{width:100%;border:2px solid #495b77;background:#1d293d;padding:10px 8px;line-height:1.6;color:#e6e8db;text-align:left;min-height:102px}.lab-card.selected{background:#394456;border-color:#f2c66e}.lab-card .big{font-weight:900;color:#f9d589;font-size:22px}.lab-card .small{font-size:11px;color:#b6c2d5}.morse{display:inline-flex;gap:4px;align-items:center;min-width:80px;height:25px;vertical-align:middle}.pip{background:#77deb7;height:10px;width:12px;display:inline-block}.pip.long{width:31px}.worldgrid{display:grid;grid-template-columns:repeat(7,minmax(32px,48px));gap:3px}.worldgrid .cell{font-size:16px;min-height:32px}.archiveEntry{padding:10px 12px;border-bottom:1px dashed #445670;font-size:12px;line-height:1.9}.archiveEntry strong{color:#f2cc82}.archiveEntry:last-child{border-bottom:0}.switchplate{padding:11px;background:#101a2b;border:2px solid #4b6380;min-width:66px;color:#f6e1b2}.switchplate.on{background:#376558;border-color:#82e6bf}.switchplate strong{font-size:20px;display:block}.signal{border:1px solid #587184;background:#283445;padding:7px;font-size:12px}.signal.ok{border-color:#87d5a9;color:#a0f1bc}.signal.fail{color:#ffb2a4}.tiny{font-size:11px;color:#b0bdcf}.timeline{display:flex;gap:8px;max-width:660px;width:100%;flex-wrap:wrap}.timeline .event{flex:1 1 130px;min-height:110px}.matrix{display:grid;grid-template-columns:repeat(4,minmax(42px,65px));gap:4px}.matrix .cell{min-height:47px}.archivePane{width:100%;max-width:660px}.suspicion{color:#f1a0a1;font-size:12px}.titlebar{letter-spacing:1px;color:#d2c0a4}.pixel-number{font-size:22px;font-weight:900;color:#f6d074;text-shadow:2px 2px #0b111a}.stage .msg{margin-top:8px}@media(max-width:440px){.case-grid{gap:3px}.event{min-height:110px;padding:5px 3px;font-size:11px}.event .stamp{font-size:9px}.casebox{padding:5px}.lab-card{padding:7px 5px}.worldgrid{grid-template-columns:repeat(7,minmax(30px,41px))}.stage{padding:9px}}
+</style>
 </head>
 <body>
 <div id="app">
-<header class="top"><div><div class="eyebrow">RETRO PUZZLE / BETA 02</div><h1>PIXEL LOCK <span style="color:var(--mint)">▣</span></h1><div class="sub">像素解謎 · 1 關教學 + 10 關正式關卡</div></div><div class="toolbox"><button class="btn sm" data-action="sound">♫ 音效：開</button><button class="btn sm warn" data-action="resetAll">清除進度</button></div></header>
-<section class="shell"><main class="panel"><div class="panelhead"><b id="levelTitle">LEVEL 00</b><span class="chapter" id="levelTag">TUTORIAL</span></div><div class="intro" id="description"></div><div class="stage" id="stage" aria-live="polite"></div></main>
-<aside class="panel"><div class="panelhead"><b>安全出口</b><span class="chapter" id="count">00 / 10</span></div><div class="sidebody"><div class="exit" id="exit"><span>▣</span><strong>LOCKED</strong></div><div class="smalltitle">4-DIGIT ACCESS CODE</div><div class="digits" id="digits"></div><div class="keypad" id="keypad"></div><div class="status" id="lockStatus">觀察現場，找到能開門的四位數。</div><div class="divider"></div><div class="actions"><button class="btn sm" data-action="reset">↺ 重置本關</button></div><div class="hintbox">調查檔案　▤<br>訊號、刻痕、紀錄、影子與殘缺物件。</div><div id="nextArea"></div></div></aside></section>
-<nav class="nav" id="nav" aria-label="關卡選擇"></nav><footer class="foot">方向鍵／WASD 可控制移動關卡。所有機關均可使用點擊或觸控操作。進度自動儲存於目前裝置。<br>PIXEL LOCK BETA 02 · HTML5 單檔遊戲</footer>
+<header class="top"><div><div class="eyebrow">RETRO PUZZLE / BETA 03</div><h1>PIXEL LOCK <span style="color:var(--mint)">▣</span></h1><div class="sub">零點封鎖事件 · 1 關教學 + 10 關調查</div></div><div class="toolbox"><button class="btn sm" data-action="sound">♫ 音效：開</button><button class="btn sm warn" data-action="resetAll">清除進度</button></div></header>
+<section class="shell"><main class="panel"><div class="panelhead"><b id="levelTitle">LEVEL 00</b><span class="chapter" id="levelTag">TUTORIAL</span></div><div class="intro" id="description"></div><div class="actions" style="padding:8px 14px 0;justify-content:flex-start"><button class="btn sm gold" data-action="archive">▤ 調查檔案</button><span class="progress" id="archiveCount"></span></div><div class="stage" id="stage" aria-live="polite"></div></main>
+<aside class="panel"><div class="panelhead"><b>安全出口</b><span class="chapter" id="count">00 / 10</span></div><div class="sidebody"><div class="exit" id="exit"><span>▣</span><strong>LOCKED</strong></div><div class="smalltitle">4-DIGIT ACCESS CODE</div><div class="digits" id="digits"></div><div class="keypad" id="keypad"></div><div class="status" id="lockStatus">觀察現場，找到能開門的四位數。</div><div class="divider"></div><div class="actions"><button class="btn sm" data-action="reset">↺ 重置本關</button></div><div class="hintbox">沒有操作提示。調查資料會保存在「調查檔案」；已找到的證據可以反覆檢查。</div><div id="nextArea"></div></div></aside></section>
+<nav class="nav" id="nav" aria-label="關卡選擇"></nav><footer class="foot">點擊畫面中的紀錄與物件，可自行嘗試、比對、排序。方向鍵／WASD 可控制移動關卡。進度存在目前裝置。<br>PIXEL LOCK BETA 03 · HTML5 單檔遊戲</footer>
 </div>
 <script>
+
 (function(){
 'use strict';
-const LEVELS=[{"t":"起點","tag":"TUTORIAL","code":"3142","desc":"抽屜沒有上鎖；把紙條上的數字輸入門鎖。","hints":[]},{"t":"失序的燈光","tag":"LOOP","code":"1368","desc":"四盞燈持續循環。桌上有一張有污漬的維修紀錄。","hints":[]},{"t":"斷電的控制室","tag":"CIRCUIT","code":"9642","desc":"開關、管線、儀錶與舊配線圖。牆角有一塊焦黑的標記。","hints":[]},{"t":"倉庫的最後一批貨","tag":"STORAGE","code":"5470","desc":"四個貨箱、四個貨位，還有一張油漬斑斑的出貨單。","hints":[]},{"t":"光與影的謊言","tag":"OPTICS","code":"8125","desc":"兩道不同顏色的光、反射鏡、玻璃與四個訊號接收器。","hints":[]},{"t":"消失的圖形","tag":"LAYERS","code":"3907","desc":"一面鏡子、兩張破損的透明膠片，以及似曾相識的線條。","hints":[]},{"t":"齒輪的連鎖反應","tag":"MECHANISM","code":"4862","desc":"每個齒輪都有指針、凹槽與刻度；牆上刻著一組羅馬數字。","hints":[]},{"t":"無人回應的電台","tag":"FREQUENCY","code":"3526","desc":"古老的電台留下兩段測試訊號，還有幾個未被破譯的頻道。","hints":[]},{"t":"一按全變","tag":"PATTERN","code":"6935","desc":"牆上的 16 盞燈與一張泛黃照片，似乎不是同一個樣子。","hints":[]},{"t":"平行世界的遺物","tag":"TWO WORLDS","code":"4187","desc":"一個可切換的世界、一塊移動的石板、四個遺失的符號。","hints":[]},{"t":"真相的順序","tag":"LAST DOOR","code":"9062","desc":"熟悉的燈、鏡子與膠片；但這次所有線索都不在原來的位置。","hints":[]}];
-
 const $=id=>document.getElementById(id);
-const DIR=['N','E','S','W'],DELTA=[[0,-1],[1,0],[0,1],[-1,0]];
-const PIPE={
-'2,1':['N','E','W'],'1,1':['S','E'],'1,2':['W','E'],'1,3':['N','E','W'],'0,3':['S','E'],
-'2,2':['W','S'],'3,2':['N','S','E'],'3,3':['W','E'],'4,2':['N','E'],'4,3':['W','E']
-};
-const TARGETS={'0,4':['A','6'],'1,4':['B','2'],'3,4':['C','9'],'4,4':['D','4']};
-const MIRRORS={'2,2':true,'2,0':true,'2,4':true};
-const RECEIVERS={'6,0':'A','6,4':'B','0,0':'C','0,4':'D'};
-const LIGHT_TAPS=[0,1,5,6,8,11,13,14];
-const LIGHT_GOAL=[0,1,0,0,1,0,0,1,1,0,1,0,0,1,1,1].map(Boolean);
-const SOK_GOALS=[[3,2],[5,2],[2,3],[4,3]];
-const SOK_LABELS=['△','◇','●','■'];
-const SOK_DIGITS=['7','0','4','5'];
-const SOK_WALLS=[[1,2],[6,4],[6,5],[5,1],[1,5]];
-const RAY_COLORS={A:'cyan',B:'amber',C:'amber',D:'cyan'};
-const RECEIVER_DIGITS={A:'2',B:'8',C:'5',D:'1'};
-const LIGHT_ORDER=['C','D','A','B'];
-const BITMAP={'0':['111','101','101','101','111'],'1':['010','110','010','010','111'],'2':['111','001','111','100','111'],'3':['111','001','111','001','111'],'4':['101','101','111','001','001'],'5':['111','100','111','001','111'],'6':['111','100','111','101','111'],'7':['111','001','010','010','010'],'8':['111','101','111','101','111'],'9':['111','101','111','001','111']};
-let store={unlocked:0,hints:{},sound:true};try{const s=JSON.parse(localStorage.getItem('pixel-lock-beta02')||'{}');if(s&&typeof s==='object'){store.unlocked=Math.max(0,Math.min(11,Number(s.unlocked)||0));store.hints=s.hints||{};store.sound=s.sound!==false;}}catch(e){}
-let game={idx:Math.min(store.unlocked,10),input:'',done:false,data:{},notice:'',timers:[],playing:false};
-function save(){try{localStorage.setItem('pixel-lock-beta02',JSON.stringify(store));}catch(e){}}
-function later(f,ms){const t=setTimeout(f,ms);game.timers.push(t);}
-function stopTimers(){game.timers.forEach(clearTimeout);game.timers=[];game.playing=false;}
-function beep(freq=440,length=0.06){if(!store.sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=new A(),o=a.createOscillator(),g=a.createGain();o.type='square';o.frequency.value=freq;g.gain.value=.035;o.connect(g);g.connect(a.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+length);o.stop(a.currentTime+length);o.onended=()=>a.close();}catch(e){}}
-function key(k,cls){return '<button class="key '+(cls||'')+'" data-action="key" data-value="'+k+'">'+(k==='X'?'⌫':k==='OK'?'確認':k)+'</button>';}
-function makeKeypad(){const keys=['1','2','3','4','5','6','7','8','9','X','0','OK'];$('keypad').innerHTML=keys.map(k=>key(k,k==='X'?'del':k==='OK'?'enter':'')).join('');}
-function updateLock(){const s=game.input;$('digits').innerHTML=[0,1,2,3].map(i=>'<div class="digit '+(i<s.length?'filled':'')+'">'+(s[i]||'–')+'</div>').join('');$('exit').classList.toggle('open',game.done);$('exit').innerHTML=game.done?'<span>◇</span><strong>OPEN</strong>':'<span>▣</span><strong>LOCKED</strong>';$('lockStatus').textContent=game.done?'門鎖已解除。':game.notice||'觀察現場，找到能開門的四位數。';}
-function init(n){if(n===1)return{played:false,speed:1};if(n===2){const rot={};Object.keys(PIPE).forEach((k,i)=>rot[k]=[1,2,3,1,2,3,2,1,3,1][i]);return{rot};}if(n===3)return{p:[5,6],boxes:[[3,4],[5,4],[2,5],[4,5]],goals:SOK_GOALS,history:[]};if(n===4)return{mirrors:{'2,2':'/','2,0':'/','2,4':'/'},lit:{},path:[],color:'cyan'};if(n===5)return{dx:2,dy:-1,rot:2,mirror:false};if(n===6){const g=[0,0,0,0];[0,1,0,3,2].forEach(i=>{g[i]=(g[i]+1)%4;g[(i+1)%4]=(g[(i+1)%4]+3)%4;});return{g,target:[0,2,3,3]};}if(n===7)return{channel:1,heard:false};if(n===8){const cells=LIGHT_GOAL.slice();LIGHT_TAPS.forEach(i=>flip(cells,i));return{cells};}if(n===9)return{world:'normal',p:[3,5],box:[3,3],lit:{},history:[]};if(n===10)return{phase:0,mirrors:{'2,2':'/','2,0':'/','2,4':'/'},lit:{},path:[],seq:0,dx:2,dy:-1,rot:2,mirror:false,color:'cyan',played:false};return{};}
-function load(n){if(n<0||n>10||n>store.unlocked)return;stopTimers();game.idx=n;game.data=init(n);game.done=false;game.input='';game.notice='';render();}
-function render(){const l=LEVELS[game.idx];$('levelTitle').textContent='LEVEL '+String(game.idx).padStart(2,'0')+' / '+l.t;$('levelTag').textContent=l.tag;$('description').textContent=l.desc;$('count').textContent=String(game.idx).padStart(2,'0')+' / 10';document.querySelector('[data-action="sound"]').textContent=store.sound?'♫ 音效：開':'♫ 音效：關';$('nav').innerHTML=LEVELS.map((v,i)=>'<button data-action="level" data-value="'+i+'" '+(i>store.unlocked?'disabled':'')+' class="'+(game.idx===i?'active':i<store.unlocked?'passed':'')+'" title="'+v.t+'">'+(i===0?'教':String(i).padStart(2,'0'))+'</button>').join('');updateLock();renderNext();renderStage();}
-function renderHint(){}
-function renderNext(){const area=$('nextArea');if(!game.done){area.innerHTML='';return;}area.innerHTML='<div class="divider"></div><div class="actions"><button class="btn accent" data-action="'+(game.idx===10?'credits':'next')+'">'+(game.idx===10?'★ 查看結局':'下一關 →')+'</button></div>';}
-function note(s){$('stage').querySelector('.msg')?.remove();const div=document.createElement('div');div.className='msg';div.textContent=s;$('stage').appendChild(div);}
-function b(act,label,value,cl){return'<button class="btn '+(cl||'')+'" data-action="'+act+'"'+(value===undefined?'':' data-value="'+value+'"')+'>'+label+'</button>';}
-function wrapper(inner,msg){$('stage').innerHTML=inner+'<div class="msg">'+(msg||'')+'</div>';}
-function ready(){const d=game.data,n=game.idx;if(n===0)return true;if(n===1)return !!d.played;if(n===2)return pipePower().count===4;if(n===3)return SOK_GOALS.every((g,i)=>same(g,d.boxes[i]));if(n===4)return Object.keys(d.lit).length===4;if(n===5)return aligned()&&d.mirror;if(n===6)return d.g.every((x,i)=>x===d.target[i]);if(n===7)return d.channel===2&&d.heard;if(n===8)return d.cells.every((x,i)=>x===LIGHT_GOAL[i]);if(n===9)return Object.keys(d.lit).length===4;if(n===10)return d.phase===1&&aligned()&&d.mirror;return false;}
-function aligned(){const d=game.data;return d.dx===0&&d.dy===0&&d.rot===0;}
-function same(a,b){return a[0]===b[0]&&a[1]===b[1];}
-function check(){if(game.input.length!==4){game.notice='尚未輸入四位數。';beep(160);updateLock();return;}if(!ready()){game.notice='門鎖沒有反應。';beep(180);updateLock();return;}if(game.input!==LEVELS[game.idx].code){game.notice='密碼錯誤。';beep(145);game.input='';updateLock();return;}game.done=true;store.unlocked=Math.max(store.unlocked,Math.min(11,game.idx+1));save();beep(784,.18);game.notice='';render();if(game.idx===10)note('十道鎖全部解除。房間歸於寂靜。');}
-function flip(cells,i){let x=i%4,y=Math.floor(i/4);[[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(p=>{let xx=x+p[0],yy=y+p[1];if(xx>=0&&xx<4&&yy>=0&&yy<4)cells[yy*4+xx]=!cells[yy*4+xx];});}
-function pipeDirs(k){const rot=game.data.rot[k]||0;return PIPE[k].map(t=>DIR[(DIR.indexOf(t)+rot)%4]);}
-function pipePower(){const visited=new Set(['2,0']);let q=[[2,0]],dirsAt=(r,c)=>{const k=r+','+c;if(k==='2,0')return['E'];if(PIPE[k])return pipeDirs(k);if(TARGETS[k])return['W'];return[];};
-while(q.length){const [r,c]=q.shift();const here=dirsAt(r,c);here.forEach(d=>{const i=DIR.indexOf(d),nr=r+DELTA[i][1],nc=c+DELTA[i][0],k=nr+','+nc;if(nr<0||nc<0||nr>=5||nc>=5||visited.has(k))return;if(dirsAt(nr,nc).includes(DIR[(i+2)%4])){visited.add(k);q.push([nr,nc]);}});}
-let count=Object.keys(TARGETS).filter(k=>visited.has(k)).length;return{visited,count};}
-function wire(dirs){return'<div class="wirebox"><i class="wire core"></i>'+dirs.map(dir=>'<i class="wire '+dir.toLowerCase()+'"></i>').join('')+'</div>';}
-function boardPipe(){const p=pipePower(),out=[];for(let r=0;r<5;r++)for(let c=0;c<5;c++){const k=r+','+c;let cl='cell',inner='';if(k==='2,0'){cl+=' source';inner=wire(['E'])+'<small class="boardlabel">電</small>';}else if(PIPE[k]){cl+=(p.visited.has(k)?' power':'');inner=wire(pipeDirs(k));}else if(TARGETS[k]){cl+=' target'+(p.visited.has(k)?' on':'');inner=TARGETS[k][0]+'<small style="font-size:16px">'+(p.visited.has(k)?TARGETS[k][1]:'?')+'</small>';}else cl+=' wall';out.push('<button class="'+cl+'" style="width:100%;height:100%" '+(PIPE[k]?'data-action="pipe" data-value="'+k+'"':'disabled')+'>'+inner+'</button>');}return '<div class="grid" style="grid-template-columns:repeat(5,minmax(42px,60px))">'+out.join('')+'</div>'+evidence('被水浸濕的原始儀錶安裝圖','舊位序　<em>C ｜ A ｜ D ｜ B</em>')+'<div class="status">儀錶通電：'+p.count+'／4</div>';}
-function controls(){return'<div class="mobilepad">'+b('move','↑','U','')+b('move','↑','U','')+b('move','↑','U','')+'</div>';}
-function dpad(){return'<div class="mobilepad"><span class="blank"></span>'+b('move','▲','U')+'<span class="blank"></span>'+b('move','◀','L')+b('undo','↶')+b('move','▶','R')+'<span class="blank"></span>'+b('move','▼','D')+'<span class="blank"></span></div>';}
-function boardSokoban(){const d=game.data,out=[];for(let y=0;y<9;y++)for(let x=0;x<9;x++){const wall=x===0||x===8||y===0||y===8||SOK_WALLS.some(a=>same(a,[x,y]));const bi=d.boxes.findIndex(p=>same(p,[x,y]));const gi=SOK_GOALS.findIndex(p=>same(p,[x,y]));const player=same(d.p,[x,y]);const cl=wall?'wall':bi>=0?'box':player?'player':gi>=0?'goal':'floor';const symbol=bi>=0?SOK_LABELS[bi]:player?'◆':gi>=0?(same(d.boxes[gi],[x,y])?SOK_DIGITS[gi]:SOK_LABELS[gi]):'';out.push('<div class="cell '+cl+' '+(bi>=0&&gi===bi?'special':'')+'">'+symbol+'</div>');}return '<div class="grid" style="grid-template-columns:repeat(9,minmax(25px,42px))">'+out.join('')+'</div>'+evidence('沾滿油漬的最後出貨單','封箱次序　<em>■　●　△　◇</em>')+dpad()+'<div class="status">每個木箱都有獨立印記。可用方向鍵移動，中心的 ↶ 可復原。</div>';}
-function moveSok(v){const d=game.data,dirs={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},a=dirs[v];if(!a)return;const wall=p=>p[0]<=0||p[0]>=8||p[1]<=0||p[1]>=8||SOK_WALLS.some(b=>same(b,p));const p=[d.p[0]+a[0],d.p[1]+a[1]];if(wall(p))return;const i=d.boxes.findIndex(x=>same(x,p));let next;if(i>=0){next=[p[0]+a[0],p[1]+a[1]];if(wall(next)||d.boxes.some(x=>same(x,next)))return;}d.history.push({p:[...d.p],boxes:d.boxes.map(x=>[...x])});d.p=p;if(i>=0)d.boxes[i]=next;beep(260,.025);renderStage();}
-function raycast(){const c=game.data.color||'cyan';let x=c==='cyan'?0:6,y=2,d=c==='cyan'?'E':'W';let path=[[x,y]],hit=null;const seen=new Set(),mirrors=game.data.mirrors;for(let i=0;i<50;i++){const j=DIR.indexOf(d);x+=DELTA[j][0];y+=DELTA[j][1];if(x<0||x>=7||y<0||y>=5)break;const k=x+','+y,sig=k+','+d;if(seen.has(sig))break;seen.add(sig);path.push([x,y]);if(RECEIVERS[k]){hit=RECEIVERS[k];break;}if(mirrors[k]){const slash=mirrors[k]==='/';d=(slash?{N:'E',E:'N',S:'W',W:'S'}:{N:'W',W:'N',S:'E',E:'S'})[d];}}return{path,hit};}
-function boardLaser(final){const d=game.data,path=new Set(d.path.map(p=>p.join(','))),out=[];for(let y=0;y<5;y++)for(let x=0;x<7;x++){const k=x+','+y,m=d.mirrors[k],receiver=RECEIVERS[k],source=x===0&&y===2?'cyan':x===6&&y===2?'amber':null;let cl='cell '+(m?'mirror':receiver?'receiver target':source?'source':path.has(k)?'laserpath':'floor');if(receiver&&d.lit[receiver])cl+=' on';let glyph=m?m:receiver?(d.lit[receiver]&&!final?'<span style="'+(['A','C'].includes(receiver)?'display:inline-block;transform:scaleX(-1)':'')+'">'+RECEIVER_DIGITS[receiver]+'</span>':receiver):source?(source==='cyan'?'▶':'◀'):path.has(k)?'·':'';out.push('<button class="'+cl+'" '+(m?'data-action="mirror" data-value="'+k+'"':'disabled')+' title="'+(m?'反射鏡':receiver?'感應器 '+receiver:'')+'">'+glyph+'</button>');}return '<div class="grid" style="grid-template-columns:repeat(7,minmax(34px,52px))">'+out.join('')+'</div><div class="actions"><button class="btn modebtn '+(d.color==='cyan'?'active':'')+'" data-action="color" data-value="cyan">◀ 青光</button><button class="btn modebtn '+(d.color==='amber'?'active':'')+'" data-action="color" data-value="amber">橙光 ▶</button>'+b('fire','發射',undefined,'gold')+'</div>'+(final?'<div class="status">記錄接收器的先後反應。</div>':evidence('玻璃背面的觀測冊','玻璃上的字似乎是反的。<br>觀測位置　<em>B　D　A　C</em>')+'<div class="stamps">'+Object.keys(RAY_COLORS).map(a=>'<span class="stamp" style="color:'+(RAY_COLORS[a]==='cyan'?'#84e1f5':'#ffd18b')+'">'+a+' ◇</span>').join('')+'</div>');}
-function fire(final){const d=game.data,result=raycast();d.path=result.path;beep(660,.09);if(result.hit){if(final){const expected=LIGHT_ORDER[d.seq];if(d.played&&result.hit===expected){d.seq++;d.lit[result.hit]=true;if(d.seq===4){d.phase=1;d.dx=2;d.dy=-1;d.rot=2;d.mirror=false;}}else{d.seq=0;d.lit={};game.notice='接收器熄滅，紀錄歸零。';updateLock();}}else if(RAY_COLORS[result.hit]===d.color){d.lit[result.hit]=true;}else{game.notice='接收器短暫閃動，隨即熄滅。';updateLock();}}renderStage();}
-function overlayUI(){return (game.idx===10?'<div class="tag">A　　　　　 B　　　　　 C　　　　　 D</div>':evidence('鏡框上細小的文字','真正的影像不在玻璃前方。'))+'<canvas class="overlay" id="overlayCanvas" width="440" height="180" aria-label="半透明像素圖層"></canvas><div class="actions">'+b('overlay','↶ 旋轉','rot')+b('overlay','←','left')+b('overlay','→','right')+b('overlay','↑','up')+b('overlay','↓','down')+b('overlay',game.data.mirror?'離開鏡面':'觀看鏡面','mirror','gold')+'</div>';}
-function overlayPaint(){const canvas=$('overlayCanvas');if(!canvas)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.fillStyle='#0b1727';ctx.fillRect(0,0,440,180);const code=game.idx===10?'6290':'3907',left=[],right=[];for(let i=0;i<4;i++)BITMAP[code[i]].forEach((row,y)=>{for(let x=0;x<3;x++)if(row[x]==='1'){const p=[19-(i*5+x),y];((x+y+i)%2===0?left:right).push(p);}});const d=game.data,scale=17,cx=220,cy=90;function draw(points,color,dx,dy,rot){ctx.fillStyle=color;points.forEach(p=>{let x=p[0]-9.5,y=p[1]-2;for(let j=0;j<rot;j++){const a=x;x=-y;y=a;}ctx.fillRect(cx+(x+dx)*scale,cy+(y+dy)*scale,scale-2,scale-2);});}ctx.strokeStyle='#465a74';ctx.strokeRect(24,36,392,110);draw(left,'#5ce3df',0,0,0);draw(right,'#ffa356',d.dx,d.dy,d.rot);canvas.style.transform=d.mirror?'scaleX(-1)':'none';if(aligned()){ctx.strokeStyle='#a4edb5';ctx.lineWidth=3;ctx.strokeRect(20,32,400,118);}}
-function adjustOverlay(v){const d=game.data;if(v==='rot')d.rot=(d.rot+1)%4;if(v==='left')d.dx=Math.max(-3,d.dx-1);if(v==='right')d.dx=Math.min(3,d.dx+1);if(v==='up')d.dy=Math.max(-3,d.dy-1);if(v==='down')d.dy=Math.min(3,d.dy+1);if(v==='mirror')d.mirror=!d.mirror;beep(340,.035);renderStage();}
-function boardGears(){const d=game.data,symbol=['↑','→','↓','←'];return'<div class="gears">'+d.g.map((n,i)=>'<div class="gearframe"><small>槽 '+symbol[d.target[i]]+'</small><button class="gear" data-action="gear" data-value="'+i+'"><span style="transform:rotate('+(n*90)+'deg)">↑</span></button><small>'+(n===d.target[i]?['8','2','4','6'][i]:'◇')+'</small></div>').join('')+'</div>'+evidence('輪系刻痕','<em>III　I　IV　II</em><br>零件旁的刻痕指向四個不同的方位。')+'<div class="status">齒輪轉動時，相鄰的指針也會改變。</div>';}
-function boardRadio(){const d=game.data;const groups=d.channel===2?[[1,1,1],[2,2,1],[1,1],[2,2,2]]:[[1,2,1,2,1,1],[2,1,2,1],[1,2,2,1,1],[2,1,1,2]];const wave=arr=>'<span class="wave">'+arr.map(v=>'<i class="pulse '+(v===1?'short':'long')+'"></i>').join('')+'</span>';return'<div class="tag">接收頻道 '+d.channel+' / 3　'+(d.channel===2?'訊號穩定':'沙沙……嗶……沙沙……')+'</div><div class="actions">'+b('channel','◀ 頻率',-1)+b('channel','頻率 ▶',1)+b('radio','▷ 收聽',undefined,'gold')+'</div>'+evidence('電台測試存檔','TEST α：'+wave([1,2,1])+'<em>4</em><br>TEST β：'+wave([2,2,1])+'<em>5</em>')+groups.map((v,i)=>'<div class="wavegroup"><span class="number">'+['甲','乙','丙','丁'][i]+'</span><div class="wave" style="opacity:'+(d.channel===2?'1':'.33')+'">'+v.map(x=>'<i class="pulse '+(x===1?'short':'long')+'"></i>').join('')+'</div></div>').join('')+'<div class="status">'+(d.heard?'收訊紀錄已保存。':'播放並比對測試存檔。')+'</div>';}
-function boardLights(){const d=game.data;return'<div class="scenegrid"><div class="grid" style="grid-template-columns:repeat(4,minmax(49px,70px))">'+d.cells.map((v,i)=>'<button class="cell '+(v?'light-on':'light-off')+'" data-action="light" data-value="'+i+'">'+(v?'✦':'·')+'</button>').join('')+'</div>'+evidence('泛黃的合照（背面字跡殘缺）','影像右下角寫著：<em>8／4／2／1</em>')+'<div class="ref-photo">'+LIGHT_GOAL.map(v=>'<div class="'+(v?'lit':'')+'"></div>').join('')+'</div></div>';}
-function canWalk(world,x,y){return y>=1&&y<=5&&(world==='normal'?x>=1&&x<=4:x>=2&&x<=5);}
-function boardWorld(){const d=game.data,pads=[[2,2],[4,2],[2,4],[4,4]],digits=['1','7','4','8'],out=[];for(let y=0;y<7;y++)for(let x=0;x<7;x++){const ok=canWalk(d.world,x,y),gi=pads.findIndex(p=>same(p,[x,y]));const box=same(d.box,[x,y]),player=same(d.p,[x,y]);const cl=!ok?'wall':box?'box':player?'player':gi>=0?'goal':'floor';const glyph=box?'▣':player?'◆':gi>=0?(d.lit[x+','+y]?digits[gi]:'◎'):'';out.push('<div class="cell '+cl+'">'+glyph+'</div>');}return '<div class="tag world '+d.world+'">◉ '+(d.world==='normal'?'NORMAL':'SHADOW')+'</div><div class="grid" style="grid-template-columns:repeat(7,minmax(32px,48px))">'+out.join('')+'</div><div class="actions">'+b('world','◉ 切換世界',undefined,'gold')+'</div>'+evidence(d.world==='normal'?'留在牆上的一半字跡':'牆後出現的殘頁',d.world==='normal'?'<em>III　I　IV　II</em>':'四處石板痕跡上有不同數字。')+dpad();}
-function moveWorld(v){const dirs={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},delta=dirs[v];if(!delta)return;const d=game.data,p=[d.p[0]+delta[0],d.p[1]+delta[1]];if(!canWalk(d.world,p[0],p[1]))return;let box=null;if(same(p,d.box)){box=[p[0]+delta[0],p[1]+delta[1]];if(!canWalk(d.world,box[0],box[1]))return;}d.history.push({p:[...d.p],box:[...d.box],world:d.world,lit:{...d.lit}});d.p=p;if(box)d.box=box;if(d.world==='shadow'&&[[2,2],[4,2],[2,4],[4,4]].some(a=>same(a,d.box)))d.lit[d.box.join(',')]=true;beep(260,.025);renderStage();}
-function boardFinal(){const d=game.data;if(d.phase===1)return'<div class="tag">四張膠片：A　B　C　D</div>'+overlayUI();return'<div class="actions">'+b('blink','▷ 播放紀錄',undefined,'gold')+'</div><div class="actions" id="lamps">'+['A','B','C','D'].map(n=>'<button class="btn" style="min-width:57px;min-height:56px" id="lamp'+n+'">'+n+'</button>').join('')+'</div>'+boardLaser(true)+evidence('只剩半頁的日誌','「你看見的順序，未必是它們存在的順序。」');}
-function evidence(title,body){return '<div class="evidence"><div class="signature">✎ '+title+'</div>'+body+'</div>';}
-function renderStage(){const d=game.data;let body='';switch(game.idx){
-case 0:body='<div class="tag">抽屜裡的一張紙條</div><div class="actions">'+['3','1','4','2'].map(n=>'<div class="plaque">'+n+'</div>').join('')+'</div>';break;
-case 1:body='<div class="actions" id="lamps">'+[6,1,8,3].map((n,i)=>'<button class="plaque" style="width:64px;height:77px;font-size:31px;'+(i===1?'border-color:#e57b7b;':'')+'" id="lamp'+i+'" disabled>'+n+(i===1?'<small style="position:absolute;color:#fa8b91;font-size:13px">✕</small>':'')+'</button>').join('')+'</div>'+evidence('帶著油污的維修紀錄','「2 號燈故障時，夜班紀錄便從頭計起。」<br>第 2 座燈底座有一道裂縫。')+'<div class="actions">'+b('blink','▷ 重播燈號',undefined,'gold')+b('speed',d.speed===1?'慢速模式':'正常速度')+'</div>';break;
-case 2:body=boardPipe();break;
-case 3:body=boardSokoban();break;
-case 4:body=boardLaser(false);break;
-case 5:body=overlayUI();break;
-case 6:body=boardGears();break;
-case 7:body=boardRadio();break;
-case 8:body=boardLights();break;
-case 9:body=boardWorld();break;
-case 10:body=boardFinal();break;
-}wrapper(body,game.done?'出口的鎖發出清脆聲響。':'房間裡的機關還在等待回應。');if(game.idx===5||(game.idx===10&&d.phase===1))overlayPaint();}
-function blink(){if(game.playing)return;game.playing=true;const n=game.idx,d=game.data,seq=n===1?[0,2,1,3]:LIGHT_ORDER,step=n===1&&d.speed===2?820:510;seq.forEach((id,i)=>later(()=>{const e=$('lamp'+id);if(e){e.classList.add('spark');beep(350+i*95,.08);}later(()=>{if(e)e.classList.remove('spark');},step*.5);},i*step));later(()=>{game.playing=false;d.played=true;if(n===1)renderStage();},seq.length*step+150);}
-function levelKey(k){if(game.done)return;if(k==='X'){game.input=game.input.slice(0,-1);game.notice='';beep(300,.025);}else if(k==='OK'){check();return;}else if(/^[0-9]$/.test(k)&&game.input.length<4){game.input+=k;game.notice='';beep(520,.025);}updateLock();}
-function endScreen(){stopTimers();$('stage').innerHTML='<div class="completed"><div style="font-size:70px;color:var(--gold)">✦</div><h2>ALL LOCKS CLEARED</h2><div>你已破解 10 個不同的機關，成功逃離像素密室。</div><div class="progress">PIXEL LOCK · BETA 02 COMPLETE</div>'+b('level','返回教學關','0','gold')+'</div>';$('nextArea').innerHTML='';}
-function action(act,val){const d=game.data,n=game.idx;if(act==='level'){load(+val);return;}if(act==='next'){load(Math.min(n+1,10));return;}if(act==='credits'){endScreen();return;}if(act==='sound'){store.sound=!store.sound;save();render();return;}if(act==='resetAll'){if(confirm('確定清除全部關卡進度？')){store.unlocked=0;store.hints={};save();load(0);}return;}if(act==='reset'){load(n);return;}if(act==='key'){levelKey(val);return;}if(game.done)return;
-if(act==='blink'&&(n===1||n===10&&d.phase===0)){blink();return;}
-if(act==='speed'&&n===1){d.speed=d.speed===1?2:1;renderStage();return;}
-if(act==='pipe'&&n===2&&PIPE[val]){d.rot[val]=(d.rot[val]+1)%4;beep(390,.03);renderStage();return;}
-if(act==='move'){if(n===3)moveSok(val);if(n===9)moveWorld(val);return;}
-if(act==='undo'&&(n===3||n===9)){const old=d.history.pop();if(old){d.p=old.p;if(n===3)d.boxes=old.boxes;else{d.box=old.box;d.world=old.world;d.lit=old.lit;}renderStage();}return;}
-if(act==='color'&&(n===4||n===10)){d.color=val;d.path=[];renderStage();return;}
-if(act==='mirror'&&(n===4||n===10&&d.phase===0)&&d.mirrors[val]){d.mirrors[val]=d.mirrors[val]==='/'?'\\':'/';d.path=[];beep(350,.03);renderStage();return;}
-if(act==='fire'&&(n===4||n===10&&d.phase===0)){fire(n===10);return;}
-if(act==='overlay'&&(n===5||n===10&&d.phase===1)){adjustOverlay(val);return;}
-if(act==='gear'&&n===6){const i=+val;d.g[i]=(d.g[i]+1)%4;d.g[(i+1)%4]=(d.g[(i+1)%4]+3)%4;beep(420,.04);renderStage();return;}
-if(act==='channel'&&n===7){d.channel=Math.max(1,Math.min(3,d.channel+(+val)));d.heard=false;beep(400,.03);renderStage();return;}
-if(act==='radio'&&n===7){d.heard=d.channel===2;beep(d.heard?650:180,.13);renderStage();return;}
-if(act==='light'&&n===8){flip(d.cells,+val);beep(d.cells[+val]?660:330,.04);renderStage();return;}
-if(act==='world'&&n===9){const w=d.world==='normal'?'shadow':'normal';if(!canWalk(w,...d.p)||!canWalk(w,...d.box)){note('切換失敗。另一個世界的牆擋住了東西。');beep(170);return;}d.history.push({p:[...d.p],box:[...d.box],world:d.world,lit:{...d.lit}});d.world=w;if(w==='shadow'&&[[2,2],[4,2],[2,4],[4,4]].some(a=>same(a,d.box)))d.lit[d.box.join(',')]=true;beep(750);renderStage();return;}
+const LEVELS=[
+ ['無人的接待室','TUTORIAL','3142','觀測站接待室。所有通道已封閉，只有桌上的抽屜沒有上鎖。'],
+ ['最後一班監視器','OBSERVATION','1368','一輛維修車在午夜後經過研究站。監視器的四張截圖順序被打亂。'],
+ ['錯誤的交接順序','DEDUCTION','4296','保全交接室。四只資料盒散落在桌上，原本的擺放順序無人知曉。'],
+ ['誰進入控制室？','INVESTIGATION','7814','控制室留下02:14的藍色腕環感應紀錄。值班人員的行蹤彼此衝突。'],
+ ['無人回應的電台','INDUCTION','3526','老舊電台仍在發送訊號。雜訊中有四段不同的脈衝。'],
+ ['玻璃另一側的訊息','PERSPECTIVE','8125','兩層半透明像素膠片，在破裂的玻璃前留下不完整的圖案。'],
+ ['齒輪不會說謊','MECHANISM','4862','機械室四個齒輪的指針全部偏離卡槽。齒輪邊緣有未磨損的刻度。'],
+ ['四個開關，一個真相','LOGIC','1759','校準台上的四個開關影響數個指示燈。一張舊圖只畫了符號。'],
+ ['那張照片不是真的','PATTERN','6935','燈光牆的亮滅與舊照片不一致；照片背面有四個磨損的數字。'],
+ ['兩個世界的同一件事','CAUSALITY','4187','研究室的現實畫面與事故模擬影像互相疊合，牆壁在兩者之間變得不同。'],
+ ['零點事件：被改寫的真相','META PUZZLE','9062','官方報告指控有人在02:10破壞控制室。四份真實設備紀錄似乎講述了另一個故事。']
+];
+const ARCHIVE=[
+ ['接待室','進入研究站後取得調查權限。'],
+ ['攝影機校準紀錄','攝影機時間比研究站母鐘慢 3 分鐘。鏡頭拍到的維修車沒有倒車。'],
+ ['保全交接清單','藍、綠、黃、紅四個資料盒各有固定數字；交接排列只存在一種合理情形。'],
+ ['控制室門禁','02:14控制室出現藍色腕環。控制室的時鐘與母鐘一致。'],
+ ['無線電檢測單','電台時鐘比母鐘快 3 分鐘；兩份測試訊號記錄了已知的數值。'],
+ ['玻璃膠片','從玻璃背面才能讀出完整的影像；觀看方向會影響字的樣子。'],
+ ['機械室','四個指針各有自己的停靠方向，齒輪之間存在連動。'],
+ ['校準台','四組開關的相同／相異關係可以透過指示燈驗證。'],
+ ['燈板照片','每排燈對應 8、4、2、1 的數值權重。'],
+ ['影像終端校準','事故模擬終端的時鐘比母鐘慢 2 分鐘。'],
+ ['官方調查報告','官方稱破壞發生於02:10；但與門禁及設備紀錄無法一致。']
+];
+const STORE_KEY='pixel-lock-beta03';
+let saved={unlocked:0,sound:true};
+try{const p=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');if(p&&typeof p==='object'){saved.unlocked=Math.max(0,Math.min(11,+p.unlocked||0));saved.sound=p.sound!==false;}}catch(e){}
+let g={level:Math.min(saved.unlocked,10),input:'',done:false,scene:null,selected:-1,archive:false,notice:'',timeouts:[],playing:false};
+function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(saved));}catch(e){}}
+function beep(freq=440,dur=.07){if(!saved.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=new C(),o=c.createOscillator(),gain=c.createGain();o.type='square';o.frequency.value=freq;gain.gain.value=.03;o.connect(gain);gain.connect(c.destination);o.start();gain.gain.exponentialRampToValueAtTime(.0001,c.currentTime+dur);o.stop(c.currentTime+dur);o.onended=()=>c.close();}catch(e){}}
+function delay(fn,ms){g.timeouts.push(setTimeout(fn,ms));}
+function stop(){g.timeouts.forEach(clearTimeout);g.timeouts=[];g.playing=false}
+function btn(a,label,v,cls){return '<button class="btn '+(cls||'')+'" data-action="'+a+'"'+(v===undefined?'':' data-value="'+v+'"')+'>'+label+'</button>'}
+function note(title,txt){return '<div class="evidence2"><div class="source">▤ '+title+'</div><p>'+txt+'</p></div>'}
+const ARROWS=['↑','→','↓','←'];
+const DIGIT=['0','1','2','3','4','5','6','7','8','9'];
+const LIGHT_GOAL=[0,1,1,0,1,0,0,1,0,0,1,1,0,1,0,1].map(Boolean);
+const TAP=[0,1,5,6,8,11,13,14];
+const RECORDS=[
+ {id:0,name:'電台',time:'02:12',offset:'快3分鐘',stamp:'9'},
+ {id:1,name:'攝影機',time:'02:08',offset:'慢3分鐘',stamp:'0'},
+ {id:2,name:'控制室',time:'02:13',offset:'準確',stamp:'6'},
+ {id:3,name:'影像終端',time:'02:13',offset:'慢2分鐘',stamp:'2'}
+];
+function flip(c,i){const x=i%4,y=Math.floor(i/4);[[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{let nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<4&&ny<4)c[ny*4+nx]=!c[ny*4+nx]})}
+function mkScene(i){
+ if(i===1)return {order:[2,0,3,1]};
+ if(i===2)return {order:[3,2,0,1]};
+ if(i===3)return {chosen:-1};
+ if(i===4)return {channel:1,heard:false};
+ if(i===5)return {dx:2,dy:-1,rot:2,mirror:false};
+ if(i===6)return {gear:[1,3,0,0],target:[0,2,3,3]};
+ if(i===7)return {switches:[false,true,false,false]};
+ if(i===8){const c=LIGHT_GOAL.slice();TAP.forEach(x=>flip(c,x));return {cells:c}}
+ if(i===9)return {world:'normal',p:[3,5],box:[3,3],lit:{},history:[]};
+ if(i===10)return {order:[2,0,3,1],verdict:null};
+ return {};
 }
-document.addEventListener('click',function(event){
-  const button=event.target.closest('[data-action]');
-  if(!button||button.disabled)return;
-  action(button.dataset.action,button.dataset.value);
+function load(i){if(i<0||i>10||i>saved.unlocked)return;stop();g.level=i;g.input='';g.done=false;g.selected=-1;g.archive=false;g.notice='';g.scene=mkScene(i);render();}
+function same(a,b){return a[0]===b[0]&&a[1]===b[1]}
+function allWorldPads(){return Object.keys(g.scene.lit).length===4}
+function live(){
+ const s=g.scene;
+ if(g.level===6)return s.gear.every((x,i)=>x===s.target[i]);
+ if(g.level===7)return switchesGood();
+ if(g.level===8)return s.cells.every((x,i)=>x===LIGHT_GOAL[i]);
+ if(g.level===9)return allWorldPads();
+ if(g.level===10)return s.verdict==='contradict'&&s.order.every((x,i)=>x===i);
+ return true;
+}
+function switchesGood(){const [a,b,c,d]=g.scene.switches;return a&&a!==b&&b!==c&&c===d&&d===a;}
+function key(k){if(g.done)return;if(k==='X')g.input=g.input.slice(0,-1);else if(k==='OK'){unlock();return;}else if(/^[0-9]$/.test(k)&&g.input.length<4)g.input+=k;g.notice='';beep(400,.025);renderKeypad();}
+function unlock(){if(g.input.length!==4){g.notice='需要四位數字。';renderKeypad();return;}if(g.input!==LEVELS[g.level][2]){g.notice='門鎖拒絕了這組數字。';g.input='';beep(155,.12);renderKeypad();return;}if(!live()){g.notice='控制端仍然沒有回應。';beep(180,.10);renderKeypad();return;}g.done=true;saved.unlocked=Math.max(saved.unlocked,Math.min(11,g.level+1));persist();beep(830,.22);render();}
+function renderKeypad(){
+ $('digits').innerHTML=[0,1,2,3].map(i=>'<div class="digit '+(i<g.input.length?'filled':'')+'">'+(g.input[i]||'–')+'</div>').join('');
+ $('keypad').innerHTML=['1','2','3','4','5','6','7','8','9','X','0','OK'].map(v=>'<button class="key '+(v==='X'?'del':v==='OK'?'enter':'')+'" data-action="key" data-value="'+v+'">'+(v==='X'?'⌫':v==='OK'?'確認':v)+'</button>').join('');
+ $('lockStatus').textContent=g.done?'門已解鎖。':g.notice||'檢視現場，找出四位數。';
+ $('exit').classList.toggle('open',g.done);$('exit').innerHTML=g.done?'<span>◇</span><strong>OPEN</strong>':'<span>▣</span><strong>LOCKED</strong>';
+ $('nextArea').innerHTML=g.done?'<div class="divider"></div>'+btn(g.level===10?'ending':'next',g.level===10?'閱讀事件結論':'下一關 →',undefined,'accent'):'';
+}
+function renderArchive(){
+ const n=Math.min(saved.unlocked,10);
+ return '<div class="archivePane casefile"><h3>▤ 調查檔案　'+(n+1)+' 件</h3><p>以下是調查時保存的原始資料，可以跨房間重新查看。鐘錶時間不一定代表真正時間。</p>'+
+ ARCHIVE.slice(0,n+1).map((v,i)=>'<div class="archiveEntry"><strong>'+String(i).padStart(2,'0')+'　'+v[0]+'</strong><div>'+v[1]+'</div></div>').join('')+'</div>';
+}
+function render(){
+ const level=LEVELS[g.level];
+ $('levelTitle').textContent='LEVEL '+String(g.level).padStart(2,'0')+' / '+level[0];
+ $('levelTag').textContent=level[1];
+ $('description').textContent=level[3];
+ $('count').textContent=String(g.level).padStart(2,'0')+' / 10';
+ $('archiveCount').textContent='已保存 '+(Math.min(saved.unlocked,10)+1)+' 份檔案';
+ document.querySelector('[data-action="sound"]').textContent=saved.sound?'♫ 音效：開':'♫ 音效：關';
+ $('nav').innerHTML=LEVELS.map((v,i)=>'<button data-action="level" data-value="'+i+'" '+(i>saved.unlocked?'disabled':'')+' class="'+(g.level===i?'active':i<saved.unlocked?'passed':'')+'" title="'+v[0]+'">'+(i===0?'教':String(i).padStart(2,'0'))+'</button>').join('');
+ renderKeypad();renderScene();
+}
+function renderScene(){
+ let body='';
+ if(g.archive){body=renderArchive()+'<div class="btnrow">'+btn('archive','返回房間',undefined,'gold')+'</div>'; }
+ else {
+ switch(g.level){
+ case 0:body=scene0();break;case 1:body=scene1();break;case 2:body=scene2();break;
+ case 3:body=scene3();break;case 4:body=scene4();break;case 5:body=scene5();break;
+ case 6:body=scene6();break;case 7:body=scene7();break;case 8:body=scene8();break;
+ case 9:body=scene9();break;case 10:body=scene10();break;
+ }
+ }
+ $('stage').innerHTML=body+'<div class="msg">'+(g.done?'遠處傳來門栓鬆開的聲音。':'記錄不一定完整；每個異常都可能有原因。')+'</div>';
+ if(!g.archive&&g.level===5)drawFilm();
+}
+function scene0(){return note('抽屜紙條','接待員寫下四個數字：<span class="pixel-number">3　1　4　2</span>')+'<div class="statusbar">點擊右側數字鍵，輸入紙條上找到的數字。</div>'}
+const FRAMES=[
+ {n:1,num:'1',time:'02:08',progress:12,detail:'東門的警示燈剛亮'},
+ {n:2,num:'3',time:'02:09',progress:37,detail:'維修車經過第一道燈'},
+ {n:3,num:'6',time:'02:10',progress:64,detail:'車輛的尾燈通過中央'},
+ {n:4,num:'8',time:'02:11',progress:85,detail:'維修車靠近出口'}
+];
+function scene1(){
+ const a=g.scene.order;
+ return '<div class="case-grid">'+a.map((n,i)=>{const f=FRAMES[n];return '<button class="event '+(g.selected===i?'selected':'')+'" data-action="pick" data-value="'+i+'"><div class="stamp">CAM '+(i+1)+'</div><div class="road"><span class="car" style="left:'+Math.min(f.progress,80)+'%"></span></div><div class="pixel-number">'+f.num+'</div><div class="tiny">'+f.detail+'</div></button>'}).join('')+'</div>'+
+ '<div class="btnrow">'+btn('left','◀ 移動畫面')+btn('right','移動畫面 ▶')+'</div>'+
+ note('值班紀錄殘頁','「維修車沿著東向通道移動；這條路不能倒車。」攝影機時間比母鐘慢三分鐘。')+
+ '<div class="statusbar">點選一張監視畫面，可調整它在記錄帶中的位置。</div>';
+}
+const BOXES=[
+ {color:'藍',hex:'#71baf4',n:4},
+ {color:'綠',hex:'#8bdc99',n:2},
+ {color:'黃',hex:'#f4d26c',n:9},
+ {color:'紅',hex:'#ef8691',n:6}
+];
+function scene2(){
+ return '<div class="case-grid">'+g.scene.order.map((idx,pos)=>{const v=BOXES[idx];return '<button class="event '+(g.selected===pos?'selected':'')+'" data-action="pick" data-value="'+pos+'"><div class="stamp">SLOT '+(pos+1)+'</div><div style="font-size:40px;color:'+v.hex+'">▣</div><strong>'+v.color+'盒</strong><span class="pixel-number">'+v.n+'</span></button>'}).join('')+'</div>'+
+ '<div class="btnrow">'+btn('left','◀ 移動盒子')+btn('right','移動盒子 ▶')+'</div>'+
+ note('警衛交接清單','「綠盒必須緊接藍盒；黃盒不在兩端；藍盒要比紅盒先交出；藍盒與紅盒之間至少隔著一只盒子。」')+
+ '<div class="statusbar">盒子上的數字沒有消失，但順序被打亂了。</div>';
+}
+const PEOPLE=[
+ {name:'甲',place:'西工坊',seen:'02:12',walk:3,band:'紅',badge:'5941'},
+ {name:'乙',place:'發電室',seen:'02:13',walk:1,band:'藍',badge:'7814'},
+ {name:'丙',place:'檔案室',seen:'02:12',walk:2,band:'紅',badge:'2639'},
+ {name:'丁',place:'西工坊',seen:'02:13',walk:3,band:'藍',badge:'9052'}
+];
+function scene3(){
+ const a=PEOPLE[g.scene.chosen];
+ return note('控制室的最後紀錄','<strong>02:14</strong>，有人持<strong>藍色腕環</strong>通過控制室門禁。系統時鐘與母鐘一致。')+
+ '<div class="case-grid">'+PEOPLE.map((p,i)=>'<button class="lab-card '+(g.scene.chosen===i?'selected':'')+'" data-action="person" data-value="'+i+'"><div class="big">'+p.name+'</div><div class="small">'+p.place+'　'+p.seen+'</div><div class="small">步行至少 '+p.walk+' 分鐘</div></button>').join('')+'</div>'+
+ (a?note('人事資料卡：'+a.name,'識別腕環：<strong>'+a.band+'</strong><br>授權編號：<strong>'+a.badge+'</strong><br>先前位置：'+a.place+'（'+a.seen+'）'):'<div class="statusbar">點擊識別證查看腕環顏色與授權編號。</div>')+
+ note('值勤規定','人員必須步行通過區域間通道，不能瞬間移動；最短步行時間已登錄在識別證上。');
+}
+function wave(a){return '<span class="morse">'+a.map(v=>'<i class="pip '+(v===2?'long':'')+'"></i>').join('')+'</span>'}
+const RADIO_GROUPS=[[1,1,1],[2,2,1],[1,1],[2,2,2]];
+function scene4(){
+ const s=g.scene;
+ return '<div class="casebox"><div class="titlebar">RF RECEIVER　CH '+s.channel+'/3</div><div class="btnrow" style="margin:12px 0">'+btn('channel','◀ 頻道',-1)+btn('radio','▷ 收聽',undefined,'gold')+btn('channel','頻道 ▶',1)+'</div><div class="statusbar">'+(s.channel===2?'▰▰▰ 訊號清晰':'▱▱▱ 沙沙……間歇雜訊')+'</div></div>'+
+ note('頻道校準舊檔','TEST A：'+wave([1,1,2])+' = <strong>4</strong><br>TEST B：'+wave([2,2,1])+' = <strong>5</strong>')+
+ '<div class="casefile"><h3>未知來源的訊號</h3>'+RADIO_GROUPS.map((arr,i)=>'<div class="case-row" style="justify-content:space-between;margin-bottom:9px"><small>訊號 '+['甲','乙','丙','丁'][i]+'</small>'+(s.channel===2?wave(arr):'<span class="tiny">▤　▨　▤　── 干擾 ──</span>')+'</div>').join('')+'</div>';
+}
+const PIXELS={
+ '0':['111','101','101','101','111'],'1':['010','110','010','010','111'],
+ '2':['111','001','111','100','111'],'3':['111','001','111','001','111'],
+ '4':['101','101','111','001','001'],'5':['111','100','111','001','111'],
+ '6':['111','100','111','101','111'],'7':['111','001','010','010','010'],
+ '8':['111','101','111','101','111'],'9':['111','101','111','001','111']
+};
+function scene5(){const d=g.scene;return note('玻璃框背面的金屬刻字','「字不在這一面。」')+
+ '<canvas class="overlay" id="overlayCanvas" width="440" height="180" aria-label="兩張透明膠片"></canvas>'+
+ '<div class="btnrow">'+btn('film','⤺ 旋轉','rot')+btn('film','◀','left')+btn('film','▶','right')+btn('film','▲','up')+btn('film','▼','down')+btn('film',d.mirror?'離開鏡面':'照向鏡面','mirror','gold')+'</div>';
+}
+function drawFilm(){
+ const el=$('overlayCanvas');if(!el)return;const ctx=el.getContext('2d');if(!ctx)return;
+ const a=[],b=[],code='8125';for(let i=0;i<4;i++)PIXELS[code[i]].forEach((row,y)=>{for(let x=0;x<3;x++)if(row[x]==='1'){const pt=[19-(i*5+x),y];((x+y+i)%2===0?a:b).push(pt);}});
+ const d=g.scene,scale=17,cx=220,cy=90;ctx.fillStyle='#0b1727';ctx.fillRect(0,0,440,180);
+ function draw(pts,color,dx,dy,rot){ctx.fillStyle=color;pts.forEach(p=>{let x=p[0]-9.5,y=p[1]-2;for(let k=0;k<rot;k++){const q=x;x=-y;y=q}ctx.fillRect(cx+(x+dx)*scale,cy+(y+dy)*scale,scale-2,scale-2);})}
+ ctx.strokeStyle='#4d5c75';ctx.strokeRect(23,35,392,110);draw(a,'#65e8e1',0,0,0);draw(b,'#ffa45c',d.dx,d.dy,d.rot);
+ el.style.transform=d.mirror?'scaleX(-1)':'none';
+}
+function scene6(){
+ const s=g.scene;
+ return '<div class="gears">'+s.gear.map((v,i)=>'<div class="gearframe"><small>凹槽 '+ARROWS[s.target[i]]+'</small><button class="gear" data-action="gear" data-value="'+i+'"><span style="transform:rotate('+(v*90)+'deg)">↑</span></button><small>'+(v===s.target[i]?['8','2','4','6'][i]:'▣')+'</small></div>').join('')+'</div>'+
+ note('齒輪邊緣的刻痕','<strong>III · I · IV · II</strong><br>每個齒輪下方都有不同方向的缺口，齒輪互相牽動。')+
+ '<div class="statusbar">齒輪並非四個獨立的開關。</div>';
+}
+function scene7(){
+ const s=g.scene.switches,rels=[
+ ['A ≠ B',s[0]!==s[1]],['B ≠ C',s[1]!==s[2]],['C ＝ D',s[2]===s[3]],['D ＝ A',s[3]===s[0]]];
+ const tick=[[7,1],[7,4],[1,5],[2,9]];
+ return note('燒焦的接線圖','主電源接在 A 開關的<strong>上側</strong>。其餘線路留下四個關係記號。')+
+ '<div class="case-row">'+s.map((on,i)=>'<button class="switchplate '+(on?'on':'')+'" data-action="switch" data-value="'+i+'"><small>'+['A','B','C','D'][i]+'</small><strong>'+(on?'▲':'▼')+'</strong><span class="tiny">下 '+tick[i][0]+' ／ 上 '+tick[i][1]+'</span></button>').join('')+'</div>'+
+ '<div class="case-row">'+rels.map(r=>'<span class="signal '+(r[1]?'ok':'fail')+'">'+r[0]+'　'+(r[1]?'●':'○')+'</span>').join('')+'</div>'+
+ '<div class="statusbar">校準燈只顯示相符或不相符，不會替你挑選開關。</div>';
+}
+function scene8(){
+ const d=g.scene;
+ return '<div class="case-row"><div><div class="tiny">現場燈板</div><div class="matrix">'+d.cells.map((x,i)=>'<button class="cell '+(x?'light-on':'light-off')+'" data-action="light" data-value="'+i+'">'+(x?'✦':'·')+'</button>').join('')+'</div></div>'+
+ '<div><div class="tiny">找到的舊照片</div><div class="matrix">'+LIGHT_GOAL.map(x=>'<div class="cell '+(x?'light-on':'light-off')+'">'+(x?'✦':'·')+'</div>').join('')+'</div></div></div>'+
+ note('照片背面殘字','<strong>8　4　2　1</strong>　「每排均有自己的總值。」')+
+ '<div class="statusbar">按鈕似乎會影響鄰近的燈。</div>';
+}
+const WORLD_PADS=[[2,2],[4,2],[2,4],[4,4]];
+function walk(w,x,y){return y>=1&&y<=5&&(w==='normal'?x>=1&&x<=4:x>=2&&x<=5)}
+function scene9(){
+ const d=g.scene,syms=['1','7','4','8'],cells=[];
+ for(let y=0;y<7;y++)for(let x=0;x<7;x++){
+ const accessible=walk(d.world,x,y),gi=WORLD_PADS.findIndex(p=>same(p,[x,y]));
+ const player=same(d.p,[x,y]),box=same(d.box,[x,y]);
+ const cl=!accessible?'wall':box?'box':player?'player':gi>=0?'goal':'floor';
+ const chr=player?'◆':box?'▣':gi>=0?(d.lit[x+','+y]?syms[gi]:'◌'):'';
+ cells.push('<div class="cell '+cl+'">'+chr+'</div>');
+ }
+ return '<div class="tag world '+d.world+'">WORLD : '+(d.world==='normal'?'NORMAL / 正常影像':'SHADOW / 事故模擬')+'</div>'+
+ '<div class="worldgrid">'+cells.join('')+'</div>'+
+ '<div class="btnrow">'+btn('world','◈ 切換畫面',undefined,'gold')+btn('undo','↶ 撤銷一步')+'</div>'+
+ '<div class="mobilepad"><span class="blank"></span>'+btn('move','▲','U')+'<span class="blank"></span>'+btn('move','◀','L')+'<span class="blank"></span>'+btn('move','▶','R')+'<span class="blank"></span>'+btn('move','▼','D')+'<span class="blank"></span></div>'+
+ note('影像殘頁','事故模擬中的感應板上有數字，但只有重物接觸才會留下可辨認的印記。另一面牆上刻著 <strong>III · I · IV · II</strong>。');
+}
+function scene10(){
+ const d=g.scene;
+ return note('官方調查報告（有紅色補章）','「02:10，工程師進入控制室，蓄意破壞主要系統。」<br><span class="suspicion">然而，控制室門禁與攝影機資料似乎不能支持這個結論。</span>')+
+ '<div class="casefile"><h3>事件性質</h3><div class="btnrow">'+btn('verdict','官方報告可信','trust',d.verdict==='trust'?'gold':'')+btn('verdict','官方報告存在矛盾','contradict',d.verdict==='contradict'?'gold':'')+'</div></div>'+
+ '<div class="timeline">'+d.order.map((n,i)=>{const v=RECORDS[n];return '<button class="event '+(g.selected===i?'selected':'')+'" data-action="pick" data-value="'+i+'"><span class="stamp">檔案 '+(i+1)+'</span><strong>'+v.name+'</strong><span class="tiny">顯示 '+v.time+'</span><span class="pixel-number">'+v.stamp+'</span></button>'}).join('')+'</div>'+
+ '<div class="btnrow">'+btn('left','◀ 調整紀錄')+btn('right','調整紀錄 ▶')+'</div>'+
+ note('母鐘校準規範','所有設備的時間必須先換算回研究站母鐘。不同設備的快慢誤差可在調查檔案找到。')+
+ '<div class="statusbar">畫面上的時間是各設備自己的讀數。</div>';
+}
+function film(v){const d=g.scene;if(v==='rot')d.rot=(d.rot+1)%4;else if(v==='left')d.dx=Math.max(-3,d.dx-1);else if(v==='right')d.dx=Math.min(3,d.dx+1);else if(v==='up')d.dy=Math.max(-3,d.dy-1);else if(v==='down')d.dy=Math.min(3,d.dy+1);else if(v==='mirror')d.mirror=!d.mirror;beep(350,.04);renderScene();}
+function move(v){
+ if(g.level!==9)return;
+ const s=g.scene,steps={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},delta=steps[v];if(!delta)return;
+ const p=[s.p[0]+delta[0],s.p[1]+delta[1]];if(!walk(s.world,...p))return;
+ let box=s.box;if(same(p,s.box)){box=[s.box[0]+delta[0],s.box[1]+delta[1]];if(!walk(s.world,...box))return;}
+ s.history.push({p:s.p.slice(),box:s.box.slice(),world:s.world,lit:{...s.lit}});
+ s.p=p;s.box=box;
+ if(s.world==='shadow'&&WORLD_PADS.some(x=>same(x,s.box)))s.lit[s.box.join(',')]=true;
+ beep(300,.03);renderScene();
+}
+function swapIndex(direction){
+ const s=g.scene;if(g.selected<0)return;
+ const n=g.selected+direction;
+ if(n<0||n>=s.order.length)return;
+ const temp=s.order[g.selected];s.order[g.selected]=s.order[n];s.order[n]=temp;g.selected=n;beep(410,.04);renderScene();
+}
+function act(name,val){
+ if(name==='level'){load(+val);return;}
+ if(name==='next'){load(Math.min(g.level+1,10));return;}
+ if(name==='sound'){saved.sound=!saved.sound;persist();render();return;}
+ if(name==='archive'){g.archive=!g.archive;renderScene();return;}
+ if(name==='reset'){load(g.level);return;}
+ if(name==='resetAll'){if(confirm('確定清除 Beta 03 的全部調查進度？')){saved.unlocked=0;persist();load(0);}return;}
+ if(name==='key'){key(val);return;}
+ if(name==='ending'){endScreen();return;}
+ if(g.done||g.archive)return;
+ const s=g.scene;
+ if(name==='pick'){g.selected=+val;beep(360,.03);renderScene();return;}
+ if(name==='left'){swapIndex(-1);return;}
+ if(name==='right'){swapIndex(1);return;}
+ if(name==='person'){s.chosen=+val;beep(360,.03);renderScene();return;}
+ if(name==='channel'){s.channel=Math.max(1,Math.min(3,s.channel+(+val)));s.heard=false;beep(460,.04);renderScene();return;}
+ if(name==='radio'){s.heard=s.channel===2;beep(s.heard?630:200,.12);renderScene();return;}
+ if(name==='film'){film(val);return;}
+ if(name==='gear'){let k=+val;s.gear[k]=(s.gear[k]+1)%4;s.gear[(k+1)%4]=(s.gear[(k+1)%4]+3)%4;beep(430,.06);renderScene();return;}
+ if(name==='switch'){s.switches[+val]=!s.switches[+val];beep(s.switches[+val]?540:310,.05);renderScene();return;}
+ if(name==='light'){flip(s.cells,+val);beep(s.cells[+val]?590:330,.05);renderScene();return;}
+ if(name==='move'){move(val);return;}
+ if(name==='undo'&&g.level===9){const prev=s.history.pop();if(prev){s.p=prev.p;s.box=prev.box;s.world=prev.world;s.lit=prev.lit;renderScene();}return;}
+ if(name==='world'&&g.level===9){
+  const w=s.world==='normal'?'shadow':'normal';
+  if(!walk(w,...s.p)||!walk(w,...s.box)){g.notice='那一邊有牆壁擋住了去路。';renderKeypad();return;}
+  s.history.push({p:s.p.slice(),box:s.box.slice(),world:s.world,lit:{...s.lit}});
+  s.world=w;if(w==='shadow'&&WORLD_PADS.some(x=>same(x,s.box)))s.lit[s.box.join(',')]=true;
+  beep(690,.05);renderScene();return;
+ }
+ if(name==='verdict'){s.verdict=val;beep(430,.04);renderScene();return;}
+}
+function endScreen(){
+ const body='<div class="completed"><h2>02:16　零點封鎖</h2><p>電台首先接收到異常訊號，監視系統隨後出現警告。控制室啟動緊急隔離，影像終端確認訊號已被封鎖。</p><p>「02:10 工程師進入控制室破壞系統」的官方指控，與可核實的門禁及時間紀錄矛盾。</p><p class="victory">CASE CLOSED · TRUTH RESTORED</p>'+btn('level','重新調查','0','gold')+'</div>';
+ $('stage').innerHTML=body;$('nextArea').innerHTML='';
+}
+document.addEventListener('click',e=>{const x=e.target.closest('[data-action]');if(x&&!x.disabled)act(x.dataset.action,x.dataset.value);});
+document.addEventListener('keydown',e=>{
+ if(e.altKey||e.ctrlKey||e.metaKey||e.target.closest('input,textarea,[contenteditable="true"]'))return;
+ const dir={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R',w:'U',a:'L',s:'D',d:'R',W:'U',A:'L',S:'D',D:'R'};
+ if(dir[e.key]&&g.level===9&&!g.archive&&!g.done){e.preventDefault();move(dir[e.key]);return;}
+ if(/^[0-9]$/.test(e.key))key(e.key);
+ else if(e.key==='Backspace'){e.preventDefault();key('X');}
+ else if(e.key==='Enter')key('OK');
 });
-document.addEventListener('keydown',function(event){
-  if(event.altKey||event.ctrlKey||event.metaKey||event.target.closest('input,textarea,[contenteditable="true"]'))return;
-  const moves={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R',w:'U',s:'D',a:'L',d:'R',W:'U',S:'D',A:'L',D:'R'};
-  if(moves[event.key]&&(game.idx===3||game.idx===9)&&!game.done){
-    event.preventDefault();
-    action('move',moves[event.key]);
-  }else if(/^[0-9]$/.test(event.key)){
-    action('key',event.key);
-  }else if(event.key==='Backspace'){
-    event.preventDefault();
-    action('key','X');
-  }else if(event.key==='Enter'){
-    action('key','OK');
-  }
-});
-makeKeypad();load(game.idx);
+load(g.level);
 })();
 </script>
 </body>
